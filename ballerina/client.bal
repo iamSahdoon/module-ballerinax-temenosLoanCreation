@@ -3,7 +3,7 @@
 
 import ballerina/http;
 
-# API to create, update and manage customer details such as delivery preferences, joint customer details, party relationships, KYC details, alert subscriptions, customer exit status, customer address formats & posting restrictions
+# API to create and manage various types of loans such as personal, commercial, mortgage, line of credit, etc
 public isolated client class Client {
     final http:Client clientEp;
     final readonly & ApiKeysConfig apiKeyConfig;
@@ -13,51 +13,19 @@ public isolated client class Client {
     # + config - The configurations to be used when initializing the `connector` 
     # + serviceUrl - URL of the target service 
     # + return - An error if connector initialization failed 
-    public isolated function init(ApiKeysConfig apiKeyConfig, ConnectionConfig config =  {}, string serviceUrl = "https://api.temenos.com/api/v5.7.0//party") returns error? {
+    public isolated function init(ApiKeysConfig apiKeyConfig, ConnectionConfig config =  {}, string serviceUrl = "https://api.temenos.com/api/v9.0.0//holdings") returns error? {
         http:ClientConfiguration httpClientConfig = {httpVersion: config.httpVersion, http1Settings: config.http1Settings, http2Settings: config.http2Settings, timeout: config.timeout, forwarded: config.forwarded, followRedirects: config.followRedirects, poolConfig: config.poolConfig, cache: config.cache, compression: config.compression, circuitBreaker: config.circuitBreaker, retryConfig: config.retryConfig, cookieConfig: config.cookieConfig, responseLimits: config.responseLimits, secureSocket: config.secureSocket, proxy: config.proxy, socketConfig: config.socketConfig, validation: config.validation, laxDataBinding: config.laxDataBinding};
         self.clientEp = check new (serviceUrl, httpClientConfig);
         self.apiKeyConfig = apiKeyConfig.cloneReadOnly();
     }
 
-    # Retrieves customer details
+    # Creates a business banking loan for a single or joint customer
     #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerResponse 
-    resource isolated function get customers/[string customerId](GetCustomerHeaders headers = {}) returns CustomerResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Update customer details
-    #
-    # + customerId - Identifier of the customer
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerResponse 
-    resource isolated function put customers/[string customerId](http:Request request, UpdateCustomerHeaders headers = {}, *UpdateCustomerQueries queries) returns CustomerResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Create a customer by providing an Id
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerWithIdResponse 
-    resource isolated function post customers/[string customerId](http:Request request, CreateCustomerWithIdHeaders headers = {}, *CreateCustomerWithIdQueries queries) returns CustomerResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}`;
+    # + return - createBNPLLoanResponse 
+    resource isolated function post loans/buyNowPayLater(http:Request request, CreateBNPLLoanHeaders headers = {}, *CreateBNPLLoanQueries queries) returns BNPLLoanResponse|error {
+        string resourcePath = string `/loans/buyNowPayLater`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -66,13 +34,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves list of customer basic details
+    # Retrieve the buy now pay later loan details
     #
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerInformationResponse 
-    resource isolated function get customers(GetCustomerInformationHeaders headers = {}, *GetCustomerInformationQueries queries) returns CustomerInformationResponse|error {
-        string resourcePath = string `/customers`;
+    # + return - LoanInformationResponse 
+    resource isolated function get loans/balances(GetLoanInformationHeaders headers = {}, *GetLoanInformationQueries queries) returns LoanInformationResponse|error {
+        string resourcePath = string `/loans/balances`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -80,61 +48,13 @@ public isolated client class Client {
         return self.clientEp->get(resourcePath, httpHeaders);
     }
 
-    # Create a customer
+    # Performs the loan cancellation for buy now pay later service
     #
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerResponse 
-    resource isolated function post customers(http:Request request, CreateCustomerHeaders headers = {}, *CreateCustomerQueries queries) returns CustomerResponse|error {
-        string resourcePath = string `/customers`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->post(resourcePath, request, httpHeaders);
-    }
-
-    # Retrieves list of customer relationships
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerRelationshipResponse 
-    resource isolated function get customers/relationships(GetCustomerRelationshipHeaders headers = {}, *GetCustomerRelationshipQueries queries) returns CustomerRelationshipResponse1|error {
-        string resourcePath = string `/customers/relationships`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Create customer relationship with other customers
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerRelationshipResponse 
-    resource isolated function post customers/relationships(http:Request request, CreateCustomerRelationshipHeaders headers = {}, *CreateCustomerRelationshipQueries queries) returns CustomerRelationshipResponse|error {
-        string resourcePath = string `/customers/relationships`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->post(resourcePath, request, httpHeaders);
-    }
-
-    # Update customer relationship
-    #
-    # + relationId - Identifier of the Customer Relationship and Party Relationship
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerRelationshipResponse 
-    resource isolated function put customers/relationships/[string relationId](http:Request request, UpdateCustomerRelationshipHeaders headers = {}, *UpdateCustomerRelationshipQueries queries) returns CustomerRelationshipResponse|error {
-        string resourcePath = string `/customers/relationships/${getEncodedUri(relationId)}`;
+    # + return - cancelArrangementResponse 
+    resource isolated function put loans/[string loanId]/cancellations(http:Request request, CancelArrangementHeaders headers = {}, *CancelArrangementQueries queries) returns ArrangementResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/cancellations`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -143,73 +63,13 @@ public isolated client class Client {
         return self.clientEp->put(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves reporting status of the customer
+    # Creates the creation of consumer loan for the given product
     #
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerReportingStatusResponse 
-    resource isolated function get customers/reportingStatus(GetCustomerReportingStatusHeaders headers = {}, *GetCustomerReportingStatusQueries queries) returns CustomerReportingStatusResponse|error {
-        string resourcePath = string `/customers/reportingStatus`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves account sweep details of the specific customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerSweepsResponse 
-    resource isolated function get customers/[string customerId]/sweeps(GetCustomerSweepsHeaders headers = {}, *GetCustomerSweepsQueries queries) returns CustomerSweepsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/sweeps`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves delivery preferences of the customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerDeliveryOptionsResponse 
-    resource isolated function get customers/[string customerId]/deliveryOptions(GetCustomerDeliveryOptionsHeaders headers = {}, *GetCustomerDeliveryOptionsQueries queries) returns CustomerDeliveryOptionsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/deliveryOptions`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves list of message channels
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerDigitalChannelsResponse 
-    resource isolated function get customers/[string customerId]/channels(GetCustomerDigitalChannelsHeaders headers = {}, *GetCustomerDigitalChannelsQueries queries) returns CustomerDigitalChannelsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/channels`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Create a new secure message for a customer
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - MessagesResponse 
-    resource isolated function post customers/messages(http:Request request, CreateMessagesHeaders headers = {}, *CreateMessagesQueries queries) returns MessagesResponse|error {
-        string resourcePath = string `/customers/messages`;
+    # + return - createConsumerLoanResponse 
+    resource isolated function post loans/consumerLoans(http:Request request, CreateConsumerLoanHeaders headers = {}, *CreateConsumerLoanQueries queries) returns ConsumerLoanResponse|error {
+        string resourcePath = string `/loans/consumerLoans`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -218,91 +78,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves joint customer details for a specific customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - JointCustomerDetailsResponse 
-    resource isolated function get customers/[string customerId]/jointCustomers(GetJointCustomerDetailsHeaders headers = {}, *GetJointCustomerDetailsQueries queries) returns JointCustomerDetailsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/jointCustomers`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves KYC details for a specific customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerKYCDetailsResponse 
-    resource isolated function get customers/[string customerId]/KYC(GetCustomerKYCDetailsHeaders headers = {}, *GetCustomerKYCDetailsQueries queries) returns CustomerKYCDetailsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/KYC`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves personal details of customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerPersonalDetailsResponse 
-    resource isolated function get customers/[string customerId]/personalProfiles(GetCustomerPersonalDetailsHeaders headers = {}, *GetCustomerPersonalDetailsQueries queries) returns CustomerPersonalDetailsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/personalProfiles`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves posting restriction details
+    # Creates the creation of consumer loan for the given product
     #
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerPostingRestrictionsResponse 
-    resource isolated function get customers/postingRestrictions(GetCustomerPostingRestrictionsHeaders headers = {}, *GetCustomerPostingRestrictionsQueries queries) returns CustomerPostingRestrictionsResponse|error {
-        string resourcePath = string `/customers/postingRestrictions`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Update party relationship details
-    #
-    # + relationId - Identifier of the Customer Relationship and Party Relationship
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - PartyRelationshipResponse 
-    resource isolated function put relationships/[string relationId](http:Request request, UpdatePartyRelationshipHeaders headers = {}, *UpdatePartyRelationshipQueries queries) returns PartyRelationshipResponse|error {
-        string resourcePath = string `/relationships/${getEncodedUri(relationId)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Create party relationship details
-    #
-    # + relationId - Identifier of the Customer Relationship and Party Relationship
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - PartyRelationshipResponse 
-    resource isolated function post relationships/[string relationId](http:Request request, CreatePartyRelationshipHeaders headers = {}, *CreatePartyRelationshipQueries queries) returns PartyRelationshipResponse|error {
-        string resourcePath = string `/relationships/${getEncodedUri(relationId)}`;
+    # + return - createpersonalLoansResponse 
+    resource isolated function post loans/personalLoans(http:Request request, CreatepersonalLoansHeaders headers = {}, *CreatepersonalLoansQueries queries) returns ConsumerLoanResponse|error {
+        string resourcePath = string `/loans/personalLoans`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -311,77 +93,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves card details of a customer
+    # Creates the creation of consumer loan for the given product
     #
-    # + customerId - Identifier of the customer
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerCreditCardsResponse 
-    resource isolated function get customers/[string customerId]/cards(GetCustomerCreditCardsHeaders headers = {}, *GetCustomerCreditCardsQueries queries) returns CustomerCreditCardsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/cards`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves standing instruction details of a customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - StandingOrdersResponse 
-    resource isolated function get customers/[string customerId]/standingOrders(GetStandingOrdersHeaders headers = {}, *GetStandingOrdersQueries queries) returns StandingOrdersResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/standingOrders`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves direct debits details of a customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - DirectDebitsResponse 
-    resource isolated function get customers/[string customerId]/directDebits(GetDirectDebitsHeaders headers = {}, *GetDirectDebitsQueries queries) returns DirectDebitsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/directDebits`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Update customer delivery preferences
-    #
-    # + deliveryPreferenceId - Identifier of the customer delivery preferences
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - DeliveryPreferenceResponse 
-    resource isolated function put customers/deliveryPreferences/[string deliveryPreferenceId](http:Request request, UpdateDeliveryPreferenceHeaders headers = {}, *UpdateDeliveryPreferenceQueries queries) returns DeliveryPreferenceResponse|error {
-        string resourcePath = string `/customers/deliveryPreferences/${getEncodedUri(deliveryPreferenceId)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Create customer delivery preferences
-    #
-    # + deliveryPreferenceId - Identifier of the customer delivery preferences
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - DeliveryPreferenceResponse 
-    resource isolated function post customers/deliveryPreferences/[string deliveryPreferenceId](http:Request request, CreateDeliveryPreferenceHeaders headers = {}, *CreateDeliveryPreferenceQueries queries) returns DeliveryPreferenceResponse|error {
-        string resourcePath = string `/customers/deliveryPreferences/${getEncodedUri(deliveryPreferenceId)}`;
+    # + return - createvehicleLoanResponse 
+    resource isolated function post loans/vehicleLoans(http:Request request, CreatevehicleLoanHeaders headers = {}, *CreatevehicleLoanQueries queries) returns ConsumerLoanResponse|error {
+        string resourcePath = string `/loans/vehicleLoans`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -390,61 +108,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves customer exit status details of customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerExitStatusResponse 
-    resource isolated function get customers/[string customerId]/customerExitStatus(GetCustomerExitStatusHeaders headers = {}, *GetCustomerExitStatusQueries queries) returns CustomerExitStatusResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/customerExitStatus`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Update customer exit status details of customers
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerExitStatusResponse 
-    resource isolated function put customers/[string customerId]/customerExitStatus(http:Request request, UpdateCustomerExitStatusHeaders headers = {}, *UpdateCustomerExitStatusQueries queries) returns CustomerExitStatusResponse1|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/customerExitStatus`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Retrieves conditions to update customer exit status of customer
+    # Creates a loan for the given product
     #
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerExitStatusParamResponse 
-    resource isolated function get customers/settings/customerExitStatus/[string customerExitStatusId](GetCustomerExitStatusParamHeaders headers = {}, *GetCustomerExitStatusParamQueries queries) returns CustomerExitStatusParamResponse|error {
-        string resourcePath = string `/customers/settings/customerExitStatus/${getEncodedUri(customerExitStatusId)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Create conditions to update customer exit status of customer
-    #
-    # + customerExitStatusId - The field reflects the exit status ID of a customer or prospect from the parameterization table CUSTOMER.EXIT.STATUS
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerExitStatusParamResponse 
-    resource isolated function post customers/settings/customerExitStatus/[string customerExitStatusId](http:Request request, CreateCustomerExitStatusParamHeaders headers = {}, *CreateCustomerExitStatusParamQueries queries) returns CustomerExitStatusParamResponse1|error {
-        string resourcePath = string `/customers/settings/customerExitStatus/${getEncodedUri(customerExitStatusId)}`;
+    # + return - createLoansResponse 
+    resource isolated function post loans(http:Request request, CreateLoansHeaders headers = {}, *CreateLoansQueries queries) returns ConsumerLoanResponse|error {
+        string resourcePath = string `/loans`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -453,31 +123,14 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Create conditions to update customer exit status of customer
+    # Retrieves payment holiday simulate details for the loan
     #
-    # + customerExitStatusId - The field reflects the exit status ID of a customer or prospect from the parameterization table CUSTOMER.EXIT.STATUS
+    # + loanId - Denotes the arrangement id of the loan
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerExitStatusParamResponse 
-    resource isolated function put customers/settings/[string customerExitStatusId]/customerExitStatus(http:Request request, UpdateCustomerExitStatusParamHeaders headers = {}, *UpdateCustomerExitStatusParamQueries queries) returns CustomerExitStatusParamResponse1|error {
-        string resourcePath = string `/customers/settings/${getEncodedUri(customerExitStatusId)}/customerExitStatus`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Retrieves structured/ unstructured address format of customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerAddressOutputResponse 
-    resource isolated function get customers/[string customerId]/addresses(GetCustomerAddressOutputHeaders headers = {}, *GetCustomerAddressOutputQueries queries) returns CustomerAddressOutputResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/addresses`;
+    # + return - PaymentHolidaySimResponse 
+    resource isolated function get loans/[string loanId]/simulations/paymentHolidays(GetPaymentHolidaySimHeaders headers = {}, *GetPaymentHolidaySimQueries queries) returns PaymentHolidaySimResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/simulations/paymentHolidays`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -485,178 +138,13 @@ public isolated client class Client {
         return self.clientEp->get(resourcePath, httpHeaders);
     }
 
-    # Retrieves customer short name
+    # Simulate payment holiday activity for a loan account
     #
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerShortNamesResponse 
-    resource isolated function get customers/[string customerId]/shortNames(GetCustomerShortNamesHeaders headers = {}) returns CustomerShortNamesResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/shortNames`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves mandate instruction applicable for the requested customer
-    #
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerMandatesResponse 
-    resource isolated function get customers/[string customerId]/mandates(GetCustomerMandatesHeaders headers = {}) returns CustomerMandatesResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/mandates`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves the customer legal document details
-    #
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerLegalDocumentsResponse 
-    resource isolated function get customers/[string customerId]/documents(GetCustomerLegalDocumentsHeaders headers = {}) returns CustomerLegalDocumentsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/documents`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves profile details of the requested customer
-    #
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerProfileResponse 
-    resource isolated function get customers/[string customerId]/profiles(GetCustomerProfileHeaders headers = {}) returns CustomerProfileResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/profiles`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves customer id for the given alternate reference
-    #
-    # + alternateReference - If the new Account to be created is a shadow of another Account already exisitng in another system, then the Account reference of that system can be specified here. The value given in this field will be mapped to ALTERNATE.ID field in arrangement activity and ensure that this Account doesn't already exist in T24 with another reference (because ALTERNATE.ID would be configured to be unique across T24)
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerIdResponse 
-    resource isolated function get customers/alternateReferences/[string alternateReference](GetCustomerIdHeaders headers = {}, *GetCustomerIdQueries queries) returns CustomerIdResponse|error {
-        string resourcePath = string `/customers/alternateReferences/${getEncodedUri(alternateReference)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves the restriction details
-    #
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerRestrictionsResponse 
-    resource isolated function get customers/[string customerId]/restrictions(GetCustomerRestrictionsHeaders headers = {}) returns CustomerRestrictionsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/restrictions`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves the customer contact details
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerContactsResponse 
-    resource isolated function get customers/[string customerId]/contacts(GetCustomerContactsHeaders headers = {}, *GetCustomerContactsQueries queries) returns CustomerContactsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/contacts`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves the relation customers
-    #
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerRelationshipsResponse 
-    resource isolated function get customers/[string customerId]/relationships(GetCustomerRelationshipsHeaders headers = {}) returns CustomerRelationshipsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/relationships`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves customer details required for payment processing
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - PartyBasicDetailsResponse 
-    resource isolated function get customers/[string customerId]/payments(GetPartyBasicDetailsHeaders headers = {}, *GetPartyBasicDetailsQueries queries) returns PartyBasicDetailsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/payments`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves the SWIFT address details for the customer.
-    #
-    # + customerId - Identifier of the customer
-    # + addressId - Reference Id of address record
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerSwiftAddressResponse 
-    resource isolated function get customers/[string customerId]/addresses/swiftAddresses/[string addressId](GetCustomerSwiftAddressHeaders headers = {}, *GetCustomerSwiftAddressQueries queries) returns CustomerSwiftAddressResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/addresses/swiftAddresses/${getEncodedUri(addressId)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves customer charge for a specific customer.
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerChargeResponse 
-    resource isolated function get customers/[string customerId]/charges(GetCustomerChargeHeaders headers = {}) returns CustomerChargeResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/charges`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Updates customer charge for a specific customer.
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerChargeResponse 
-    resource isolated function put customers/[string customerId]/charges(http:Request request, UpdateCustomerChargeHeaders headers = {}, *UpdateCustomerChargeQueries queries) returns CustomerChargeResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/charges`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Creates customer charge for a specific customer.
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerChargeResponse 
-    resource isolated function post customers/[string customerId]/charges(http:Request request, CreateCustomerChargeHeaders headers = {}, *CreateCustomerChargeQueries queries) returns CustomerChargeResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/charges`;
+    # + return - simulatePaymentHolidayResponse 
+    resource isolated function post loans/[string loanId]/simulations/paymentHolidays(http:Request request, SimulatePaymentHolidayHeaders headers = {}, *SimulatePaymentHolidayQueries queries) returns PaymentHolidayResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/simulations/paymentHolidays`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -665,30 +153,193 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves available list of customer sms communication addresses
+    # Perform the renegotiation of the loan contract details
     #
-    # + customerId - Identifier of the customer
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerPhoneAddressResponse 
-    resource isolated function get customers/[string customerId]/addresses/smsAddresses(GetCustomerPhoneAddressHeaders headers = {}, *GetCustomerPhoneAddressQueries queries) returns CustomerPhoneAddressResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/addresses/smsAddresses`;
+    # + return - updateLoanConditionsResponse 
+    resource isolated function put loans/[string loanId]/renegotiations(http:Request request, UpdateLoanConditionsHeaders headers = {}, *UpdateLoanConditionsQueries queries) returns LoanConditionsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/renegotiations`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
         map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
     }
 
-    # Creates customer sms communication address
+    # Update the account conditions of the loan
     #
-    # + customerId - Identifier of the customer
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerPhoneAddressResponse 
-    resource isolated function post customers/[string customerId]/addresses/smsAddresses(http:Request request, CreateCustomerPhoneAddressHeaders headers = {}, *CreateCustomerPhoneAddressQueries queries) returns CustomerPhoneAddressResponse1|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/addresses/smsAddresses`;
+    # + return - updateLoanAccountResponse 
+    resource isolated function put loans/[string loanId]/accounts(http:Request request, UpdateLoanAccountHeaders headers = {}, *UpdateLoanAccountQueries queries) returns LoanAccountResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/accounts`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Update the interest conditions of the loan
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateLoanInterestResponse 
+    resource isolated function put loans/[string loanId]/interestConditions(http:Request request, UpdateLoanInterestHeaders headers = {}, *UpdateLoanInterestQueries queries) returns LoanInterestResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/interestConditions`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Execute loan charge-off activity to charge-off account balance only
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createChargeOffActivityResponse 
+    resource isolated function put loans/[string loanId]/chargeOffs(http:Request request, CreateChargeOffActivityHeaders headers = {}, *CreateChargeOffActivityQueries queries) returns ChargeOffActivityResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/chargeOffs`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Disburses the loan commitment amount
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createLoanDisbursementResponse 
+    resource isolated function put loans/[string loanId]/disbursements(http:Request request, CreateLoanDisbursementHeaders headers = {}, *CreateLoanDisbursementQueries queries) returns LoanDisbursementResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/disbursements`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Updates the customer for the given loan contract
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateLoansCustomerResponse 
+    resource isolated function put loans/[string loanId]/customers(http:Request request, UpdateLoansCustomerHeaders headers = {}, *UpdateLoansCustomerQueries queries) returns LoansCustomerResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/customers`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Increases the commitment amount of the given loan contract
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateLoanTopupAmountResponse 
+    resource isolated function put loans/[string loanId]/commitmentIncreases(http:Request request, UpdateLoanTopupAmountHeaders headers = {}, *UpdateLoanTopupAmountQueries queries) returns LoanTopupAmountResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/commitmentIncreases`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Decreases the commitment amount of the given loan contract
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateLoanDecreaseAmountResponse 
+    resource isolated function put loans/[string loanId]/commitmentDecreases(http:Request request, UpdateLoanDecreaseAmountHeaders headers = {}, *UpdateLoanDecreaseAmountQueries queries) returns LoanDecreaseAmountResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/commitmentDecreases`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Perform repayment date change for the loan
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateRepaymentDateResponse 
+    resource isolated function put loans/[string loanId]/repaymentDates(http:Request request, UpdateRepaymentDateHeaders headers = {}, *UpdateRepaymentDateQueries queries) returns RepaymentDateResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/repaymentDates`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Perform a loan balance write off
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - initiateWriteOffBalanceLoansResponse 
+    resource isolated function put loans/[string loanId]/writeOffs/balances(http:Request request, InitiateWriteOffBalanceLoansHeaders headers = {}, *InitiateWriteOffBalanceLoansQueries queries) returns WriteOffBalanceLoansResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/writeOffs/balances`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Perform a loan write off of balances and bills
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - initiateWriteOffLoansResponse 
+    resource isolated function put loans/[string loanId]/writeOffs(http:Request request, InitiateWriteOffLoansHeaders headers = {}, *InitiateWriteOffLoansQueries queries) returns WriteOffLoansResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/writeOffs`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Perform a write off bills of unpaid loans
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - initiateWriteOffBillLoansResponse 
+    resource isolated function put loans/[string loanId]/writeOffs/bills(http:Request request, InitiateWriteOffBillLoansHeaders headers = {}, *InitiateWriteOffBillLoansQueries queries) returns WriteOffBillLoansResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/writeOffs/bills`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Create a personal loan account with linked rate
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createLinkedRateLoanResponse 
+    resource isolated function post loans/linkedRateLoans(http:Request request, CreateLinkedRateLoanHeaders headers = {}, *CreateLinkedRateLoanQueries queries) returns LinkedRateLoanResponse|error {
+        string resourcePath = string `/loans/linkedRateLoans`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -697,30 +348,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves available list of customer email communication addresses
+    # Create a commercial or business account
     #
-    # + customerId - Identifier of the customer
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerEmailAddressResponse 
-    resource isolated function get customers/[string customerId]/addresses/emailAddresses(GetCustomerEmailAddressHeaders headers = {}, *GetCustomerEmailAddressQueries queries) returns CustomerEmailAddressResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/addresses/emailAddresses`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Creates customer email communication address
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerEmailAddressResponse 
-    resource isolated function post customers/[string customerId]/addresses/emailAddresses(http:Request request, CreateCustomerEmailAddressHeaders headers = {}, *CreateCustomerEmailAddressQueries queries) returns CustomerEmailAddressResponse1|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/addresses/emailAddresses`;
+    # + return - createCommercialLoanResponse 
+    resource isolated function post loans/commercialLoans(http:Request request, CreateCommercialLoanHeaders headers = {}, *CreateCommercialLoanQueries queries) returns CommercialLoanResponse|error {
+        string resourcePath = string `/loans/commercialLoans`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -729,30 +363,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves available list of customer print communication addresses
+    # Create a mortgage loan
     #
-    # + customerId - Identifier of the customer
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - CustomerPrintAddressResponse 
-    resource isolated function get customers/[string customerId]/addresses/printAddresses(GetCustomerPrintAddressHeaders headers = {}, *GetCustomerPrintAddressQueries queries) returns CustomerPrintAddressResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/addresses/printAddresses`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Creates customer print communication address
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerPrintAddressResponse 
-    resource isolated function post customers/[string customerId]/addresses/printAddresses(http:Request request, CreateCustomerPrintAddressHeaders headers = {}, *CreateCustomerPrintAddressQueries queries) returns CustomerPrintAddressResponse1|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/addresses/printAddresses`;
+    # + return - createMortgageResponse 
+    resource isolated function post loans/mortgages(http:Request request, CreateMortgageHeaders headers = {}, *CreateMortgageQueries queries) returns MortgageResponse|error {
+        string resourcePath = string `/loans/mortgages`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -761,149 +378,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Updates customer sms communication address
+    # Create a lines of credit account
     #
-    # + customerAddressId - Identifier of the customer address table
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerPhoneAddressResponse 
-    resource isolated function put customers/addresses/[string customerAddressId]/smsAddresses(http:Request request, UpdateCustomerPhoneAddressHeaders headers = {}, *UpdateCustomerPhoneAddressQueries queries) returns CustomerPhoneAddressResponse1|error {
-        string resourcePath = string `/customers/addresses/${getEncodedUri(customerAddressId)}/smsAddresses`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Deletes customer sms communication address
-    #
-    # + customerAddressId - Identifier of the customer address table
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerPhoneAddressResponse 
-    resource isolated function delete customers/addresses/[string customerAddressId]/smsAddresses(http:Request request, DeleteCustomerPhoneAddressHeaders headers = {}, *DeleteCustomerPhoneAddressQueries queries) returns CustomerPhoneAddressResponse1|error {
-        string resourcePath = string `/customers/addresses/${getEncodedUri(customerAddressId)}/smsAddresses`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->delete(resourcePath, request, httpHeaders);
-    }
-
-    # Updates customer email communication address
-    #
-    # + customerAddressId - Identifier of the customer address table
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerEmailAddressResponse 
-    resource isolated function put customers/addresses/[string customerAddressId]/emailAddresses(http:Request request, UpdateCustomerEmailAddressHeaders headers = {}, *UpdateCustomerEmailAddressQueries queries) returns CustomerEmailAddressResponse1|error {
-        string resourcePath = string `/customers/addresses/${getEncodedUri(customerAddressId)}/emailAddresses`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Deletes customer email communication address
-    #
-    # + customerAddressId - Identifier of the customer address table
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerEmailAddressResponse 
-    resource isolated function delete customers/addresses/[string customerAddressId]/emailAddresses(http:Request request, DeleteCustomerEmailAddressHeaders headers = {}, *DeleteCustomerEmailAddressQueries queries) returns CustomerEmailAddressResponse1|error {
-        string resourcePath = string `/customers/addresses/${getEncodedUri(customerAddressId)}/emailAddresses`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->delete(resourcePath, request, httpHeaders);
-    }
-
-    # Updates customer print communication address
-    #
-    # + customerAddressId - Identifier of the customer address table
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerPrintAddressResponse 
-    resource isolated function put customers/addresses/[string customerAddressId]/printAddresses(http:Request request, UpdateCustomerPrintAddressHeaders headers = {}, *UpdateCustomerPrintAddressQueries queries) returns CustomerPrintAddressResponse1|error {
-        string resourcePath = string `/customers/addresses/${getEncodedUri(customerAddressId)}/printAddresses`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Deletes customer print communication address
-    #
-    # + customerAddressId - Identifier of the customer address table
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerPrintAddressResponse 
-    resource isolated function delete customers/addresses/[string customerAddressId]/printAddresses(http:Request request, DeleteCustomerPrintAddressHeaders headers = {}, *DeleteCustomerPrintAddressQueries queries) returns CustomerPrintAddressResponse1|error {
-        string resourcePath = string `/customers/addresses/${getEncodedUri(customerAddressId)}/printAddresses`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->delete(resourcePath, request, httpHeaders);
-    }
-
-    # Retrieves customer consents details
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerConsentsResponse 
-    resource isolated function get customers/[string customerId]/consents(GetCustomerConsentsHeaders headers = {}, *GetCustomerConsentsQueries queries) returns CustomerConsentsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/consents`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Update FATCA customer supplementary information details
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - FatcaCustomerResponse 
-    resource isolated function put customers/[string customerId]/fatca(http:Request request, UpdateFatcaCustomerHeaders headers = {}, *UpdateFatcaCustomerQueries queries) returns FatcaCustomerResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/fatca`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Create FATCA customer supplementary information details
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - FatcaCustomerResponse 
-    resource isolated function post customers/[string customerId]/fatca(http:Request request, CreateFatcaCustomerHeaders headers = {}, *CreateFatcaCustomerQueries queries) returns FatcaCustomerResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/fatca`;
+    # + return - createCreditLineResponse 
+    resource isolated function post loans/creditLines(http:Request request, CreateCreditLineHeaders headers = {}, *CreateCreditLineQueries queries) returns ConsumerLoanResponse|error {
+        string resourcePath = string `/loans/creditLines`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -912,58 +393,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves overdue settlements of customer or portfolio
-    #
-    # + customerId - Identifier of the customer
-    # + portfolioId - Id of the portfolio or security account
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - OverdueSettlementsResponse 
-    resource isolated function get customers/[string customerId]/portfolios/[string portfolioId]/overdueSettlements(GetOverdueSettlementsHeaders headers = {}, *GetOverdueSettlementsQueries queries) returns OverdueSettlementsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/portfolios/${getEncodedUri(portfolioId)}/overdueSettlements`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves details of third party providers
+    # Create an installment loan for the given product
     #
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - OtherBanksToConnectToResponse 
-    resource isolated function get customers/accountServicingProviders(GetOtherBanksToConnectToHeaders headers = {}, *GetOtherBanksToConnectToQueries queries) returns OtherBanksToConnectToResponse|error {
-        string resourcePath = string `/customers/accountServicingProviders`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves prospect details of customers
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - ProspectCustomersResponse 
-    resource isolated function get customers/prospects(GetProspectCustomersHeaders headers = {}, *GetProspectCustomersQueries queries) returns ProspectCustomersResponse|error {
-        string resourcePath = string `/customers/prospects`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Create a prospect customer
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - ProspectCustomerResponse 
-    resource isolated function post customers/prospects(http:Request request, CreateProspectCustomerHeaders headers = {}, *CreateProspectCustomerQueries queries) returns ProspectCustomerResponse|error {
-        string resourcePath = string `/customers/prospects`;
+    # + return - createInstallmentLoanResponse 
+    resource isolated function post facilities/installmentLoans(http:Request request, CreateInstallmentLoanHeaders headers = {}, *CreateInstallmentLoanQueries queries) returns InstallmentLoanResponse|error {
+        string resourcePath = string `/facilities/installmentLoans`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -972,91 +408,17 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves the sales opportunities for specific customers
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerOpportunitiesResponse 
-    resource isolated function get customers/[string customerId]/opportunities(GetCustomerOpportunitiesHeaders headers = {}, *GetCustomerOpportunitiesQueries queries) returns CustomerOpportunitiesResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/opportunities`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves process workflows for a specific customer
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerRequestsResponse 
-    resource isolated function get customers/[string customerId]/requests(GetCustomerRequestsHeaders headers = {}, *GetCustomerRequestsQueries queries) returns CustomerRequestsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/requests`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Update a prospect customer
-    #
-    # + prospectId - Indicates the status of an onboarding customer. Status can be PROSPECT while onboarding and ACTIVE when the prospect becomes a Customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - ProspectCustomerResponse 
-    resource isolated function put customers/prospects/[string prospectId](http:Request request, UpdateProspectCustomerHeaders headers = {}, *UpdateProspectCustomerQueries queries) returns ProspectCustomerResponse|error {
-        string resourcePath = string `/customers/prospects/${getEncodedUri(prospectId)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Retrieves alert requests details
-    #
-    # + customerId - Identifier of the customer
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - AlertRequestsResponse 
-    resource isolated function get customers/[string customerId]/alertRequests(GetAlertRequestsHeaders headers = {}, *GetAlertRequestsQueries queries) returns AlertRequestsResponse|error {
-        string resourcePath = string `/customers/${getEncodedUri(customerId)}/alertRequests`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves list of party relationship details
-    #
-    # + partyId - Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - PartyRelationshipResponse 
-    resource isolated function get relationships/[string partyId]/relations(GetPartyRelationshipHeaders headers = {}, *GetPartyRelationshipQueries queries) returns PartyRelationshipResponse1|error {
-        string resourcePath = string `/relationships/${getEncodedUri(partyId)}/relations`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Create log of customer static data update event from external party systems
+    # Create an account transfer
     #
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + request - body Payload 
-    # + return - CustomerStaticChangeResponse 
-    resource isolated function post customers/staticDataUpdateEvents(http:Request request, CreateCustomerStaticChangeHeaders headers = {}, *CreateCustomerStaticChangeQueries queries) returns CustomerStaticChangeResponse|error {
-        string resourcePath = string `/customers/staticDataUpdateEvents`;
+    # + return - FundsTransferResponse 
+    # 
+    # # Deprecated
+    @deprecated
+    resource isolated function post fundsTransfer(http:Request request, CreateFundsTransferHeaders headers = {}, *CreateFundsTransferQueries queries) returns FundsTransferResponse|error {
+        string resourcePath = string `/fundsTransfer`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -1065,14 +427,14 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Returns the owner of the BIC and the channel through which this BIC is used.
+    # Retrieves the outstanding amount to be paid for the given loan
     #
-    # + bicId - Bank Identifier Code (BIC) of the financial institution
+    # + loanId - Denotes the arrangement id of the loan
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - BicOwnersResponse 
-    resource isolated function get customers/bankCodes/BICs/[string bicId]/owners(GetBicOwnersHeaders headers = {}, *GetBicOwnersQueries queries) returns BicOwnersResponse|error {
-        string resourcePath = string `/customers/bankCodes/BICs/${getEncodedUri(bicId)}/owners`;
+    # + return - LoanOutstandingBillsResponse 
+    resource isolated function get loans/[string loanId]/outstandingBills(GetLoanOutstandingBillsHeaders headers = {}, *GetLoanOutstandingBillsQueries queries) returns LoanOutstandingBillsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/outstandingBills`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -1080,32 +442,154 @@ public isolated client class Client {
         return self.clientEp->get(resourcePath, httpHeaders);
     }
 
-    # Allows amendment of customer group purpose
+    # Retrieves the payoff details of the given loan
     #
-    # + groupPurposeId - Identifier of customer group purpose
+    # + loanId - Denotes the arrangement id of the loan
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerGroupPurposeResponse 
-    resource isolated function put customers/groupPurposes/[string groupPurposeId](http:Request request, UpdateCustomerGroupPurposeHeaders headers = {}, *UpdateCustomerGroupPurposeQueries queries) returns CustomerGroupPurposeResponse|error {
-        string resourcePath = string `/customers/groupPurposes/${getEncodedUri(groupPurposeId)}`;
+    # + return - LoanPayoffDetailsResponse 
+    resource isolated function get loans/[string loanId]/payoffCalculations(GetLoanPayoffDetailsHeaders headers = {}, *GetLoanPayoffDetailsQueries queries) returns LoanPayoffDetailsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/payoffCalculations`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
         map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
+        return self.clientEp->get(resourcePath, httpHeaders);
     }
 
-    # Allows creation of customer group purpose.
+    # Retrieves the status of the given loan
     #
-    # + groupPurposeId - Identifier of customer group purpose
+    # + loanId - Denotes the arrangement id of the loan
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerGroupPurposeResponse 
-    resource isolated function post customers/groupPurposes/[string groupPurposeId](http:Request request, CreateCustomerGroupPurposeHeaders headers = {}, *CreateCustomerGroupPurposeQueries queries) returns CustomerGroupPurposeResponse|error {
-        string resourcePath = string `/customers/groupPurposes/${getEncodedUri(groupPurposeId)}`;
+    # + return - ArrangementDetailsResponse 
+    resource isolated function get loans/[string loanId]/status(GetArrangementDetailsHeaders headers = {}, *GetArrangementDetailsQueries queries) returns ArrangementDetailsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/status`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Retrieves the status of the given activity 
+    #
+    # + arrangementActivityId - Contains the arrangement activity reference identifier
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - ExternalEventStatusResponse 
+    resource isolated function get loans/arrangements/activities/[string arrangementActivityId]/status(GetExternalEventStatusHeaders headers = {}, *GetExternalEventStatusQueries queries) returns ExternalEventStatusResponse|error {
+        string resourcePath = string `/loans/arrangements/activities/${getEncodedUri(arrangementActivityId)}/status`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Retrieves payment schedules details
+    #
+    # + loanId - Denotes the arrangement id of the loan
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - PaymentSchedulesProjectionResponse 
+    resource isolated function get loans/[string loanId]/schedules(GetPaymentSchedulesProjectionHeaders headers = {}, *GetPaymentSchedulesProjectionQueries queries) returns PaymentSchedulesProjectionResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/schedules`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Retrieves loan details 
+    #
+    # + loanId - Denotes the arrangement id of the loan
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - LoanOverviewResponse 
+    resource isolated function get loans/[string loanId]/loanDetails(GetLoanOverviewHeaders headers = {}, *GetLoanOverviewQueries queries) returns LoanOverviewResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/loanDetails`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Retrieves loan bills details
+    #
+    # + loanId - Denotes the arrangement id of the loan
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - LoanBillsResponse 
+    resource isolated function get loans/[string loanId]/bills(GetLoanBillsHeaders headers = {}, *GetLoanBillsQueries queries) returns LoanBillsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/bills`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Retrieves loan collateral details
+    #
+    # + loanId - Denotes the arrangement id of the loan
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - LoanCollateralsResponse 
+    resource isolated function get loans/[string loanId]/collaterals(GetLoanCollateralsHeaders headers = {}, *GetLoanCollateralsQueries queries) returns LoanCollateralsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/collaterals`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Retrieves the loan account details
+    #
+    # + loanId - Denotes the arrangement id of the loan
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - LoanDetailsResponse 
+    # 
+    # # Deprecated
+    @deprecated
+    resource isolated function get loans/[string loanId](GetLoanDetailsHeaders headers = {}, *GetLoanDetailsQueries queries) returns LoanDetailsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Retrieves payment schedules details
+    #
+    # + loanId - Denotes the arrangement id of the loan
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - PaymentSchedulesResponse 
+    # 
+    # # Deprecated
+    @deprecated
+    resource isolated function get loans/[string loanId]/schedulePaymentFrequencies(GetPaymentSchedulesHeaders headers = {}, *GetPaymentSchedulesQueries queries) returns PaymentSchedulesResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/schedulePaymentFrequencies`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Simulate payoff calculate activity for a loan arrangement
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createSimulationCapturesResponse 
+    resource isolated function post simulationCapture/[string arrangementId](http:Request request, CreateSimulationCapturesHeaders headers = {}, *CreateSimulationCapturesQueries queries) returns SimulationCapturesResponse|error {
+        string resourcePath = string `/simulationCapture/${getEncodedUri(arrangementId)}`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -1114,80 +598,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Allows deletion of unapproved customer group purpose
+    # Create simulation for loan products
     #
-    # + groupPurposeId - Identifier of customer group purpose
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerGroupPurposeResponse 
-    resource isolated function delete customers/groupPurposes/[string groupPurposeId](http:Request request, DeleteCustomerGroupPurposeHeaders headers = {}, *DeleteCustomerGroupPurposeQueries queries) returns CustomerGroupPurposeResponse|error {
-        string resourcePath = string `/customers/groupPurposes/${getEncodedUri(groupPurposeId)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->delete(resourcePath, request, httpHeaders);
-    }
-
-    # Allows authorization of customer group purpose
-    #
-    # + groupPurposeId - Identifier of customer group purpose
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerGroupPurposeResponse 
-    resource isolated function put customers/groupPurposes/[string groupPurposeId]/approvals(ApproveCustomerGroupPurposeHeaders headers = {}) returns CustomerGroupPurposeResponse|error {
-        string resourcePath = string `/customers/groupPurposes/${getEncodedUri(groupPurposeId)}/approvals`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        http:Request request = new;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Allows cancellation of customer group purpose
-    #
-    # + groupPurposeId - Identifier of customer group purpose
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerGroupPurposeResponse 
-    resource isolated function delete customers/groupPurposes/[string groupPurposeId]/cancellations(http:Request request, CancelCustomerGroupPurposeHeaders headers = {}, *CancelCustomerGroupPurposeQueries queries) returns CustomerGroupPurposeResponse|error {
-        string resourcePath = string `/customers/groupPurposes/${getEncodedUri(groupPurposeId)}/cancellations`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->delete(resourcePath, request, httpHeaders);
-    }
-
-    # Allows amendment of customer group
-    #
-    # + groupId - Unique ID of the group
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerGroupResponse 
-    resource isolated function put customers/groups/[string groupId](http:Request request, UpdateCustomerGroupHeaders headers = {}, *UpdateCustomerGroupQueries queries) returns CustomerGroupResponse|error {
-        string resourcePath = string `/customers/groups/${getEncodedUri(groupId)}`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        // TODO: Update the request as needed;
-        return self.clientEp->put(resourcePath, request, httpHeaders);
-    }
-
-    # Allows creation of customer group
-    #
-    # + groupId - Unique ID of the group
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerGroupResponse 
-    resource isolated function post customers/groups/[string groupId](http:Request request, CreateCustomerGroupHeaders headers = {}, *CreateCustomerGroupQueries queries) returns CustomerGroupResponse|error {
-        string resourcePath = string `/customers/groups/${getEncodedUri(groupId)}`;
+    # + return - createLoanSimulationResponse 
+    resource isolated function post loans/simulations(http:Request request, CreateLoanSimulationHeaders headers = {}, *CreateLoanSimulationQueries queries) returns LoanSimulationResponse|error {
+        string resourcePath = string `/loans/simulations`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -1196,115 +613,28 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Allows deletion of unapproved customer group
+    # Update a simulation for loan products
     #
-    # + groupId - Unique ID of the group
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerGroupResponse 
-    resource isolated function delete customers/groups/[string groupId](http:Request request, DeleteCustomerGroupHeaders headers = {}, *DeleteCustomerGroupQueries queries) returns CustomerGroupResponse|error {
-        string resourcePath = string `/customers/groups/${getEncodedUri(groupId)}`;
+    # + return - updateLoanSimulationResponse 
+    resource isolated function put loans/simulations/[string simulationId](http:Request request, UpdateLoanSimulationHeaders headers = {}, *UpdateLoanSimulationQueries queries) returns LoanSimulationResponse1|error {
+        string resourcePath = string `/loans/simulations/${getEncodedUri(simulationId)}`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
         map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
         // TODO: Update the request as needed;
-        return self.clientEp->delete(resourcePath, request, httpHeaders);
-    }
-
-    # Allows authorization of customer group
-    #
-    # + groupId - Unique ID of the group
-    # + headers - Headers to be sent with the request 
-    # + return - CustomerGroupResponse 
-    resource isolated function put customers/groups/[string groupId]/approvals(ApproveCustomerGroupHeaders headers = {}) returns CustomerGroupResponse|error {
-        string resourcePath = string `/customers/groups/${getEncodedUri(groupId)}/approvals`;
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        http:Request request = new;
         return self.clientEp->put(resourcePath, request, httpHeaders);
     }
 
-    # Retrieves the list of unapproved customer group purposes
+    # Create simulation payoff activity for loan products
     #
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + return - UnapprovedCustomerGroupPurposeResponse 
-    resource isolated function get customers/groupPurposes/pendingApprovals(GetUnapprovedCustomerGroupPurposeHeaders headers = {}, *GetUnapprovedCustomerGroupPurposeQueries queries) returns UnapprovedCustomerGroupPurposeResponse|error {
-        string resourcePath = string `/customers/groupPurposes/pendingApprovals`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves the list of customer group purposes
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerGroupPurposeResponse 
-    resource isolated function get customers/groupPurposes(GetCustomerGroupPurposeHeaders headers = {}, *GetCustomerGroupPurposeQueries queries) returns CustomerGroupPurposeResponse1|error {
-        string resourcePath = string `/customers/groupPurposes`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves the list of unapproved customer groups
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - UnapprovedCustomerGroupResponse 
-    resource isolated function get customers/groups/pendingApprovals(GetUnapprovedCustomerGroupHeaders headers = {}, *GetUnapprovedCustomerGroupQueries queries) returns UnapprovedCustomerGroupResponse|error {
-        string resourcePath = string `/customers/groups/pendingApprovals`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves the details of customer group
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerGroupsResponse 
-    resource isolated function get customers/groups(GetCustomerGroupsHeaders headers = {}, *GetCustomerGroupsQueries queries) returns CustomerGroupsResponse|error {
-        string resourcePath = string `/customers/groups`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Retrieves customer closure request.
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + return - CustomerClosureResponse 
-    resource isolated function get customers/customerClosures(GetCustomerClosureHeaders headers = {}, *GetCustomerClosureQueries queries) returns CustomerClosureResponse1|error {
-        string resourcePath = string `/customers/customerClosures`;
-        resourcePath = resourcePath + check getPathForQueryParam(queries);
-        map<anydata> headerValues = {...headers};
-        headerValues["apikey"] = self.apiKeyConfig.apikey;
-        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
-        return self.clientEp->get(resourcePath, httpHeaders);
-    }
-
-    # Creates customer closure request
-    #
-    # + headers - Headers to be sent with the request 
-    # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerClosureResponse 
-    resource isolated function post customers/customerClosures(http:Request request, CreateCustomerClosureHeaders headers = {}, *CreateCustomerClosureQueries queries) returns CustomerClosureResponse|error {
-        string resourcePath = string `/customers/customerClosures`;
+    # + return - createLoanPayoffSimulationResponse 
+    resource isolated function post loans/[string loanId]/simulations/payoffs(http:Request request, CreateLoanPayoffSimulationHeaders headers = {}, *CreateLoanPayoffSimulationQueries queries) returns LoanPayoffSimulationResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/simulations/payoffs`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
@@ -1313,20 +643,348 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 
-    # Allows amendment of customer closure request
+    # Execute payoff activity for loan products
     #
-    # + customerClosureId - Identifier of customer closure request
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + request - body Payload 
-    # + return - CustomerClosureResponse 
-    resource isolated function put customers/customerClosures/[string customerClosureId](http:Request request, UpdateCustomerClosureHeaders headers = {}, *UpdateCustomerClosureQueries queries) returns CustomerClosureResponse|error {
-        string resourcePath = string `/customers/customerClosures/${getEncodedUri(customerClosureId)}`;
+    # + return - createLoanArrangementPayoffResponse 
+    resource isolated function post loans/[string loanId]/payoffs(http:Request request, CreateLoanArrangementPayoffHeaders headers = {}, *CreateLoanArrangementPayoffQueries queries) returns LoanArrangementPayoffResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/payoffs`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Retrieves overpayment details that has happened for a loan arrangement
+    #
+    # + loanId - Denotes the arrangement id of the loan
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - OverpaymentDetailsResponse 
+    resource isolated function get loans/[string loanId]/overpayments(GetOverpaymentDetailsHeaders headers = {}, *GetOverpaymentDetailsQueries queries) returns OverpaymentDetailsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/overpayments`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Creates a new drawdown offer for the required customer.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createLoanDrawdownOfferResponse 
+    resource isolated function post loans/drawdowns/offers(http:Request request, CreateLoanDrawdownOfferHeaders headers = {}, *CreateLoanDrawdownOfferQueries queries) returns LoanDrawdownOfferResponse|error {
+        string resourcePath = string `/loans/drawdowns/offers`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Accept the offer drawdown for the retail loan and convert offer drawdown into a live loan arrangement.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createLoanDrawdownOfferAcceptanceResponse 
+    resource isolated function post loans/[string loanId]/drawdowns/acceptances(http:Request request, CreateLoanDrawdownOfferAcceptanceHeaders headers = {}, *CreateLoanDrawdownOfferAcceptanceQueries queries) returns LoanDrawdownOfferAcceptanceResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/drawdowns/acceptances`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Renegotiate the offer drawdown for the required customer.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createLoanDrawdownOfferRenegotiationResponse 
+    resource isolated function post loans/[string loanId]/drawdowns/renegotiations(http:Request request, CreateLoanDrawdownOfferRenegotiationHeaders headers = {}, *CreateLoanDrawdownOfferRenegotiationQueries queries) returns LoanDrawdownOfferRenegotiationResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/drawdowns/renegotiations`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Cancellation of offer drawdown for the required customer.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - cancelLoanDrawdownOfferResponse 
+    resource isolated function post loans/[string loanId]/drawdowns/cancellations(http:Request request, CancelLoanDrawdownOfferHeaders headers = {}, *CancelLoanDrawdownOfferQueries queries) returns LoanDrawdownOfferResponse1|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/drawdowns/cancellations`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Accept the offer drawdown for the retail loan and convert offer drawdown into a live loan arrangement and retrieve the payment schedule details.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createLoanDrawdownOfferAcceptanceSchedulesResponse 
+    resource isolated function post loans/[string loanId]/drawdowns/acceptances/schedules(http:Request request, CreateLoanDrawdownOfferAcceptanceSchedulesHeaders headers = {}, *CreateLoanDrawdownOfferAcceptanceSchedulesQueries queries) returns LoanDrawdownOfferAcceptanceResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/drawdowns/acceptances/schedules`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Renegotiate the offer drawdown for the required customer and retrieve the payment schedule details.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createLoanDrawdownOfferRenegotiationSchedulesResponse 
+    resource isolated function post loans/[string loanId]/drawdowns/renegotiations/schedules(http:Request request, CreateLoanDrawdownOfferRenegotiationSchedulesHeaders headers = {}, *CreateLoanDrawdownOfferRenegotiationSchedulesQueries queries) returns LoanDrawdownOfferRenegotiationResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/drawdowns/renegotiations/schedules`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Updates the settlement condition of the loan
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateLoanSettlementResponse 
+    resource isolated function put loans/[string loanId]/settlements(http:Request request, UpdateLoanSettlementHeaders headers = {}, *UpdateLoanSettlementQueries queries) returns LoanSettlementResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/settlements`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         map<anydata> headerValues = {...headers};
         headerValues["apikey"] = self.apiKeyConfig.apikey;
         map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
         // TODO: Update the request as needed;
         return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Simulate  the loan pre payment
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createRepaymentSimulationResponse 
+    resource isolated function post loans/[string loanId]/simulations/repayments(http:Request request, CreateRepaymentSimulationHeaders headers = {}, *CreateRepaymentSimulationQueries queries) returns RepaymentSimulationResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/simulations/repayments`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Simulate the pre payment of the given loan amount and retrieve the payment schedule
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createRepaymentScheduleResponse 
+    resource isolated function post loans/[string loanId]/simulations/repayments/schedules(http:Request request, CreateRepaymentScheduleHeaders headers = {}, *CreateRepaymentScheduleQueries queries) returns RepaymentSimulationResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/simulations/repayments/schedules`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Perform repayment date change for the loan and retrieve the payment schedule details.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateRepaymentDateAndSchedulesResponse 
+    resource isolated function put loans/[string loanId]/repaymentDates/schedules(http:Request request, UpdateRepaymentDateAndSchedulesHeaders headers = {}, *UpdateRepaymentDateAndSchedulesQueries queries) returns RepaymentSimulationResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/repaymentDates/schedules`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Simulate a loan arrangement for the given payment date
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createRepaymentDateChangeSimulationResponse 
+    resource isolated function post loans/[string loanId]/simulations/repaymentDates(http:Request request, CreateRepaymentDateChangeSimulationHeaders headers = {}, *CreateRepaymentDateChangeSimulationQueries queries) returns RepaymentDateChangeSimulationResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/simulations/repaymentDates`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Simulate a loan arrangement for the given payment date and retrieve the payments schedule details.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createRepaymentDateChangeSimulationSchedulesResponse 
+    resource isolated function post loans/[string loanId]/simulations/repaymentDates/schedules(http:Request request, CreateRepaymentDateChangeSimulationSchedulesHeaders headers = {}, *CreateRepaymentDateChangeSimulationSchedulesQueries queries) returns RepaymentDateChangeSimulationSchedulesResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/simulations/repaymentDates/schedules`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Migration of legacy system loan contract to the given product
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - initiateTakeoverloanResponse 
+    resource isolated function post loans/migrations(http:Request request, InitiateTakeoverloanHeaders headers = {}, *InitiateTakeoverloanQueries queries) returns TakeoverloanResponse|error {
+        string resourcePath = string `/loans/migrations`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Captures outstanding balance details of a contract migrated from legacy system
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateBalanceResponse 
+    resource isolated function put loans/[string loanId]/balances/migrations(http:Request request, UpdateBalanceHeaders headers = {}, *UpdateBalanceQueries queries) returns BalanceResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/balances/migrations`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Captures outstanding bill information of a contract migrated from legacy system.
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateBillsResponse 
+    resource isolated function put loans/[string loanId]/bills/migrations(http:Request request, UpdateBillsHeaders headers = {}, *UpdateBillsQueries queries) returns BillsResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/bills/migrations`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Change of contract from one loan product to another
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateChangeProductResponse 
+    resource isolated function put loans/[string loanId]/products(http:Request request, UpdateChangeProductHeaders headers = {}, *UpdateChangeProductQueries queries) returns ChangeProductResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/products`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Retrieves the covenants and conditions for a loan account.
+    #
+    # + loanId - Denotes the arrangement id of the loan
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - EvidenceResponse 
+    resource isolated function get loans/[string loanId]/evidences(GetEvidenceHeaders headers = {}, *GetEvidenceQueries queries) returns EvidenceResponse1|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/evidences`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        return self.clientEp->get(resourcePath, httpHeaders);
+    }
+
+    # Update the covenants and conditions for a loan account
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - updateEvidenceResponse 
+    resource isolated function put loans/[string loanId]/evidences(http:Request request, UpdateEvidenceHeaders headers = {}, *UpdateEvidenceQueries queries) returns EvidenceResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/evidences`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->put(resourcePath, request, httpHeaders);
+    }
+
+    # Creates a business banking loan for a single customer or more than one customer(like a joint account relationship) with the customer identifier, customer role, loan currency details
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createBusinessLoanResponse 
+    resource isolated function post loans/businessLoans(http:Request request, CreateBusinessLoanHeaders headers = {}, *CreateBusinessLoanQueries queries) returns BusinessLoanResponse|error {
+        string resourcePath = string `/loans/businessLoans`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Create auto simulation payoff activity for loan products
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createLoanPayoffAutoSimulationResponse 
+    resource isolated function post loans/[string loanId]/autoSimulations/payoffs(http:Request request, CreateLoanPayoffAutoSimulationHeaders headers = {}, *CreateLoanPayoffAutoSimulationQueries queries) returns LoanPayoffAutoSimulationResponse|error {
+        string resourcePath = string `/loans/${getEncodedUri(loanId)}/autoSimulations/payoffs`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
+    }
+
+    # Create online simulation for loan products
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - createAutoSimulationsResponse 
+    resource isolated function post loans/autoSimulations(http:Request request, CreateAutoSimulationsHeaders headers = {}, *CreateAutoSimulationsQueries queries) returns AutoSimulationsResponse|error {
+        string resourcePath = string `/loans/autoSimulations`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        map<anydata> headerValues = {...headers};
+        headerValues["apikey"] = self.apiKeyConfig.apikey;
+        map<string|string[]> httpHeaders = http:getHeaderMap(headerValues);
+        // TODO: Update the request as needed;
+        return self.clientEp->post(resourcePath, request, httpHeaders);
     }
 }

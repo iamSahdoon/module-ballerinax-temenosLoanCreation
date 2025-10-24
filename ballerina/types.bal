@@ -5,18 +5,14 @@ import ballerina/constraint;
 import ballerina/data.jsondata;
 import ballerina/http;
 
-# CustomerGroupPurposeResponse
-public type CustomerGroupPurposeResponse record {
-    ScreenHeader header?;
-    CustomerGroupPurposeResponseBody body?;
-};
-
-# Represents the Headers record for the operation: getCustomerPrintAddress
-public type GetCustomerPrintAddressHeaders record {
+# Represents the Headers record for the operation: getArrangementDetails
+public type GetArrangementDetailsHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
     # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
     boolean disablePagination?;
     # User who initiated the transaction
@@ -25,104 +21,52 @@ public type GetCustomerPrintAddressHeaders record {
     string deviceId?;
 };
 
-# Represents the Queries record for the operation: getStandingOrders
-public type GetStandingOrdersQueries record {
-    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
-    string accountId?;
-    # Indicates the customer id for the ordering customer
-    string orderingCustomerId?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The unique standing order identifier
-    string standingOrderId?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
+# LoanOutstandingBillsResponse
+public type LoanOutstandingBillsResponse record {
+    QueryHeader header?;
+    LoanOutstandingBillsResponseBody body?;
 };
 
-public type CustomerEmailAddressResponse1Body record {
+# Represents the Headers record for the operation: getOverpaymentDetails
+public type GetOverpaymentDetailsHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type BNPLLoanResponseBodyActivitiesactivityName record {
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    string activity?;
+    # The status of the transaction
+    string transactionStatus?;
+    # The Identifier of the record created
+    string id?;
+};
+
+public type TakeoverloanBodyLimit record {
     # Indicates the extensions
     record {} extensions?;
-    # Denotes the Short name registered for a customer
-    CustomerProfileResponseBodyCustomerShortNames[] customerShortNames?;
-    # Email Identifier of the Customer
-    @constraint:String {maxLength: 254}
-    string email?;
-};
-
-public type CustomerGroupPurposeBodyAggregateRelationships record {
-    # Indicates the relations that must be considered for aggregating under a primary customer within the customer group. List of relations can be retrieved using /reference/relationships
-    @constraint:String {maxLength: 3}
-    string allowedAggregateRelationship?;
-};
-
-public type CustomerContactsResponseBodyInner_smsNumbers record {
-    # The mobile SMS number of the customer
-    string smsNumber?;
-};
-
-public type CustomerPhoneAddressResponseBodyInner record {
-    # Identifier of the customer address table
-    @constraint:String {maxLength: 1000}
-    string customerAddressId?;
-    # Identifies the international calling prefix code of the mobile
-    @constraint:String {maxLength: 16}
-    string iddPrefixMobile?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Mobile number of the customer
-    @constraint:String {maxLength: 100}
-    string mobileNumber?;
-    # Denotes the Short name registered for a customer
-    CustomerPhoneAddressResponseBodyInner_customerShortNames[] customerShortNames?;
-};
-
-public type CustomerGroupBodySubGroupDetails record {
-    # The name that is displayed for the group
-    @constraint:String {maxLength: 35}
-    string groupName?;
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    @constraint:String {maxLength: 9}
-    string companyId?;
-    # Identifier of Department Account Officer
-    @constraint:String {maxLength: 6}
-    string accountOfficer?;
-    # Unique ID of the group
-    @constraint:String {maxLength: 15}
-    string groupId?;
-    # Indicates the identifier for party details in which party id and party owner are defined
-    CustomerGroupBodyPartyDetails[] partyDetails?;
-};
-
-public type CustomerProfileResponseBodyCustomerNameAdditionals record {
-    # Continuation/Extension to the Customer Name
-    @constraint:String {maxLength: 70}
-    string customerNameAdditional?;
-};
-
-public type CustomerExitStatusParamResponseBody CustomerExitStatusParamResponseBodyInner[];
-
-# Represents the Queries record for the operation: getCustomerKYCDetails
-public type GetCustomerKYCDetailsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
+    # Identifies the credit limit reference for the underlying account
+    @constraint:String {maxLength: 12}
+    string limitReference?;
+    # The Limit amount that is actually available for use. The system limit checks are preformed against the online limit
+    @constraint:String {maxLength: 19}
+    string limitAmount?;
 };
 
 public type ScreenHeader record {
     # The status of the transaction
     string transactionStatus?;
-    ScreenHeaderAudit audit?;
+    ArrangementHeaderAudit audit?;
     # The Identifier of the record created
     string id?;
     # Status of the API(success/failed)
@@ -131,2608 +75,308 @@ public type ScreenHeader record {
     string uniqueIdentifier?;
 };
 
-public type CustomerPersonalDetailsResponseBodyInner_employDetails record {
-    # Employment status of the customer
-    @constraint:String {maxLength: 35}
-    string employStatus?;
-    # Occupation of the customer
-    @constraint:String {maxLength: 35}
-    string occupation?;
-    # Employment Job Title of the Customer
-    @constraint:String {maxLength: 10}
-    string employJobTitle?;
-    # Name of the customer's employer
-    @constraint:String {maxLength: 35}
-    string employerName?;
-    # Starting date of the customer's employment
-    string employStartDate?;
-    # Currency in which the Salary information of the customer is maintained
-    @constraint:String {maxLength: 3}
-    string salaryCurrency?;
-    # Gross Salary details of the customer
-    @constraint:Number {maxValue: 19}
-    decimal salaryAmount?;
-    # The business of customer's employer involved.
-    @constraint:String {maxLength: 35}
-    string employerBusiness?;
-    # Indicates the Annual bonus received by customer
-    @constraint:Number {maxValue: 19}
-    decimal annualBonus?;
-    # Indicates the payment frequency of salary.
-    @constraint:String {maxLength: 17}
-    string salaryFrequency?;
-    # Net income earned by customer each month.
-    @constraint:String {maxLength: 19}
-    string netMonthlyIncome?;
-    # Net expenses of customer each month.
-    @constraint:String {maxLength: 19}
-    string netMonthlyExpense?;
-    # Contains the communication address of the customer or full address of the property
-    CustomerPersonalDetailsResponseBodyInner_Addresses[] Addresses?;
+# Represents the Headers record for the operation: getLoanInformation
+public type GetLoanInformationHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
 };
 
-public type PartyRelationshipBodyPartyRelationships record {
-    # Used to record the percentage of ownership in the relationship. For example an entity may be partially or wholly owned by another entity. This will only be allowed to be entered if the relation is indicated as a type allowing Ownership
-    @constraint:String {maxLength: 6}
-    string owningPercent?;
-    # Indicates the related party's customer type. It may be Customer, Person or Entity
-    @constraint:String {maxLength: 10}
-    string relatedPartyType?;
-    # Entity Relationship with the partyType
-    @constraint:String {maxLength: 13}
-    string relatedAs?;
-    # Related customers or persons/entities that are part of the relationship
+public type InstallmentLoanResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
     @constraint:String {maxLength: 20}
-    string relationPartyId?;
-    # Relationship identifier between the partyType and relatedPartyType
-    @constraint:String {maxLength: 3}
-    string relationshipCode?;
-    # Defines the application id, to which the party id belongs to. Example, CUSTOMER/PERSON.ENTITY
-    @constraint:String {maxLength: 10}
-    string partyType?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
+    string arrangmentId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Unique identifier (contract number) of the facility
     @constraint:String {maxLength: 20}
-    string partyId?;
-};
-
-# Represents the Queries record for the operation: getCustomerAddressOutput
-public type GetCustomerAddressOutputQueries record {
-    # It identifies the address output format for the unstructured address
-    string addressOutputFormat?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # It reflects the preference for the customer address format, respective structured, unstructured or both
-    string addressOption?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: getCustomerEmailAddress
-public type GetCustomerEmailAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getCustomerAddressOutput
-public type GetCustomerAddressOutputHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: getCustomerEmailAddress
-public type GetCustomerEmailAddressQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Reference Id of address record
-    string addressId?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: getCustomerPostingRestrictions
-public type GetCustomerPostingRestrictionsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: getCustomerPostingRestrictions
-public type GetCustomerPostingRestrictionsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Identifier of the customer
-    string customerId?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerExitStatusParamResponseBodyInner_allowedExitReasons record {
-    # The field indicates the reason for exiting a relation with a prospect or customer.
-    @constraint:String {maxLength: 70}
-    string allowedExitReason?;
-};
-
-public type CustomerConsentsResponseBody CustomerConsentsResponseBodyInner[];
-
-# AlertRequestsResponse
-public type AlertRequestsResponse record {
-    QueryHeader header?;
-    AlertRequestsResponseBody body?;
-};
-
-public type CustomerResponseBodyFaxIds record {
-    # The fax (facsimile) number of the customer
-    @constraint:String {maxLength: 67}
-    string faxId?;
-};
-
-public type CustomerGroupPurposeResponse1Body UnapprovedCustomerGroupPurposeResponseBodyInner[];
-
-public type CustomerProfileResponseBodyCustomerShortNames record {
-    # Indicates the short name of Customer
-    @constraint:String {maxLength: 70}
-    string customerShortName?;
-};
-
-public type FatcaCustomerBodyOwner record {
-    # Identifies the owner of the documents
-    @constraint:String {maxLength: 35}
-    string formOwner?;
-    FatcaCustomerBodyFormDetails[] formDetails?;
-};
-
-public type OverdueSettlementsResponseBodyInner_broker record {
-    # The identifier of the broker
-    @constraint:String {maxLength: 10}
-    string brokerId?;
-    # The name that is displayed for the broker
-    @constraint:String {maxLength: 10}
-    string brokerName?;
-    # Nostro account id
-    string nostro?;
-    # Currency of the nostro account
-    string nostroCurrency?;
-    # The amount outstanding for the broker
-    @constraint:Number {maxValue: 19}
-    decimal brokerOutstandingAmount?;
-    # The quantity of the instrument outstanding for the broker
-    @constraint:String {maxLength: 19}
-    string brokerOutstandingQuantity?;
-};
-
-# MessagesResponse
-public type MessagesResponse record {
-    ScreenHeader header?;
-    MessagesResponseBody body?;
-};
-
-public type CustomerReportingStatusResponseBodyInner_crsStatuses record {
-    # Holds the status of the customer as Reportable or Non-reportable.
-    string[] crsStatus?;
-};
-
-# Represents the Headers record for the operation: deleteCustomerGroupPurpose
-public type DeleteCustomerGroupPurposeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerContactsResponseBody CustomerContactsResponseBodyInner[];
-
-# CustomerProfileResponse
-public type CustomerProfileResponse record {
-    ScreenHeader header?;
-    CustomerProfileResponseBody body?;
-};
-
-public type ProspectCustomersResponseBody ProspectCustomersResponseBodyInner[];
-
-public type CustomerGroupResponseBody record {
-    # Contains primary pary details such as primary party id and primary party type
-    CustomerGroupBodyPrimaryPartyDetails[] primaryPartyDetails?;
-    # The name that is displayed for the group
-    @constraint:String {maxLength: 40}
-    string groupName?;
-    # Indicates the type of entity that identifies the group eg. Parent or Member
-    @constraint:String {maxLength: 25}
-    string groupType?;
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    @constraint:String {maxLength: 9}
-    string companyId?;
-    # Identifier of Department Account Officer
-    @constraint:String {maxLength: 6}
-    string accountOfficer?;
-    # Indicates the extensions
-    record {} extensions?;
-    # Indicates the details of Relationship maintained by the Customer or Entity
-    CustomerGroupBodyRelationshipDetails[] relationshipDetails?;
-    # Contains sub group details such as sub group id, sub group name, sub group customer etc
-    CustomerGroupBodySubGroupDetails[] subGroupDetails?;
-    # Identifier of the Liability Customer to the credit limit
-    @constraint:String {maxLength: 10}
-    string liabilityNumber?;
-    # The date when the Security Account is to be closed
-    @constraint:String {maxLength: 11}
-    string closureDate?;
-    # Contains the description of purpose of the payment
-    @constraint:String {maxLength: 35}
-    string description?;
-    # Identifier of customer group purpose
-    @constraint:String {maxLength: 15}
-    string groupPurposeId?;
-};
-
-public type CustomerInformationResponseBodyInner_otherNationalityIds record {
-    # Other Nationality of the Customer
-    @constraint:String {maxLength: 90}
-    string otherNationalityId?;
-};
-
-public type FatcaCustomerBodyFormDetails record {
-    # Contains the form or sheet Id
-    @constraint:String {maxLength: 35}
-    string formId?;
-    # This indicates the  date  on which the offer or privilege terminates for the event
-    string expiryDate?;
-    # Identifies the type of the document that are expected from the customer
-    @constraint:String {maxLength: 50}
-    string formType?;
-    # Specifies the Cutoff date for document submission. Identifies the end date before which the document has to be submitted. 
-    string cutOffDate?;
-    # Date on which the client's request to be classified as professional has been received
-    string requestDate?;
-    # Identifies the date on which the document was received
-    string receivedDate?;
-};
-
-# PartyBasicDetailsResponse
-public type PartyBasicDetailsResponse record {
-    QueryHeader header?;
-    PartyBasicDetailsResponseBody body?;
-};
-
-public type CustomerGroupBodyPartyDetails record {
-    # Defines the application id, to which the party id belongs to. Example, CUSTOMER/PERSON.ENTITY
-    @constraint:String {maxLength: 13}
-    string partyType?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
-    @constraint:String {maxLength: 10}
-    string partyId?;
-};
-
-# Represents the Queries record for the operation: getOtherBanksToConnectTo
-public type GetOtherBanksToConnectToQueries record {
-    # Identifies the open banking number of the customer
-    string openBankingId?;
-    # Flag to set the connection status to active
-    string setActive?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Contains the name of the external source provider for the customer
-    string extSourceProvider?;
-    # ISO country code of the financial institution. 
-    string countryId?;
-    # Contains status of the data rights request.Allowed values are INITIATED, INPROGESS, EXTENDED, COMPLETED, REJECTED
-    string status?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# ProspectCustomersResponse
-public type ProspectCustomersResponse record {
-    QueryHeader header?;
-    ProspectCustomersResponseBody body?;
-};
-
-public type CustomerDeliveryOptionsResponseBody CustomerDeliveryOptionsResponseBodyInner[];
-
-# CustomerGroupPurposeResponse1
-public type CustomerGroupPurposeResponse1 record {
-    QueryHeader header?;
-    CustomerGroupPurposeResponse1Body body?;
-};
-
-public type CustomerResponseBodyDisplayNames record {
-    # Contains the name used for display or enrichment purposes
-    @constraint:String {maxLength: 90}
-    string displayName?;
-};
-
-# Represents the Queries record for the operation: updateCustomer
-public type UpdateCustomerQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Headers record for the operation: createCustomerExitStatusParam
-public type CreateCustomerExitStatusParamHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getUnapprovedCustomerGroupPurpose
-public type GetUnapprovedCustomerGroupPurposeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# UnapprovedCustomerGroupPurposeResponse
-public type UnapprovedCustomerGroupPurposeResponse record {
-    QueryHeader header?;
-    UnapprovedCustomerGroupPurposeResponseBody body?;
-};
-
-# CustomerRelationshipResponse
-public type CustomerRelationshipResponse record {
-    ScreenHeader header?;
-    CustomerRelationshipResponseBody body?;
-};
-
-public type CustomerResponseBodyAddressCities record {
-    # The town and/or city component of the base address of a customer
-    @constraint:String {maxLength: 55}
-    string addressCity?;
-};
-
-# Represents the Headers record for the operation: getCustomerContacts
-public type GetCustomerContactsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# CustomerChargeResponse
-public type CustomerChargeResponse record {
-    ScreenHeader header?;
-    CustomerChargeResponseBody body?;
-};
-
-public type CustomerResponseBodyCountries record {
-    # Identifies the country of the customer or a property or organization
-    @constraint:String {maxLength: 55}
-    string country?;
-};
-
-public type CustomerExitStatusParamBodyAllowedExitReasons record {
-    # The field indicates the reason for exiting a relation with a prospect or customer
-    @constraint:String {maxLength: 70}
-    string allowedExitReason?;
-};
-
-public type CustomerInformationResponseBodyInner_contactDetails record {
-    # The phone number of the customer or prospect
-    CustomerInformationResponseBodyInner_phoneNumbers[] phoneNumbers?;
-    # The office phone number of the customer
-    CustomerInformationResponseBodyInner_officePhoneNumbers[] officePhoneNumbers?;
-    CustomerInformationResponseBodyInner_mobilePhoneNumbers[] mobilePhoneNumbers?;
-    # Email Identifier of the Customer
-    CustomerInformationResponseBodyInner_emails[] emails?;
-    # Identifies the nature of the postal address, like primary, secondary or office address
-    CustomerInformationResponseBodyInner_addressLocations[] addressLocations?;
-    CustomerInformationResponseBodyInner_Contacts[] Contacts?;
-};
-
-# Represents the Queries record for the operation: getCustomerDeliveryOptions
-public type GetCustomerDeliveryOptionsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerLegalDocumentsResponseBodyLegalDocuments record {
-    # Date of Issue of the legal document
-    @constraint:String {maxLength: 11}
-    string legalIssueDate?;
-    # Expiry date of the legal document submitted as proof
-    @constraint:String {maxLength: 11}
-    string legalExpiredDate?;
-    # Unique reference number of the legal documents submitted as identification proof
-    @constraint:String {maxLength: 35}
-    string legalId?;
-    # Name of the legal documents such as passport, driving licence etc., provided as identification proof
-    @constraint:String {maxLength: 35}
-    string legalDocumentName?;
-    # Authority who issued the legal document
-    @constraint:String {maxLength: 75}
-    string legalIssueAuthorisedDate?;
-    # Name of the account holder in the Legal Document
-    @constraint:String {maxLength: 100}
-    string legalHolderName?;
-};
-
-# Represents the Queries record for the operation: createCustomerPhoneAddress
-public type CreateCustomerPhoneAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type PartyBasicDetailsResponseBody PartyBasicDetailsResponseBodyInner[];
-
-public type CustomerInformationResponseBodyInner_officePhoneNumbers record {
-    # The office phone number of the customer
-    @constraint:String {maxLength: 20}
-    string officePhoneNumber?;
-};
-
-# Represents the Headers record for the operation: getAlertRequests
-public type GetAlertRequestsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type AlertRequestsResponseBodyInner record {
-    # Contains the starting message id of the conversation
-    @constraint:String {maxLength: 35}
-    string messageGroupId?;
-    # Event identifier
-    @constraint:String {maxLength: 35}
-    string eventId?;
-    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
-    string accountId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Contains the name used for display or enrichment purposes
-    @constraint:String {maxLength: 35}
-    string displayName?;
-    # Input is the valid field name for the metrics evaluation of alerts
-    AlertRequestsResponseBodyInner_fields[] fields?;
-    # Contains the contract reference
-    @constraint:String {maxLength: 35}
-    string contractReference?;
-    # The unique identifier of the alert request
-    @constraint:String {maxLength: 35}
-    string alertRequestId?;
-    # Current number of the record
-    @constraint:String {maxLength: 4}
-    string versionNumber?;
-    # Indicates the description of the Product
-    string productDescription?;
-};
-
-public type CustomerLegalDocumentsResponseBody record {
-    CustomerLegalDocumentsResponseBodyLegalDocuments[] legalDocuments?;
-    # Indicates the extensions
-    record {} extensions?;
-};
-
-public type CustomerContactsResponseBodyInner_faxIds record {
-    # The fax (facsimile) number of the customer
-    string faxId?;
-};
-
-public type FatcaCustomerBodyJointOwner record {
-    # Specifies customer's first name
-    @constraint:String {maxLength: 65}
-    string firstName?;
-    # Identifies the Name of the  joint, substantial or beneficial owner
-    @constraint:String {maxLength: 35}
-    string holderName?;
-    # Indicates the Role of the Customer
-    @constraint:String {maxLength: 35}
-    string role?;
-    # Specifies the ownership in percentage terms for the account mentioned
-    @constraint:String {maxLength: 3}
-    string ownershipParticipation?;
-    # Indicates the Surname of the Customers
-    @constraint:String {maxLength: 65}
-    string surname?;
-    # Identifies the Tax Country of the joint, substantial or beneficial owner
-    @constraint:String {maxLength: 9}
-    string holderTinCountry?;
-    # Identifies whether the legal entity is individual or corporate
-    @constraint:String {maxLength: 35}
-    string legalEntityType?;
-    # Identifier of the customer
-    @constraint:String {maxLength: 10}
-    string customerId?;
-    # Identifies the Country of the joint, substantial or beneficial owner
-    @constraint:String {maxLength: 9}
-    string holderCountry?;
-    # Specifies the Unique Identifier for joint, substantial or beneficial owner. Uniquely identifies the owner of the client, must be defined in format <id of the Customer> - <Sequence number>
-    @constraint:String {maxLength: 15}
-    string holderReference?;
-};
-
-# Represents the Headers record for the operation: createProspectCustomer
-public type CreateProspectCustomerHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# OtherBanksToConnectToResponse
-public type OtherBanksToConnectToResponse record {
-    QueryHeader header?;
-    OtherBanksToConnectToResponseBody body?;
-};
-
-# Represents the Headers record for the operation: getCustomerKYCDetails
-public type GetCustomerKYCDetailsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type BicOwnersResponseBody BicOwnersResponseBodyInner[];
-
-# Represents the Headers record for the operation: getCustomerClosure
-public type GetCustomerClosureHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerPersonalDetailsResponseBodyInner record {
-    # If 'Yes', then the customer will receive a SECURE message
-    boolean isSecureMessage?;
-    # Indicates whether is Customer is subscribed to the mobile banking service or not
-    boolean isMobileBankingService?;
-    # The asset amount
-    decimal assetAmount?;
-    # Indicates the customer consolidation number for credit grouping purposes, within the same branch/country
-    string customerLiability?;
-    # Indicates whether is Customer is subscribed to the internet banking service or not
-    boolean isInternetBankingService?;
-    # Count of the Number of visits to the bank
-    decimal customerVisitCount?;
-    # Indicates the residence details of Customer or entity like type, status, value
-    CustomerPersonalDetailsResponseBodyInner_residenceDetails[] residenceDetails?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    @constraint:String {maxLength: 35}
-    string customerName?;
-    # Currency of the asset
-    string assetCurrency?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Indicates the communication details of the customer like PhoneNumber, email
-    CustomerPersonalDetailsResponseBodyInner_communicationDevice[] communicationDevice?;
-    # Segment of the customer
-    @constraint:String {maxLength: 6}
-    string customerSegment?;
-    # Identifier of the customer
-    @constraint:Number {maxValue: 10}
-    decimal customerId?;
-    # Recently visited date of the customer to the bank
-    string customerRecentVisitDate?;
-    # Indicates the employment details of Customer like Status, title, occupation
-    CustomerPersonalDetailsResponseBodyInner_employDetails[] employDetails?;
-};
-
-# CustomerRelationshipsResponse
-public type CustomerRelationshipsResponse record {
-    ScreenHeader header?;
-    CustomerRelationshipsResponseBody body?;
-};
-
-# Represents the Queries record for the operation: updateCustomerPhoneAddress
-public type UpdateCustomerPhoneAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type ProspectCustomersResponseBodyInner_prospectNetworks record {
-    # The phone number of the customer or prospect
-    @constraint:String {maxLength: 17}
-    string phoneNumber?;
-    # Email Identifier of the Customer
-    @constraint:String {maxLength: 50}
-    string email?;
-};
-
-public type CustomerCreditCardsResponseBodyInner record {
-    # This indicates the  date  on which the offer or privilege terminates for the event
-    string expiryDate?;
-    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
-    @constraint:String {maxLength: 12}
-    string accountId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Display name or short name of the account specified
-    @constraint:String {maxLength: 35}
-    string accountName?;
-    # Real-time balance including all authorised transactions posted against the account, excluding any entries with a future processing date
-    decimal onlineActualBalance?;
-    # The type of the card, e.g. Visa, Mastercard, etc
-    string cardType?;
-    # Limit details for the customer
-    string 'limit?;
-    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
-    @constraint:String {maxLength: 3}
-    string currencyId?;
-    # The date the item was issued
-    string issueDate?;
-    # Cards issued are defined with an identifier consisting of three elements. The card type, a full stop and the card number. The card number may be any alphanumeric construction, commonly a 16 numeric number is used. VISA.5332870296579001. The id must be in the form of:  CCCC.AAAAAAAAAAAAAAAA  Where CCCC is the card type and AAAAAAAAAAAAAAAA is a unique identifier.  Examples:   VISA.1234567887654321   GC.1111222233334444   AB21.1111111122222222
-    @constraint:String {maxLength: 25}
-    string cardNumber?;
-};
-
-# Represents the Queries record for the operation: getCustomerRequests
-public type GetCustomerRequestsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type UnapprovedCustomerGroupPurposeResponseBodyInner record {
-    # Indicates whether group relations have to be defaulted in customer group from party relationship. Allowed values are YES, NO or Blank
-    @constraint:String {maxLength: 35}
-    string allowGroupRelationship?;
-    UnapprovedCustomerGroupPurposeResponseBodyInner_groupTypes[] groupTypes?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Indicates whether customers in a group are to be restricted from being defined in another customer group with same group purpose. YES - will restrict the customer from being defined in another group, NO/Blank - will allow customers to be defined in other groups
-    @constraint:String {maxLength: 35}
-    string groupLevelUniqueCustomer?;
-    # Indicates the type of customer group. Allowed values are RISK ,LIABILITY or Blank
-    @constraint:String {maxLength: 35}
-    string groupPurpose?;
-    # Indicates whether customer relations have to be defaulted in customer group from party relationship. Allowed values are YES, NO or Blank
-    @constraint:String {maxLength: 35}
-    string allowRelationship?;
-    # Contains the description of purpose of the payment
-    @constraint:String {maxLength: 35}
-    string description?;
-    # Identifier of customer group purpose
-    @constraint:String {maxLength: 15}
-    string groupPurposeId?;
-    # Indicates whether a customer is allowed to be part of multiple sub groups. Allowed values are UNIQUE, MULTIPLE, NONE or Blank
-    @constraint:String {maxLength: 35}
-    string subGroupLevelUniqueCustomer?;
-};
-
-public type CustomerResponseBodyPostingRestrictIds record {
-    # Identifies any restrictions for posting entries that are imposed on a Customer
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal postingRestrictId?;
-};
-
-public type CustomerPrintAddressResponse1Body record {
-    # Contains a sub-division identifier of a large organisation or building
-    @constraint:String {maxLength: 70}
-    string subDepartmentId?;
-    # Contains the communication address of the customer or full address of the property
-    CustomerResponseBodyAddresses[] addresses?;
-    # Identifies specific location name with in the country or town
-    @constraint:String {maxLength: 55}
-    string locationName?;
-    # Contains the street name of the customer or the property
-    CustomerResponseBodyStreets[] streets?;
-    # Stores the district name of the  Beneficiary Customer
-    @constraint:String {maxLength: 55}
-    string districtName?;
-    # Contains the flat number of the customer
-    @constraint:String {maxLength: 70}
-    string flatNumber?;
-    # Department identifier
-    @constraint:String {maxLength: 70}
-    string departmentId?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    CustomerProfileResponseBodyCustomerNames[] customerNames?;
-    # Identifies the international calling prefix code of the phone or mobile number
-    @constraint:String {maxLength: 16}
-    string iddPrefixPhone?;
-    # Contains the party or service which was used for address confirmation purposes
-    @constraint:String {maxLength: 35}
-    string addressVerifier?;
-    # Identifies the purpose or usage of the address. Allowed values are CTC (Communication to Customer), CTICOP(Communication to In Care Of Party) or CTOP(Communication to Other Party)
-    @constraint:String {maxLength: 35}
-    string addressPurpose?;
-    # Identifies the name of the building where customer resides
-    @constraint:String {maxLength: 35}
-    string buildingName?;
-    # Indicates the extensions
-    record {} extensions?;
-    # Identifies the address postal code for the customer or the property
-    CustomerPrintAddressBodyPostCodes[] postCodes?;
-    # The phone number of the customer or prospect
-    @constraint:String {maxLength: 17}
-    string phoneNumber?;
-    # ISO Country code, IBAN number will be generated based on the structure of this country
-    @constraint:String {maxLength: 2}
-    string countryCode?;
-    CustomerPrintAddressBodyTowns[] towns?;
-    # Denotes the Short name registered for a customer
-    CustomerProfileResponseBodyCustomerShortNames[] customerShortNames?;
-    # Contains the floor number of the customer address
-    @constraint:String {maxLength: 70}
-    string floorNumber?;
-    # Identifies the nature of the postal address, like primary, secondary or office address
-    @constraint:String {maxLength: 35}
-    string addressLocation?;
-    # Identifies the building number where customer resides
-    @constraint:String {maxLength: 16}
-    string buildingNumber?;
-    # Post Office Box (POB) number that relates to financial institution
-    @constraint:String {maxLength: 16}
-    string postBoxNumber?;
-    # Represents a subdivision of a country such as state, region, country
-    @constraint:String {maxLength: 35}
-    string state?;
-};
-
-# Represents the Headers record for the operation: updateCustomerCharge
-public type UpdateCustomerChargeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerRelationshipResponse1BodyInner record {
-    # Details about the Customer Relationships and Party Relationships
-    CustomerRelationshipResponse1BodyInner_originatingRelation[] originatingRelation?;
-    # Identifies the key to Customer Relationship Group to form a relation
-    @constraint:String {maxLength: 15}
-    string customerRelationGroupId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # The purpose of the relationship between the Originating Party and the Related Party. Valid options - TAX, LIMIT, ADVICES, OTHERS or can be left blank
-    @constraint:String {maxLength: 35}
-    string purposeOfRelationship?;
-    # Identifier of the Customer Relationship and Party Relationship
-    @constraint:String {maxLength: 35}
-    string relationId?;
-    # Name of a Customer Relationship Group if applicable to the relationship
-    @constraint:String {maxLength: 40}
-    string customerRelationGroupName?;
-};
-
-# Represents the Queries record for the operation: getCustomerContacts
-public type GetCustomerContactsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: getCustomerRequests
-public type GetCustomerRequestsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# CustomerResponse
-public type CustomerResponse record {
-    ScreenHeader header?;
-    CustomerResponseBody body?;
-};
-
-public type FatcaCustomerBodyTinDetails record {
-    # Identifies the Tax Identification Number of the Customer
-    @constraint:String {maxLength: 35}
-    string tinId?;
-    # Identifies the country that the associated Tax Identification Number relates to
-    @constraint:String {maxLength: 9}
-    string tinCountry?;
-};
-
-public type CustomerRestrictionsResponseBody record {
-    # Identifies any restrictions for posting entries that are imposed on a Customer
-    CustomerRestrictionsResponseBodyPostingRestrictIds[] postingRestrictIds?;
-    # Indicates the extensions
-    record {} extensions?;
-};
-
-public type JointCustomerDetailsResponseBody JointCustomerDetailsResponseBodyInner[];
-
-# Represents the Headers record for the operation: getStandingOrders
-public type GetStandingOrdersHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: updateCustomerGroup
-public type UpdateCustomerGroupHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: getAlertRequests
-public type GetAlertRequestsQueries record {
-    # Enables an alert service
-    string subscribe?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Contains the contract reference
-    string contractReference?;
-    # The unique identifier of the alert request
-    string alertRequestId?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerPersonalDetailsResponseBodyInner_communicationDevice record {
-    # Communication type to the customer, as defined by the institution. E.g. Proposal, Alert, Campaign, New Product Update, Robinson List, Statement.
-    @constraint:String {maxLength: 35}
-    string communicationType?;
-    # Preferred method of contact to the customer
-    @constraint:String {maxLength: 20}
-    string preferredChannel?;
-};
-
-public type CustomerPhoneAddressResponse1Body record {
-    # Identifies the international calling prefix code of the mobile
-    @constraint:String {maxLength: 16}
-    string iddPrefixMobile?;
-    # Indicates the extensions
-    record {} extensions?;
-    # Mobile number of the customer
-    @constraint:String {maxLength: 17}
-    string mobileNumber?;
-    # Denotes the Short name registered for a customer
-    CustomerProfileResponseBodyCustomerShortNames[] customerShortNames?;
-};
-
-# CustomerAddressOutputResponse
-public type CustomerAddressOutputResponse record {
-    QueryHeader header?;
-    CustomerAddressOutputResponseBody body?;
-};
-
-# Represents the Headers record for the operation: getCustomerInformation
-public type GetCustomerInformationHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: createFatcaCustomer
-public type CreateFatcaCustomerHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: updateFatcaCustomer
-public type UpdateFatcaCustomerHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type BicOwnersResponseBodyInner record {
-    # Bank Identifier Code (BIC) of the financial institution
-    @constraint:String {maxLength: 11}
-    string bicId?;
-    # Indicates the extension data
-    record {} extensions?;
-    BicOwnersResponseBodyInner_bicdetails[] bicdetails?;
-};
-
-public type UnapprovedCustomerGroupPurposeResponseBodyInner_relationships record {
-    # Indicates the list of allowed real relations in a customer group using this purpose and group type. List of relations can be retrieved using /reference/relationships
-    @constraint:String {maxLength: 3}
-    string allowedRelationship?;
-};
-
-# Represents the Headers record for the operation: getOtherBanksToConnectTo
-public type GetOtherBanksToConnectToHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerClosureResponseBody record {
-    # Indicates the extensions
-    record {} extensions?;
-    # The field reflects the customer exit reason of the customer or prospect
+    string facilityId?;
+    # Defines the activity to be processed against the Arrangement. The activity may be a user activity or a system generated activity
     @constraint:String {maxLength: 80}
-    string exitReason?;
-    # Indicates if the customer who had exited the relationship with the bank is reopened
-    @constraint:String {maxLength: 11}
-    string reopenedDate?;
-    # Identifier of the customer
-    @constraint:String {maxLength: 10}
-    string customerId?;
-    # The field reflects the customer exit status of a customer or prospect
-    @constraint:String {maxLength: 35}
-    string exitStatus?;
-    # General comments / notes
-    @constraint:String {maxLength: 35}
-    string remarks?;
-    # The current status of the request. The possible values includes New, send to printer, cancelled and processed
-    @constraint:String {maxLength: 35}
-    string requestStatus?;
-    # The field reflects the customer exit date of the customer or prospect
-    @constraint:String {maxLength: 11}
-    string exitDate?;
-};
-
-public type JointCustomerDetailsResponseBodyInner record {
-    # Indicates the extension data
-    record {} extensions?;
-    # Identifies the details of Customer in a Joint Relationship
-    JointCustomerDetailsResponseBodyInner_jointCustomerDetails[] jointCustomerDetails?;
-    # Identifier of the customer
-    @constraint:Number {maxValue: 10}
-    decimal customerId?;
-};
-
-public type CustomerPhoneAddressResponseBody CustomerPhoneAddressResponseBodyInner[];
-
-# StandingOrdersResponse
-public type StandingOrdersResponse record {
-    QueryHeader header?;
-    StandingOrdersResponseBody body?;
-};
-
-# Represents the Headers record for the operation: updateCustomer
-public type UpdateCustomerHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: createCustomerExitStatusParam
-public type CreateCustomerExitStatusParamQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerContactsResponseBodyInner_emailIds record {
-    # Contains the email identifier of the customer
-    string emailId?;
-};
-
-# Represents the Headers record for the operation: getCustomerRelationships
-public type GetCustomerRelationshipsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: updateCustomerClosure
-public type UpdateCustomerClosureHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type DeliveryPreferenceBodyMessageGroupDetail record {
-    # Indicates the Role of the Customer
-    @constraint:String {maxLength: 35}
-    string role?;
-    # Identifies the position of the carrier in the arrangement
-    @constraint:String {maxLength: 3}
-    string carrierPosition?;
-    # Indicates the date till which the transaction history requested. If 20120101 is the start date and 20120201 is the end date, all transactions that are booked between January 1 to February 1 2012 are returned
-    @constraint:String {maxLength: 11}
-    string endDate?;
-    # Defines whether the output delivery message is to be held by the system before processing. Allowed option is Y
-    @constraint:String {maxLength: 3}
-    string holdOutput?;
-    # Indicates the formatting version to be used for the delivery message
-    @constraint:String {maxLength: 2}
-    string format?;
-    # Defines the hold options to be used on the delivery messages during the hold period. Options are HELD - hold the delivery messages; DELETE - aviod generation of delivery messages; CLEAR - automatically clear hold messages after hold period expiry and SEND - automatically push the held messages for processing
-    @constraint:String {maxLength: 7}
-    string holdMailOption?;
-    # The language that the contents of the field are displayed in
-    @constraint:String {maxLength: 2}
-    string language?;
-    # Defines the start date of the hold period when the delivery message is to be held in the system
-    @constraint:String {maxLength: 11}
-    string holdMailStartDate?;
-    # Flag to set the channel to communicate
-    @constraint:String {maxLength: 8}
-    string required?;
-    # Carrier to be used for processing the messages
-    @constraint:String {maxLength: 10}
-    string carrier?;
-    # Specifies the number of copies of a message required
-    @constraint:String {maxLength: 2}
-    string copies?;
-    # Defines the end date of the hold period when the delivery message is to be held in the system
-    @constraint:String {maxLength: 11}
-    string holdMailEndDate?;
-    # Contains the date on which the transaction or payment gets initiated
-    @constraint:String {maxLength: 11}
-    string startDate?;
-};
-
-public type JointCustomerDetailsResponseBodyInner_deliveryOption record {
-    # Role of joint customer with the main customer
-    @constraint:Number {maxValue: 20}
-    decimal jointRelationRoleId?;
-    # Description of the joint customer role.
-    @constraint:String {maxLength: 20}
-    string jointRoleDisplayName?;
-    # Additional notes about the role
-    @constraint:String {maxLength: 35}
-    string jointRelationRoleNotes?;
-    # This is used to specify what delivery addressing is to be used for the link customer. 
-    @constraint:String {maxLength: 8}
-    string jointRelationDeliveryOption?;
-    # Additional information of the role.
-    @constraint:String {maxLength: 35}
-    string jointRelationRoleInfo?;
-};
-
-public type CustomerResponseBodyTaxIds record {
-    # Holds the Customer's TAX/SSN Id
-    @constraint:String {maxLength: 55}
-    string taxId?;
-};
-
-# Represents the Queries record for the operation: updateCustomerPrintAddress
-public type UpdateCustomerPrintAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type OtherBanksToConnectToResponseBodyInner record {
-    # globalURNSpecifies the GLOBAL.URN reference of the TPP (third party provider). This will be retrieved from the request and should match a GLOBAL.URN from a record within the Open Banking Directory
-    @constraint:String {maxLength: 35}
-    string globalUrn?;
-    # Contains the code of the bank with which the transaction is performed
-    string bankCode?;
-    # Contains the identifier of the bank with which the transaction is performed
-    string bankId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Contains the templates used for payment transactions
-    OtherBanksToConnectToResponseBodyInner_paymentTemplates[] paymentTemplates?;
-    # The name of the bank being referred to
-    @constraint:String {maxLength: 150}
-    string bankName?;
-    # Contains the name of the external source provider for the customer
-    @constraint:String {maxLength: 35}
-    string extSourceProvider?;
-    # Contains the uniform resourcelocator of the logo
-    @constraint:String {maxLength: 200}
-    string logoURL?;
-    # ISO country code of the financial institution. 
-    @constraint:String {maxLength: 35}
-    string countryId?;
-};
-
-# CustomerReportingStatusResponse
-public type CustomerReportingStatusResponse record {
-    QueryHeader header?;
-    CustomerReportingStatusResponseBody body?;
-};
-
-public type CustomerReportingStatusResponseBodyInner_reportableJurisdictions record {
-    # Indicates the residences of the participating jurisdictions of the reporting customer.
-    string[] reportableJurisdiction?;
-};
-
-public type CustomerExitStatusResponseBody CustomerExitStatusResponseBodyInner[];
-
-# Represents the Queries record for the operation: getCustomerOpportunities
-public type GetCustomerOpportunitiesQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type DirectDebitsResponseBodyInner record {
-    # Specifies an alternative easy means of referencing the Customer
-    @constraint:String {maxLength: 200}
-    string customerMnemonic?;
-    # This is the payment amount
-    @constraint:Number {maxValue: 19}
-    decimal amount?;
-    # Indicates next payment date for the contract
-    string nextPaymentDate?;
-    # Name or short title of the credit account
-    @constraint:String {maxLength: 70}
-    string creditorName?;
-    # Defines whether the direct debit mandate is for stand-alone purpose i.e. one-off instruction
-    @constraint:String {maxLength: 1}
-    string standAloneDdi?;
-    # Display name or short name of the account specified
-    string accountName?;
-    # Contains the name used for display or enrichment purposes
-    @constraint:String {maxLength: 35}
-    string displayName?;
-    # The unique identifier of the direct debit mandate. 
-    @constraint:String {maxLength: 25}
-    string directDebitId?;
-    # Contains bank sort code or iban branch identifier for the account
-    @constraint:String {maxLength: 35}
-    string sortCode?;
-    # Current number of the record
-    @constraint:String {maxLength: 4}
-    string versionNumber?;
-    # Specifies the frequency in which the payment application(periodic payments) execute the payment instruction
-    @constraint:String {maxLength: 50}
-    string frequency?;
-    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
-    string accountId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # The name that is displayed for the currency
-    string currencyName?;
-    # Identifier of the customer
-    @constraint:String {maxLength: 10}
-    string customerId?;
+    string activity?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
     # Identifies the currency. E.g. USD, GBP etc
     @constraint:String {maxLength: 3}
     string currency?;
-    # Credit account identifier of the payment or transaction
-    @constraint:String {maxLength: 35}
-    string creditAccountId?;
-    # Contains the date on which the transaction or payment gets initiated
-    string startDate?;
-    # Indicates the direction of the Direct debit claim for which mandate is received. The claim can be 'Outward' i.e. Claim is sent to the other bank or 'Inward'  i.e. other bank submit their claim to debit our customer's account. 
-    @constraint:String {maxLength: 10}
-    string direction?;
-    # Contains status of the data rights request.Allowed values are INITIATED, INPROGESS, EXTENDED, COMPLETED, REJECTED
-    @constraint:String {maxLength: 35}
-    string status?;
+    # Contains the customer identifier to fetch list of consent arrangements for the customer or customer identifier of the debtor account. This will be populated once the SCA(Strong Customer Authentication) is completed
+    InstallmentLoanBodyCustomers[] customers?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    @constraint:String {maxLength: 11}
+    string effectiveDate?;
 };
 
-public type CustomerGroupPurposeBodyGroupTypes record {
-    # Details about the Customer Relationships and Party Relationships
-    CustomerGroupPurposeBodyRelationships[] relationships?;
-    # Indicates the type of entity that identifies the group eg. Parent or Member
-    @constraint:String {maxLength: 35}
-    string groupType?;
-    CustomerGroupPurposeBodyGroupRelationships[] groupRelationships?;
-    CustomerGroupPurposeBodyAggregateRelationships[] aggregateRelationships?;
-};
-
-# Represents the Queries record for the operation: createProspectCustomer
-public type CreateProspectCustomerQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerGroupPurposeResponseBody record {
-    # Indicates whether group relations have to be defaulted in customer group from party relationship. Allowed values are YES, NO or Blank
-    @constraint:String {maxLength: 35}
-    string allowGroupRelationship?;
-    CustomerGroupPurposeBodyGroupTypes[] groupTypes?;
-    # Indicates the extensions
-    record {} extensions?;
-    # Indicates whether customers in a group are to be restricted from being defined in another customer group with same group purpose. YES - will restrict the customer from being defined in another group, NO/Blank - will allow customers to be defined in other groups
-    @constraint:String {maxLength: 35}
-    string groupLevelUniqueCustomer?;
-    # Indicates the type of customer group. Allowed values are RISK ,LIABILITY or Blank
-    @constraint:String {maxLength: 35}
-    string groupPurpose?;
-    # Indicates whether customer relations have to be defaulted in customer group from party relationship. Allowed values are YES, NO or Blank
-    @constraint:String {maxLength: 35}
-    string allowRelationship?;
-    # Contains the description of purpose of the payment
-    @constraint:String {maxLength: 35}
-    string description?;
-    # Indicates whether a customer is allowed to be part of multiple sub groups. Allowed values are UNIQUE, MULTIPLE, NONE or Blank
-    @constraint:String {maxLength: 35}
-    string subGroupLevelUniqueCustomer?;
-};
-
-public type OtherBanksToConnectToResponseBody OtherBanksToConnectToResponseBodyInner[];
-
-public type CustomerPostingRestrictionsResponseBody CustomerPostingRestrictionsResponseBodyInner[];
-
-public type CustomerInformationResponseBodyInner_taxIds record {
-    # Holds the Customer's TAX/SSN Id.
-    @constraint:String {maxLength: 35}
-    string taxId?;
-};
-
-# Represents the Queries record for the operation: createDeliveryPreference
-public type CreateDeliveryPreferenceQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerPersonalDetailsResponseBody CustomerPersonalDetailsResponseBodyInner[];
-
-public type CustomerInformationResponseBodyInner_preferredChannels record {
-    # Preferred method of contact to the customer
-    @constraint:String {maxLength: 20}
-    string preferredChannel?;
-};
-
-# CustomerExitStatusParamResponse1
-public type CustomerExitStatusParamResponse1 record {
-    ScreenHeader header?;
-    CustomerExitStatusParamResponse1Body body?;
-};
-
-# CustomerOpportunitiesResponse
-public type CustomerOpportunitiesResponse record {
-    QueryHeader header?;
-    CustomerOpportunitiesResponseBody body?;
-};
-
-public type CustomerConsentsResponseBodyInner_consentTypes record {
-    # Consent Type for which the consent is given
-    string consentType?;
-    # Identifies whether the consent has been given to the customer to perform the transaction
-    string consentGiven?;
-    # Indicates whether consent is blocked or not. No personal data of the Client will be shared by the Bank for any purpose when the consent is blocked.
-    string consentBlock?;
-    # Indicates the reason for which the consent is blocked.
-    string blockNotes?;
-    # Identifies whether the consent has been withdrawn to the customer to perform the transaction
-    string consentWithdraw?;
-    # Notes to facilitate why the consent has been withdrawn
-    string withdrawNotes?;
-    # Contains the name of the type of consent given to the customer
-    string consentTypeName?;
-    CustomerConsentsResponseBodyInner_subTypes[] subTypes?;
-};
-
-public type CustomerPrintAddressResponseBodyInner record {
-    # Contains a sub-division identifier of a large organisation or building
-    @constraint:String {maxLength: 70}
-    string subDepartmentId?;
-    # Contains the communication address of the customer or full address of the property
-    CustomerPrintAddressResponseBodyInner_addresses[] addresses?;
-    # Identifies specific location name with in the country or town
-    @constraint:String {maxLength: 35}
-    string locationName?;
-    # Contains the street name of the customer or the property
-    PartyBasicDetailsResponseBodyInner_streets[] streets?;
-    # Stores the district name of the  Beneficiary Customer
-    @constraint:String {maxLength: 35}
-    string districtName?;
-    # Contains the flat number of the customer
-    @constraint:String {maxLength: 70}
-    string flatNumber?;
-    # Department identifier
-    @constraint:String {maxLength: 70}
-    string departmentId?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    CustomerPrintAddressResponseBodyInner_customerNames[] customerNames?;
-    # Identifies the international calling prefix code of the phone or mobile number
-    @constraint:String {maxLength: 16}
-    string iddPrefixPhone?;
-    # Contains the party or service which was used for address confirmation purposes
-    @constraint:String {maxLength: 35}
-    string addressVerifier?;
-    # Identifies the purpose or usage of the address. Allowed values are CTC (Communication to Customer), CTICOP(Communication to In Care Of Party) or CTOP(Communication to Other Party)
-    @constraint:String {maxLength: 35}
-    string addressPurpose?;
-    # Identifier of the customer address table
-    @constraint:String {maxLength: 1000}
-    string customerAddressId?;
-    # Identifies the name of the building where customer resides
-    @constraint:String {maxLength: 35}
-    string buildingName?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Identifies the address postal code for the customer or the property
-    PartyBasicDetailsResponseBodyInner_postCodes[] postCodes?;
-    # The phone number of the customer or prospect
-    @constraint:String {maxLength: 17}
-    string phoneNumber?;
-    # ISO Country code, IBAN number will be generated based on the structure of this country
-    @constraint:String {maxLength: 2}
-    string countryCode?;
-    CustomerPrintAddressResponseBodyInner_towns[] towns?;
-    # Denotes the Short name registered for a customer
-    CustomerPrintAddressResponseBodyInner_customerShortNames[] customerShortNames?;
-    # Contains the floor number of the customer address
-    @constraint:String {maxLength: 70}
-    string floorNumber?;
-    # Identifies the nature of the postal address, like primary, secondary or office address
-    @constraint:String {maxLength: 35}
-    string addressLocation?;
-    # Identifies the building number where customer resides
-    @constraint:String {maxLength: 16}
-    string buildingNumber?;
-    # Post Office Box (POB) number that relates to financial institution
-    @constraint:String {maxLength: 16}
-    string postBoxNumber?;
-    # Represents a subdivision of a country such as state, region, country
-    @constraint:String {maxLength: 35}
-    string state?;
-};
-
-public type ProspectCustomerBodySocialNetworkIds record {
-    # Social Network Identification of the person/entity
-    @constraint:String {maxLength: 70}
-    string socialNetworkId?;
-};
-
-# CustomerClosureResponse
-public type CustomerClosureResponse record {
-    ScreenHeader header?;
-    CustomerClosureResponseBody body?;
-};
-
-# Represents the Headers record for the operation: createDeliveryPreference
-public type CreateDeliveryPreferenceHeaders record {
+# Represents the Headers record for the operation: createLoanPayoffAutoSimulation
+public type CreateLoanPayoffAutoSimulationHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
     # User who initiated the transaction
     string userRole?;
     # Identifies the device type
     string deviceId?;
 };
 
-# Represents the Queries record for the operation: getCustomerPhoneAddress
-public type GetCustomerPhoneAddressQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Reference Id of address record
-    string addressId?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
+public type LinkedRateLoanResponseBodyPropertiesPrincipalint record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    LinkedRateLoanBodyPrincipalint body?;
 };
 
-public type ProspectCustomerBodyCustomerNames record {
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    @constraint:String {maxLength: 40}
-    string customerName?;
-};
-
-# Represents the Headers record for the operation: createCustomerWithId
-public type CreateCustomerWithIdHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type PartyRelationshipBodyPartyDisplayNames record {
-    # A description of the Party Relationship
-    @constraint:String {maxLength: 35}
-    string partyDisplayName?;
-};
-
-# Represents the Queries record for the operation: updateCustomerClosure
-public type UpdateCustomerClosureQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Headers record for the operation: approveCustomerGroup
-public type ApproveCustomerGroupHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getCustomerDeliveryOptions
-public type GetCustomerDeliveryOptionsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerReportingStatusResponseBody CustomerReportingStatusResponseBodyInner[];
-
-public type CustomerResponseBodyRelationshipDetails record {
-    # Relationship code for the Related Customer
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal reverseJointRelationCode?;
-    # Joint or related customer id
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal jointCustomer?;
-    # The identifier of the relationship between joint holder and owner 
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal jointRelationCode?;
-    CustomerResponseBodyRoleDetails[] roleDetails?;
-};
-
-public type CustomerRelationshipBodyOriginatingRelation record {
-    # Used to record the percentage of ownership in the relationship. For example an entity may be partially or wholly owned by another entity. This will only be allowed to be entered if the relation is indicated as a type allowing Ownership
+public type LinkedRateLoanBodyPrincipalint record {
+    # If the charge calculated for this tier is less than the amount defined in this field then minimum amount will be the charge amount for this tier
     @constraint:String {maxLength: 6}
-    string owningPercent?;
-    # Effective date from which there is a relationship between originating party and the portfolio
-    string partyEffectiveDate?;
-    # Details about the Customer Relationships and Party Relationships
-    CustomerRelationshipBodyRelationships[] relationships?;
-    # Customer Relationship of originating party. It is used in conjunction with the relatedRelationReference attribute
-    @constraint:String {maxLength: 35}
-    string relationReference?;
-    # Contains the identifier used for the role played by the party or customer in the contract or account
-    @constraint:String {maxLength: 20}
-    string partyRole?;
-    # Originating Party's relationship to the underlying portfolio. Should be a valid relationship
+    string tiers?;
+    # Defines the minimum interest amount that will be compared to the system calculated interest amount. If the interest calculated is less than the minimum amount set, then based on the waive setup  either the min interest amount would be applied or it would be waived
+    @constraint:String {maxLength: 19}
+    string minIntAmount?;
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    ConsumerLoanBodyReferences[] references?;
+    # This field indicates if the calculated interest amount has to be waived or adjusted. If the field is set to YES, then the system will waive the interest amount if it is less than the minimum interest amount specified.If NULL value is set and if the calculated interest amount is less than the minimum interest amount  specified, then system will post the minimum interest amount
     @constraint:String {maxLength: 3}
-    string partyRelation?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
+    string minIntWaive?;
+    # Indicates whether accruals needs to be Suppressed or Accrual should be done for the Alternate Interest Property. Allowed values are Yes, Alternate, info only, null
     @constraint:String {maxLength: 10}
-    string partyId?;
-    # Specifies customer information
+    string suppressAccrual?;
+    # The user can specify that interest will only be calculated if a balance threshold is surpassed. For credit interest, the user can specify the minimum balance which must be maintained. For debit interest, the user can specify the maximum debit balance for which interest will not be calculated
+    @constraint:String {maxLength: 19}
+    string calcThreshold?;
+    # Determines the amounts which has to be included in each day's balance while accruing interest, the actual days to include in the period(eg: first day, last day) and how to round any calculations
     @constraint:String {maxLength: 35}
-    string party?;
-};
-
-public type CustomerChargeBodyTaxGroups record {
-    # Defines the Default Tax Group which the Customer is calculated to be a member of for the associated tax type
-    @constraint:String {maxLength: 14}
-    string defaultTaxGroup?;
-    # Type of Tax identification number, eg, Social Security, Individual Tax Identification Number, etc,
-    @constraint:String {maxLength: 10}
-    string taxIdType?;
-    # Defines the Actual Tax Group which the customer is calculated to be a member of for associated tax type
-    @constraint:String {maxLength: 14}
-    string taxGroup?;
-};
-
-# Represents the Queries record for the operation: getPartyRelationship
-public type GetPartyRelationshipQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: updateCustomerPrintAddress
-public type UpdateCustomerPrintAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# CustomerContactsResponse
-public type CustomerContactsResponse record {
-    QueryHeader header?;
-    CustomerContactsResponseBody body?;
-};
-
-public type PartyBasicDetailsResponseBodyInner_nameAliases record {
-    # Contains the alias name or additional surname of the customer
-    @constraint:String {maxLength: 35}
-    string nameAlias?;
-};
-
-# Represents the Headers record for the operation: createCustomerPrintAddress
-public type CreateCustomerPrintAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerResponseBodyContactDetails record {
-    # Indicates the contact data of customer used for communication such as phone or mobile or e-mail address
-    @constraint:String {maxLength: 254}
-    string contactData?;
-    # Identifies the international calling prefix code of the phone or mobile number
-    @constraint:String {maxLength: 56}
-    string iddPrefixPhone?;
-    # Types of contacts available to users to communicate
-    @constraint:String {maxLength: 55}
-    string contactType?;
-};
-
-public type CustomerInformationResponseBodyInner_mobilePhoneNumbers record {
-    # Represents the phone number of a customer
-    @constraint:String {maxLength: 20}
-    string mobilePhoneNumber?;
-};
-
-public type ProspectCustomersResponseBodyInner record {
-    # Contains the communication address of the customer or full address of the property
-    CustomerPrintAddressResponseBodyInner_addresses[] addresses?;
-    # Contains the street name of the customer or the property
-    ProspectCustomersResponseBodyInner_streets[] streets?;
-    # This is the country name that the financial institution resides in
-    ProspectCustomersResponseBodyInner_countryNames[] countryNames?;
-    # Gender of the Individual Customer
-    @constraint:String {maxLength: 35}
-    string gender?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    ProspectCustomersResponseBodyInner_customerNames[] customerNames?;
-    # Identify which country an entity has been registered
-    @constraint:String {maxLength: 2}
-    string registeredCountry?;
-    # Identifies if the record is for a real person or a legal entity. Allowed Options: Person or Entity
-    @constraint:String {maxLength: 35}
-    string personEntity?;
-    # Identifies the legal entity details of prospect customer
-    ProspectCustomersResponseBodyInner_prospectLegalDetails[] prospectLegalDetails?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Identifies the address postal code for the customer or the property
-    PartyBasicDetailsResponseBodyInner_postCodes[] postCodes?;
-    # Date on which the entity is incorporated
-    string birthIncorpDate?;
-    # The town and country associated with the address
-    PartyBasicDetailsResponseBodyInner_townCountries[] townCountries?;
-    # Identifies the social networks of the Customer
-    ProspectCustomersResponseBodyInner_socialNetworks[] socialNetworks?;
-    # Identifes the prospect customer network details like Phone number, email
-    ProspectCustomersResponseBodyInner_prospectNetworks[] prospectNetworks?;
-};
-
-# Represents the Queries record for the operation: deleteCustomerGroup
-public type DeleteCustomerGroupQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerInformationResponseBodyInner_emails record {
-    # Email Identifier of the Customer
-    @constraint:String {maxLength: 60}
-    string email?;
-};
-
-public type CustomerChargeResponseBody record {
-    # Indicates the extensions
-    record {} extensions?;
-    # Defines the Actual Tax Group which the customer is calculated to be a member of for associated tax type
-    CustomerChargeBodyTaxGroups[] taxGroups?;
-};
-
-public type PartyRelationshipResponse1Body PartyRelationshipResponse1BodyInner[];
-
-# CustomerPrintAddressResponse1
-public type CustomerPrintAddressResponse1 record {
-    ScreenHeader header?;
-    CustomerPrintAddressResponse1Body body?;
-};
-
-public type CustomerProfileResponseBody record {
-    # Identifies the country of the customer or a property or organization
-    @constraint:String {maxLength: 35}
-    string country?;
-    # Contains a sub-division identifier of a large organisation or building
-    @constraint:String {maxLength: 70}
-    string subDepartmentId?;
-    # The date of birth of an individual customer
-    @constraint:String {maxLength: 11}
-    string dateofBirth?;
-    # Specifies the number of dependents to the customer
-    @constraint:String {maxLength: 2}
-    string numberOfDependents?;
-    # Name of the person who introduced the Customer to the bank
-    @constraint:String {maxLength: 35}
-    string introducer?;
-    # Date that first contact was made with the Customer
-    @constraint:String {maxLength: 11}
-    string contactDate?;
-    # Department identifier
-    @constraint:String {maxLength: 70}
-    string departmentId?;
-    # Residence type of the customer like Farmhouse, Independent house, Residential Apartment, Serviced Apartments
-    @constraint:String {maxLength: 35}
-    string residenceType?;
-    # Identifies the type of customers. Example Personal, Business, Corporate, etc
-    @constraint:String {maxLength: 35}
-    string customerType?;
-    # Identifies the building number where customer resides
-    @constraint:String {maxLength: 16}
-    string buildingNumber?;
-    # Indicates first line of the address of the BIC
-    @constraint:String {maxLength: 35}
-    string addressLine1?;
-    # Indicates second line of the address of the BIC
-    @constraint:String {maxLength: 35}
-    string addressLine2?;
-    # Represents a subdivision of a country such as state, region, country
-    @constraint:String {maxLength: 35}
-    string state?;
-    # The town and/or city component of the base address of a customer
-    @constraint:String {maxLength: 35}
-    string addressCity?;
-    # An institution-defined identifier of the type of customer
-    @constraint:String {maxLength: 100000}
-    string sectorId?;
-    # Indicates the rating of the customer
-    CustomerProfileResponseBodyCustomerRatings[] customerRatings?;
-    # The identifier of the nationality of a customer
-    @constraint:String {maxLength: 2}
-    string nationalityId?;
-    # The identifier of the country of residence of a customer
-    @constraint:String {maxLength: 2}
-    string residenceId?;
-    # Identifies the name of the building where customer resides
-    @constraint:String {maxLength: 35}
-    string buildingName?;
-    # Identifier of Department Account Officer
-    @constraint:String {maxLength: 4}
-    string accountOfficer?;
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    @constraint:String {maxLength: 11}
-    string companyId?;
-    # Indicates the extensions
-    record {} extensions?;
-    # Denotes the Short name registered for a customer
-    CustomerProfileResponseBodyCustomerShortNames[] customerShortNames?;
-    # Customers native language or the language that can be used for communication
-    CustomerProfileResponseBodySpokenLanguages[] spokenLanguages?;
-    # Identifies the address postal code for the customer or the property
-    @constraint:String {maxLength: 35}
-    string postCode?;
-    # Contains the alias name or additional surname of the customer
-    CustomerProfileResponseBodyNameAliases[] nameAliases?;
-    # Contains the greeting to be used for communications with the customer
-    @constraint:String {maxLength: 70}
-    string salutation?;
-    # Marital status of the customer
-    @constraint:String {maxLength: 35}
-    string maritalStatus?;
-    # Identifies the apartment number of the customer address
-    @constraint:String {maxLength: 70}
-    string apartmentNumber?;
-    # Other officers managing the Customer
-    CustomerResponseBodyOtherOfficers[] otherOfficerIds?;
-    # The date on which the bank gets the notification that the customer is dead
-    @constraint:String {maxLength: 51}
-    string notificationDateOfDeath?;
-    # Gender of the Individual Customer
-    @constraint:String {maxLength: 35}
-    string gender?;
-    # The death date of customer
-    @constraint:String {maxLength: 51}
-    string dateOfDeath?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    CustomerProfileResponseBodyCustomerNames[] customerNames?;
-    # Main menu title or header which the user wants to display on the screen when requesting the display of this main menu. This field can be expanded to allow the user to enter the description of the main menu in various languages
-    @constraint:String {maxLength: 35}
-    string title?;
-    # The internal bank status of a customer
-    @constraint:String {maxLength: 55}
-    string customerStatus?;
-    # Contains the street name of the customer or the property
-    @constraint:String {maxLength: 70}
-    string street?;
-    # Contains the floor number of the customer address
-    @constraint:String {maxLength: 70}
-    string floorNumber?;
-    # Continuation/Extension to the Customer Name
-    CustomerProfileResponseBodyCustomerNameAdditionals[] customerNameAdditionals?;
-    # Industry associated with the Customer
-    @constraint:String {maxLength: 200}
-    string industryName?;
-    # Identifies specific location name with in the country or town
-    @constraint:String {maxLength: 35}
-    string locationName?;
-    # Represents the language code of the underlying Entity/Company/Branch
-    @constraint:String {maxLength: 2}
-    string languageId?;
-    # Contains the party or service which was used for address confirmation purposes
-    @constraint:String {maxLength: 35}
-    string addressVerifier?;
-    # Identifies the purpose or usage of the address. Allowed values are CTC (Communication to Customer), CTICOP(Communication to In Care Of Party) or CTOP(Communication to Other Party)
-    @constraint:String {maxLength: 35}
-    string addressPurpose?;
-    # Specifies how the Customer is considered by the bank and how he fits in with the Account Officer's overall marketing strategy
-    @constraint:String {maxLength: 4}
-    string target?;
-    # Date Since Customer is held in the system
-    @constraint:String {maxLength: 11}
-    string customerSince?;
-    # Date on which the entity is incorporated
-    @constraint:String {maxLength: 11}
-    string birthIncorpDate?;
-    # Identifies the citizenship details of Customer
-    CustomerProfileResponseBodyCitizenships[] citizenships?;
-    # Post Office Box (POB) number that relates to financial institution
-    @constraint:String {maxLength: 16}
-    string postBoxNumber?;
-    # The town and country associated with the address
-    @constraint:String {maxLength: 35}
-    string townCountry?;
-};
-
-public type CustomerContactsResponseBodyInner_phoneNumbers record {
-    # The phone number of the customer or prospect
-    string phoneNumber?;
-};
-
-# Represents the Headers record for the operation: getCustomerCharge
-public type GetCustomerChargeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerResponseBodyCommunicationDevices record {
-    # The phone number of the customer or prospect
-    @constraint:String {maxLength: 57}
-    string phoneNumber?;
-    # Preferred method of contact to the customer
-    @constraint:String {maxLength: 50}
-    string preferredChannel?;
-    # The mobile SMS number of the customer
-    @constraint:String {maxLength: 57}
-    string smsNumber?;
-    # Communication type to the customer, as defined by the institution. E.g. Proposal, Alert, Campaign, New Product Update, Robinson List, Statement
-    @constraint:String {maxLength: 55}
-    string communicationType?;
-    # Email Identifier of the Customer
-    @constraint:String {maxLength: 50}
-    string email?;
-};
-
-# CustomerPrintAddressResponse
-public type CustomerPrintAddressResponse record {
-    QueryHeader header?;
-    CustomerPrintAddressResponseBody body?;
-};
-
-public type CustomerInformationResponseBodyInner record {
-    # Specifies an alternative easy means of referencing the Customer
-    @constraint:String {maxLength: 200}
-    string customerMnemonic?;
-    # The last name of an individual customer
-    @constraint:String {maxLength: 50}
-    string lastName?;
-    # Contains the communication address of the customer or full address of the property
-    CustomerInformationResponseBodyInner_addresses[] addresses?;
-    # Describes the target in an abbreviated form which can be used for reporting when space is limited.This can be expanded to allow the User to enter a short description of the Target code in various languages. 
-    @constraint:String {maxLength: 200}
-    string targetName?;
-    # The date on which the bank gets the notification that the customer is dead
-    string notificationDateOfDeath?;
-    # Gender of the Individual Customer
-    @constraint:String {maxLength: 40}
-    string gender?;
-    # The death date of customer
-    string dateOfDeath?;
-    # Identifies any restrictions for posting entries that are to be imposed on the Account
-    CustomerInformationResponseBodyInner_postingRestrictions[] postingRestrictions?;
-    # Name of the Nationality of the Customer
-    @constraint:String {maxLength: 200}
-    string nationalityName?;
-    # Identifies the type of profile that can be assigned to the customer. Bank needs to profile its clients in order to be effective in cross selling and campaign management
-    CustomerInformationResponseBodyInner_profileTypes[] profileTypes?;
-    # The language that the contents of the field are displayed in
-    @constraint:String {maxLength: 20}
-    string language?;
-    # Main menu title or header which the user wants to display on the screen when requesting the display of this main menu. This field can be expanded to allow the user to enter the description of the main menu in various languages
-    @constraint:String {maxLength: 25}
-    string title?;
-    # Holds the Customer's TAX/SSN Id
-    CustomerInformationResponseBodyInner_taxIds[] taxIds?;
-    # Represents the language name of the underlying Entity/Company/Branch
-    @constraint:String {maxLength: 200}
-    string languageName?;
-    # The internal bank status of a customer
-    @constraint:String {maxLength: 40}
-    string customerStatus?;
-    # An institution-defined identifier of the industry in which the customer is trading, operating or is associated with
-    @constraint:Number {maxValue: 100000}
-    decimal industryId?;
-    # Identifies the type of customers. Example Personal, Business, Corporate, etc
-    @constraint:String {maxLength: 35}
-    string customerType?;
-    # The fax (facsimile) number of the customer
-    @constraint:String {maxLength: 27}
-    string faxId?;
-    # The identifier of the department head or specific account officer responsible for the customer
-    @constraint:Number {maxValue: 100000}
-    decimal accountOfficerId?;
-    # Identifier of the customer
-    @constraint:String {maxLength: 30}
-    string customerId?;
-    # An institution-defined high level description or segmentation of the customer
-    @constraint:String {maxLength: 200}
-    string statusName?;
-    # Name of the account or relationship officer attached to the Customer
-    @constraint:String {maxLength: 200}
-    string accountOfficerName?;
-    # Name of the residence country
-    @constraint:String {maxLength: 200}
-    string residenceName?;
-    # Industry associated with the Customer
-    @constraint:String {maxLength: 200}
-    string industryName?;
-    # An institution-defined identifier of the type of customer
-    @constraint:Number {maxValue: 100000}
-    decimal sectorId?;
-    # Indicates the customer consolidation number for credit grouping purposes, within the same branch/country
-    @constraint:String {maxLength: 40}
-    string customerLiability?;
-    CustomerInformationResponseBodyInner_employmentDetails[] employmentDetails?;
-    # The identifier of the nationality of a customer
-    @constraint:String {maxLength: 40}
-    string nationalityId?;
-    # The date of birth of an individual customer
-    string dateOfBirth?;
-    # An institution-defined identifier of the type of customer
-    @constraint:String {maxLength: 40}
-    string sectorName?;
-    # Contains the contact details of the customer
-    CustomerInformationResponseBodyInner_contactDetails[] contactDetails?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    @constraint:String {maxLength: 35}
-    string customerName?;
-    # The identifier of the country of residence of a customer
-    @constraint:String {maxLength: 40}
-    string residenceId?;
-    # Current number of the record
-    @constraint:String {maxLength: 60}
-    string versionNumber?;
-    # Specifies how the Customer is considered by the bank and how he fits in with the Account Officer's overall marketing strategy
-    @constraint:String {maxLength: 40}
-    string target?;
-    CustomerInformationResponseBodyInner_legalDocuments[] legalDocuments?;
-    # Date Since Customer is held in the system
-    string customerSince?;
-    # Specifies customer's first name
-    @constraint:String {maxLength: 50}
-    string firstName?;
-    # Other Nationality of the Customer
-    CustomerInformationResponseBodyInner_otherNationalityIds[] otherNationalityIds?;
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    @constraint:String {maxLength: 21}
-    string companyId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Date on which the entity is incorporated
-    string birthIncorpDate?;
-    # Continuation/Extension to the Customer Name
-    @constraint:String {maxLength: 70}
-    string customerNameAdditional?;
-    # The type of vulnerability (physical impairment) the customer had
-    CustomerInformationResponseBodyInner_vulnerabilities[] vulnerabilities?;
-    # Preferred method of contact to the customer
-    CustomerInformationResponseBodyInner_preferredChannels[] preferredChannels?;
-    CustomerInformationResponseBodyInner_relCust[] relCust?;
-    # Marital status of the customer
-    @constraint:String {maxLength: 45}
-    string maritalStatus?;
-};
-
-# Represents the Headers record for the operation: updateCustomerExitStatusParam
-public type UpdateCustomerExitStatusParamHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerPrintAddressResponseBodyInner_addresses record {
-    # Contains the communication address of the customer or full address of the property
-    @constraint:String {maxLength: 35}
-    string address?;
-};
-
-# Represents the Headers record for the operation: createCustomerStaticChange
-public type CreateCustomerStaticChangeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: deleteCustomerGroupPurpose
-public type DeleteCustomerGroupPurposeQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerInformationResponseBodyInner_relCust record {
-    # Customers linked or related to the arrangement owner
-    @constraint:String {maxLength: 30}
-    string relCustomer?;
-    # Relationship identifier between the partyType and relatedPartyType
-    @constraint:String {maxLength: 30}
-    string relationshipCode?;
-    # Specifies related customer's first name
-    @constraint:String {maxLength: 200}
-    string relCustomerFirstName?;
-    # The last name of the related customer
-    @constraint:String {maxLength: 40}
-    string relCustomerLastName?;
-    # The date of birth of the related customer
-    string relCustomerDateOfBirth?;
-    # Holds the related Customer's TAX/SSN Id.
-    @constraint:String {maxLength: 30}
-    string relCustomerTaxId?;
-    # The phone number of the related customer or prospect
-    @constraint:String {maxLength: 100}
-    string relCustomerPhoneNumber?;
-    # Email Identifier of the related Customer
-    @constraint:String {maxLength: 200}
-    string relCustomerEmail?;
-    # Identifies the address postal code of the related customer.
-    @constraint:String {maxLength: 30}
-    string relCustomerPostCode?;
-    # Contains the first line of the related customer's base address, example building number, street number etc.
-    @constraint:String {maxLength: 200}
-    string relCustomerStreet?;
-    # Indicates the town and country associated with the address of the related customer
-    @constraint:String {maxLength: 200}
-    string relCustomerTownCountry?;
-    # Identifies the greeting used for communicating with the related customer
-    @constraint:String {maxLength: 30}
-    string relCustomerSalutation?;
-    # Indicates the Marital status of the related customer
-    @constraint:String {maxLength: 30}
-    string relCustomerMaritalStatus?;
-    # Identifies the employment status of the related customer
-    @constraint:String {maxLength: 30}
-    string relCustomerEmploymentStatus?;
-};
-
-# Represents the Queries record for the operation: updateCustomerCharge
-public type UpdateCustomerChargeQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Queries record for the operation: updateCustomerGroup
-public type UpdateCustomerGroupQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerExitStatusResponse1Body record {
-    # Indicates the extensions
-    record {} extensions?;
-    # The field reflects the customer exit reason of the customer or prospect
-    @constraint:String {maxLength: 80}
-    string exitReason?;
-    # The field reflects the customer exit status of a customer or prospect
-    @constraint:String {maxLength: 35}
-    string exitStatus?;
-};
-
-# Represents the Headers record for the operation: getProspectCustomers
-public type GetProspectCustomersHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerResponseBodyResidenceDetails record {
-    # Residence type of the customer like Farmhouse, Independent house, Residential Apartment, Serviced Apartments
-    @constraint:String {maxLength: 55}
-    string residenceType?;
-    # The date since the user has obtained the residence
-    string residenceSince?;
-    # Market Value of the customer's residence
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal residenceValue?;
-    # Residence Status of the Customer for CRM purpose like Owner, Tenant, Householder, Nester etc
-    @constraint:String {maxLength: 55}
-    string residenceStatus?;
-    # Mortgage value of the residence property of the customer
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal residenceMortgageValue?;
-};
-
-# Represents the Headers record for the operation: getCustomerProfile
-public type GetCustomerProfileHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: getCustomerInformation
-public type GetCustomerInformationQueries record {
-    # Specifies an alternative easy means of referencing the Customer
-    string customerMnemonic?;
-    # The last name of an individual customer
-    string lastName?;
-    # The office phone number of the customer
-    string officePhoneNumber?;
-    # ISO country code of the financial institution. 
-    string countryId?;
-    # The internal bank status of a customer
-    string customerStatus?;
-    # An institution-defined identifier of the industry in which the customer is trading, operating or is associated with
-    string industryId?;
-    # Identifies the type of customers. Example Personal, Business, Corporate, etc
-    string customerType?;
-    # The fax (facsimile) number of the customer
-    string faxId?;
-    # The identifier of the department head or specific account officer responsible for the customer
-    string accountOfficerId?;
-    # Contains the street name of the customer or the property
-    string street?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Identifier of the customer
-    string customerId?;
-    # Name of the legal documents such as passport, driving licence etc., provided as identification proof
-    string legalDocumentName?;
-    # Email Identifier of the Customer
-    string email?;
-    # The town and/or city component of the base address of a customer
-    string addressCity?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-    # Represents the phone number of a customer
-    string mobilePhoneNumber?;
-    # An institution-defined identifier of the type of customer
-    string sectorId?;
-    # Contains the communication address of the customer or full address of the property
-    string address?;
-    # The identifier of the nationality of a customer
-    string nationalityId?;
-    # Unique reference number of the legal documents submitted as identification proof
-    string legalId?;
-    # The date of birth of an individual customer
-    string dateOfBirth?;
-    # Relationship identifier between the partyType and relatedPartyType
-    string relationshipCode?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    string customerName?;
-    # The identifier of the country of residence of a customer
-    string residenceId?;
-    # Specifies customer's first name
-    string firstName?;
-    # The phone number of the customer or prospect
-    string phoneNumber?;
-    # Holds the Customer's TAX/SSN Id
-    string taxId?;
-    # Date on which the entity is incorporated
-    string birthIncorpDate?;
-    # Continuation/Extension to the Customer Name
-    string customerNameAdditional?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Identifies the address postal code for the customer or the property
-    string postCode?;
-    # Contains the name of the account, basically the short title of the account
-    string shortName?;
-    # Customers linked or related to the arrangement owner
-    string relCustomer?;
-};
-
-# Represents the Queries record for the operation: createCustomerWithId
-public type CreateCustomerWithIdQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerResponseBodyStreets record {
-    # Contains the street name of the customer or the property
-    @constraint:String {maxLength: 70}
-    string street?;
-};
-
-# Represents the Headers record for the operation: createMessages
-public type CreateMessagesHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# CustomerPersonalDetailsResponse
-public type CustomerPersonalDetailsResponse record {
-    QueryHeader header?;
-    CustomerPersonalDetailsResponseBody body?;
-};
-
-# Represents the Headers record for the operation: getJointCustomerDetails
-public type GetJointCustomerDetailsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: getCustomerExitStatusParam
-public type GetCustomerExitStatusParamQueries record {
-    # Identifies the type of customers. Example Personal, Business, Corporate, etc
-    string customerType?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerInformationResponseBodyInner_Contacts record {
-    # Types of contacts available to users to communicate
-    @constraint:String {maxLength: 35}
-    string contactType?;
-    # Indicates the contact data of customer used for communication such as phone or mobile or e-mail address.
-    @constraint:String {maxLength: 254}
-    string contactData?;
-    # Identifies the international calling prefix code of the phone or mobile number.
-    @constraint:String {maxLength: 16}
-    string iddPrefixPhone?;
-};
-
-public type CustomerGroupBodyPrimaryPartyDetails record {
-    # Identifier of the customer defined as the primary party in an aggregate relationship
-    @constraint:String {maxLength: 40}
-    string primaryPartyId?;
-    # Indicates the type of primary customer which is part of the aggregate relationship. It may be Customer, Person or Entity
-    @constraint:String {maxLength: 80}
-    string primaryPartyType?;
-};
-
-public type CustomerGroupsResponseBodyInner record {
-    # Contains primary pary details such as primary party id and primary party type
-    CustomerGroupsResponseBodyInner_primaryPartyDetails[] primaryPartyDetails?;
-    # The name that is displayed for the group
-    @constraint:String {maxLength: 40}
-    string groupName?;
-    # Indicates the type of entity that identifies the group eg. Parent or Member
-    @constraint:String {maxLength: 25}
-    string groupType?;
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    @constraint:String {maxLength: 9}
-    string companyId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Indicates the details of Relationship maintained by the Customer or Entity
-    CustomerGroupsResponseBodyInner_relationshipDetails[] relationshipDetails?;
-    # Contains sub group details such as sub group id, sub group name, sub group customer etc
-    UnapprovedCustomerGroupResponseBodyInner_subGroupDetails[] subGroupDetails?;
-    # Unique ID of the group
-    @constraint:String {maxLength: 35}
-    string groupId?;
-    # Identifier of the Liability Customer to the credit limit
-    @constraint:String {maxLength: 10}
-    string liabilityNumber?;
-    # Contains the description of purpose of the payment
-    @constraint:String {maxLength: 35}
-    string description?;
-    # Identifier of customer group purpose
+    string accrualRule?;
+    LinkedRateLoanBodyActivites[] activites?;
+    # This field defines the number of compounding periods to be applied.Compounding interest applies a factor to the compound interest calculation based upon the number of compounding periods in the year
     @constraint:String {maxLength: 15}
-    string groupPurposeId?;
+    string compounding?;
+    # This field indicates if the calculated interest amount has to be waived or adjusted. If the field is set to YES, then the system will waive the interest amount if it is less than the minimum interest amount specified.If NULL value is set and if the calculated interest amount is less than the minimum interest amount  specified, then system will post the minimum interest amount
+    @constraint:String {maxLength: 18}
+    string referLimit?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Interest amount
+    LinkedRateLoanBodyInterest[] interest?;
+    # Indicates the details of periodic interest such as periodic index, periodic rate, periodic method, periodic reset, etc
+    LinkedRateLoanBodyPeriodicInterest[] periodicInterest?;
+    # Indicates how the effective rate is calculated, when set to YIELD the interest rate defined is taken as the annual effective rate
+    @constraint:String {maxLength: 8}
+    string compoundYieldMethod?;
+    # Specifies the Interest component of the linked contract that should be referred for getting the Interest Rate
+    @constraint:String {maxLength: 30}
+    string linkedProperty?;
+    # attributes
+    LinkedRateLoanBodyAttributes[] attributes?;
+    # Contains the day basis on which the interest is calculated. Eg: 366/366, 360/365 (Interest days/days in the year)
+    @constraint:String {maxLength: 3}
+    string dayBasis?;
 };
 
-# Represents the Headers record for the operation: getCustomerExitStatusParam
-public type GetCustomerExitStatusParamHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
+public type OverpaymentDetailsResponseBody OverpaymentDetailsResponseBodyInner[];
 
-# Represents the Queries record for the operation: getCustomerClosure
-public type GetCustomerClosureQueries record {
-    # Identifier of customer closure request
-    string customerClosureId?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Identifier of the customer
-    string customerId?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The current status of the request. The possible values includes New, send to printer, cancelled and processed
-    string requestStatus?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: getCustomerPhoneAddress
-public type GetCustomerPhoneAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerResponseBodyOtherOfficers record {
-    # Other officers managing the Customer
+public type BNPLLoanResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Contains the line of business in which the activity was performed. If pricing is not determined based on line of business, then this is not significant
+    @constraint:String {maxLength: 4}
+    string lineOfBusiness?;
+    # Contains the reason for performing the current activity
+    @constraint:String {maxLength: 100}
+    string reason?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # Contains the channel in which the activity was performed. If pricing is not determined based on channel, then this is not significant
+    @constraint:String {maxLength: 30}
+    string channel?;
+    # The override message is captured  that was generated at the time of commitment of the transaction to the database
+    BNPLLoanBodyOverrides[] overrides?;
+    # Contains the branch name/code in which the business activity was performed. If pricing is not determined based on branch, then this is not significant
+    @constraint:String {maxLength: 16}
+    string branch?;
+    # The unique identifier to specify an arrangement reference which is act as a Master for the arrangement being created
+    @constraint:String {maxLength: 20}
+    string masterArrangementId?;
+    # An Alternate Identification for the Deal. This can be used to retrieve the Deal for amendment
     @constraint:String {maxLength: 50}
+    string alternateId?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates the runner Reference ID for simulation activity
+    @constraint:String {maxLength: 30}
+    string simulationRunReference?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Contains the transaction amount. This is based on the currency, either local or foreign currency
+    @constraint:Number {minValue: 0, maxValue: 19}
+    decimal transactionAmount?;
+    # Name of the role or sub contract that is displayed, for eg: Payments Inputter, Administrator, Clerk and etc
+    @constraint:String {maxLength: 35}
+    string roleName?;
+    # Identifier of the customer
+    BNPLLoanBodyCustomerIds[] customerIds?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
+    @constraint:String {maxLength: 3}
+    string currencyId?;
+    # Id of the product property
+    BNPLLoanBodyProperties[] properties?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
+};
+
+public type BNPLLoanBodyProperties record {
+    # Input is the valid field name for the metrics evaluation of alerts
+    BNPLLoanBodyFields[] fields?;
+    # The identifier of the product condition
+    @constraint:String {maxLength: 30}
+    string propertyId?;
+};
+
+public type ConsumerLoanBodyPrincipalint record {
+    # Defines the minimum interest amount that will be compared to the system calculated interest amount. If the interest calculated is less than the minimum amount set, then based on the waive setup  either the min interest amount would be applied or it would be waived
+    @constraint:String {maxLength: 19}
+    string minIntAmount?;
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    ConsumerLoanBodyReferences[] references?;
+    # Indicates whether accruals needs to be Suppressed or Accrual should be done for the Alternate Interest Property. Allowed values are Yes, Alternate, info only, null
+    @constraint:String {maxLength: 10}
+    string suppressAccrual?;
+    # Specifies the type to be used for risk free rates calculation. Allowed options are NARROW, OBSERVATION SHIFT. Narrow Definition: Apply original interest period’s day count to the look back rate used for this day (i.e. if the Wednesday rate is used for Friday, apply the Friday’s weight, three days, to Wednesday’s rate). Observation Shift: Apply the original day count of the look back rate (i.e. if the Wednesday rate is used for Friday, apply the Wednesday’s own weight, one day, and do not use Friday’s day count for it)
+    @constraint:String {maxLength: 30}
+    string rfrLookbackType?;
+    # Define the market convention to be used as risk free rate calculation convention
+    @constraint:String {maxLength: 15}
+    string rfrConvention?;
+    # Interest amount
+    ConsumerLoanBodyInterest[] interest?;
+    # Indicates how the effective rate is calculated, when set to YIELD the interest rate defined is taken as the annual effective rate
+    @constraint:String {maxLength: 8}
+    string compoundYieldMethod?;
+    # Specifies the Interest component of the linked contract that should be referred for getting the Interest Rate
+    @constraint:String {maxLength: 30}
+    string linkedProperty?;
+    # Define how the Spread inputted in the interest definition would be used as part of risk free rate calculation. Inclusive – The spread inputted in definition will be used in risk free rate formula itself to calculate the Compounding RFR rate. Exclusive – The spread inputted in the definition will be added on top of formula calculated Compounding RFR rate
+    @constraint:String {maxLength: 15}
+    string rfrSpreadTreatment?;
+    # The account which is linked for calculating interest that should be applied to this account
+    @constraint:String {maxLength: 20}
+    string linkedArrangement?;
+    # This field indicates if the calculated interest amount has to be waived or adjusted. If the field is set to YES, then the system will waive the interest amount if it is less than the minimum interest amount specified.If NULL value is set and if the calculated interest amount is less than the minimum interest amount  specified, then system will post the minimum interest amount
+    @constraint:String {maxLength: 3}
+    string minIntWaive?;
+    # Define the type of formula used to calculate the rate. There are two types.  1. Simple - Simple Average Calculation (Arithmetic Mean) 2. Compound -  Compound Average Calculation (geometric mean)
+    @constraint:String {maxLength: 15}
+    string rfrCalculationMethod?;
+    # The user can specify that interest will only be calculated if a balance threshold is surpassed. For credit interest, the user can specify the minimum balance which must be maintained. For debit interest, the user can specify the maximum debit balance for which interest will not be calculated
+    @constraint:String {maxLength: 19}
+    string calcThreshold?;
+    # Determines the amounts which has to be included in each day's balance while accruing interest, the actual days to include in the period(eg: first day, last day) and how to round any calculations
+    @constraint:String {maxLength: 35}
+    string accrualRule?;
+    # Determine how the risk free rates will be used  when calculating the compounding risk free rate. TODAY – The formula will use only risk free rate till TODAY from Period Start date, and calculate the Compounding rate.  FULL – The formula will use the risk free rates for FULL period from Period Start date to Period End date when calculating compounding rate. 
+    @constraint:String {maxLength: 20}
+    string rfrRoundingRule?;
+    # This field defines the number of compounding periods to be applied.Compounding interest applies a factor to the compound interest calculation based upon the number of compounding periods in the year
+    @constraint:String {maxLength: 15}
+    string compounding?;
+    # It indicates whether the renewal activity will be triggered automatically or manually by the user. Possible values are AUTO , MANUAL
+    @constraint:String {maxLength: 6}
+    string initiationType?;
+    # This field indicates if the calculated interest amount has to be waived or adjusted. If the field is set to YES, then the system will waive the interest amount if it is less than the minimum interest amount specified.If NULL value is set and if the calculated interest amount is less than the minimum interest amount  specified, then system will post the minimum interest amount
+    @constraint:String {maxLength: 18}
+    string referLimit?;
+    # Specifies the backward looking period for the risk free rates calculation. Example – An arrangement is creating on 15-May-2020 with look back days as 2. Then during RFR compounding rate calculation, system would use the risk free rate published on 13-May-2020. So, it will look back to 2 days and get the rate
+    @constraint:String {maxLength: 2}
+    string rfrLookbackDays?;
+    # Determine how the risk free rates will be used  when calculating the compounding risk free rate. TODAY – The formula will use only risk free rate till TODAY from Period Start date, and calculate the Compounding rate.  FULL – The formula will uses the risk free rates for FULL period from Period Start date to Period End date when calculating compounding rate
+    @constraint:String {maxLength: 15}
+    string rfrPeriodDayCount?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Indicates the number of days prior to  which change product needs to be triggered from the actual change product date
+    @constraint:String {maxLength: 4}
+    string priorDays?;
+    # Defines the activity to be processed against the Arrangement. The activity may be a user activity or a system generated activity
+    ConsumerLoanBodyActivities[] activities?;
+    # Contains a routine to return the tier amounts for the first two tiers which would be used for interest calculation
+    @constraint:String {maxLength: 30}
+    string referToRoutine?;
+    # Contains the day basis on which the interest is calculated. Eg: 366/366, 360/365 (Interest days/days in the year)
+    @constraint:String {maxLength: 3}
+    string dayBasis?;
+};
+
+public type LoanDrawdownOfferBodyAssocSettlement record {
+    # Contains the transaction type used by the transaction recycler for retrying the debits
+    @constraint:String {maxLength: 35}
+    string payinRCType?;
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    BNPLLoanBodyReference1[] reference?;
+    # Flag to indicate whether Payin Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payinSettlement?;
+    # Contains the transaction type used for settlement of the bills due
+    @constraint:String {maxLength: 55}
+    string payinSettlementActivity?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    LoanDrawdownOfferBodyPaymentTypes[] paymentTypes?;
+    # Contains the transaction recycling rules which define the set of retry conditions
+    @constraint:String {maxLength: 35}
+    string payinRCCondition?;
+    # Contains the rule on which the system should utilise the funds available in the pay in account during the settlement process. Options are Full, Partial and None
+    @constraint:String {maxLength: 35}
+    string payinRule?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesOfficersBodyOfficrers record {
+    # Indicates the Role of the Customer
+    @constraint:String {maxLength: 30}
+    string role?;
+    # Other officers managing the Customer
+    @constraint:String {maxLength: 4}
     string otherOfficerId?;
 };
 
-# Represents the Headers record for the operation: getCustomerRestrictions
-public type GetCustomerRestrictionsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
+public type LoanDecreaseAmountResponseBody record {
+    ArrangementResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanDecreaseAmountResponseBodyProperties properties?;
 };
 
-public type CustomerSwiftAddressResponseBody CustomerSwiftAddressResponseBodyInner[];
-
-# Represents the Headers record for the operation: updateCustomerPhoneAddress
-public type UpdateCustomerPhoneAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
+# WriteOffBalanceLoansResponse
+public type WriteOffBalanceLoansResponse record {
+    ArrangementHeader header?;
+    WriteOffBalanceLoansResponseBody body?;
 };
 
-public type CustomerDigitalChannelsResponseBodyInner record {
+public type LoanBillsResponseBodyInner record {
+    # Total amount
+    @constraint:Number {maxValue: 19}
+    decimal totalAmount?;
     # Indicates the extension data
     record {} extensions?;
-    # Indicates whether is Customer is subscribed to the mobile banking service or not
-    boolean isMobileBankingService?;
-    # Contains the external user identifier for which the consent is created
-    @constraint:String {maxLength: 70}
-    string externalUserId?;
-    # Indicates whether is Customer is subscribed to the internet banking service or not
-    boolean isInternetBankingService?;
-    # Identifier of the customer
-    @constraint:Number {maxValue: 10}
-    decimal customerId?;
-    # Specific channels details for a customer
-    CustomerDigitalChannelsResponseBodyInner_digitalChannels[] digitalChannels?;
-    # The type of authentication for this external user. It should be either External or User Maintained
-    @constraint:String {maxLength: 35}
-    string authenticationType?;
-    # External or Digital Channel User Name
-    @constraint:String {maxLength: 70}
-    string externalUserName?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    @constraint:String {maxLength: 10}
-    string customerName?;
+    # Id of the product property
+    LoanBillsResponseBodyInner_properties[] properties?;
 };
 
-# Represents the Headers record for the operation: getCustomerReportingStatus
-public type GetCustomerReportingStatusHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
+public type RepaymentSimulationResponseBodyProperties record {
+    RepaymentSimulationResponseBodyPropertiesSchedule schedule?;
 };
 
-public type UnapprovedCustomerGroupResponseBodyInner_relationshipDetails record {
-    # Defines the application id, to which the party id belongs to. Example, CUSTOMER/PERSON.ENTITY.
-    @constraint:String {maxLength: 13}
-    string partyType?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field.
-    @constraint:String {maxLength: 10}
-    string partyId?;
-    # Indicates the related party's customer type. It may be Customer, Person or Entity.
-    @constraint:String {maxLength: 13}
-    string relatedPartyType?;
-    # Identifier of the Related Party
-    @constraint:String {maxLength: 10}
-    string relatedPartyId?;
-};
-
-# CustomerShortNamesResponse
-public type CustomerShortNamesResponse record {
-    ScreenHeader header?;
-    CustomerShortNamesResponseBody body?;
-};
-
-# Represents the Headers record for the operation: getDirectDebits
-public type GetDirectDebitsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerGroupBodyRelationshipDetails record {
-    # Indicates the description of the relationship between parties
-    @constraint:String {maxLength: 13}
-    string relationshipName?;
-    # Indicates the related party's customer type. It may be Customer, Person or Entity
-    @constraint:String {maxLength: 13}
-    string relatedPartyType?;
-    # Indicates the nature of the relationship between the two parties Parent-of, Subsidiary-of
-    @constraint:String {maxLength: 3}
-    string relationshipType?;
-    # Indicates the nature of the relationship between the two group of parties
-    @constraint:String {maxLength: 3}
-    string groupRelationshipType?;
-    # Identifier of the Related Party
-    @constraint:String {maxLength: 10}
-    string relatedPartyId?;
-    # Indicates whether the party can be excluded from the customer group. Allowed values are YES or Blank
-    @constraint:String {maxLength: 3}
-    string excludeParty?;
-    # Defines the application id, to which the party id belongs to. Example, CUSTOMER/PERSON.ENTITY
-    @constraint:String {maxLength: 13}
-    string partyType?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
-    @constraint:String {maxLength: 10}
-    string partyId?;
-    # Contains the date on which the transaction or payment gets initiated
-    @constraint:String {maxLength: 11}
-    string startDate?;
-    # Contains the percentage contributed by specific owner of the asset or collateral
-    @constraint:String {maxLength: 6}
-    string ownershipPercentage?;
-};
-
-# Represents the Queries record for the operation: getJointCustomerDetails
-public type GetJointCustomerDetailsQueries record {
+# Represents the Queries record for the operation: getArrangementDetails
+public type GetArrangementDetailsQueries record {
     # The record from which the response should be displayed
     @http:Query {name: "page_start"}
     int:Signed32 pageStart?;
@@ -2744,8 +388,2592 @@ public type GetJointCustomerDetailsQueries record {
     int:Signed32 pageSize?;
 };
 
+public type TakeoverloanBodyPayments record {
+    # Contains the date on which the transaction or payment gets initiated
+    @constraint:String {maxLength: 30}
+    string startDate?;
+};
+
+# LoanConditionsResponse
+public type LoanConditionsResponse record {
+    ArrangementHeader header?;
+    LoanConditionsResponseBody body?;
+};
+
+public type BNPLLoanResponseBodyPropertiesInheritanceHeader record {
+    string transactionStatus?;
+    string id?;
+    string status?;
+};
+
+# Represents the Queries record for the operation: cancelArrangement
+public type CancelArrangementQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: cancelLoanDrawdownOffer
+public type CancelLoanDrawdownOfferQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type BNPLLoanResponseBodyPropertiesSettlement record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    BNPLLoanBodySettlement1 body?;
+};
+
+public type LoanPayoffDetailsResponseBodyInner_infoPayments record {
+    # Indicates the bill date of payoff bill for the perdiem amounts calculated
+    string infoPayDate?;
+    # Indicates the total payment amount which was made due over the tenure
+    @constraint:String {maxLength: 19}
+    string totPayAmount?;
+    # Indicates the sum of interest amounts which was made due over the tenure
+    @constraint:String {maxLength: 19}
+    string totInterestAmount?;
+};
+
+public type LoanDrawdownOfferBodySettlement record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Details of the concentration account to which the surplus funds available in the sweeping account is paid out to
+    BNPLLoanBodyPayout[] payout?;
+    # Default settlement account to be used for all incoming payments and outgoing settlements when a specific settlement account is not provided for each payment type
+    @constraint:String {maxLength: 90}
+    string defaultSettlementAccount?;
+    LoanDrawdownOfferBodyAssocSettlement[] assocSettlement?;
+};
+
+public type LoanDrawdownOfferAcceptanceResponseBody record {
+    LoanDrawdownOfferResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanDrawdownOfferAcceptanceResponseBodyProperties properties?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesSchedule record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanBodySchedule body?;
+};
+
+public type LoanAccountBodyAlternateIds record {
+    # Contains the alternate account system identifier used for defining the alternate account Id
+    @constraint:String {maxLength: 10}
+    string alternateIdType?;
+};
+
+# Represents the Queries record for the operation: updateLoansCustomer
+public type UpdateLoansCustomerQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# ConsumerLoanResponse
+public type ConsumerLoanResponse record {
+    ArrangementHeader header?;
+    ConsumerLoanResponseBody body?;
+};
+
+# LoanDecreaseAmountResponse
+public type LoanDecreaseAmountResponse record {
+    ArrangementHeader header?;
+    LoanDecreaseAmountResponseBody body?;
+};
+
+public type RepaymentSimulationResponseBodyPropertiesSchedule record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    RepaymentSimulationBodySchedule body?;
+};
+
+# Represents the Queries record for the operation: simulatePaymentHoliday
+public type SimulatePaymentHolidayQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type PaymentHolidayResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates the runner Reference ID for simulation activity
+    @constraint:String {maxLength: 30}
+    string simulationRunReference?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Contains the transaction amount. This is based on the currency, either local or foreign currency
+    @constraint:Number {minValue: 0, maxValue: 19}
+    decimal transactionAmount?;
+    # This field is used to hold the notes for the reason of account closure
+    PaymentHolidayBodyClosureNotes[] closureNotes?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
+    @constraint:String {maxLength: 3}
+    string currencyId?;
+    # This field would be used during the Simulation scenarios. The following options are supported: 1. SIMULATE : The system would automatically trigger the Simulation the moment the simulated transaction is authorized. 2. EXECUTE : The system would automatically trigger the Execution of simulation the moment simulated transaction is authorized. It is assumed that the user would have simulated first before using this option. 3. DIRECT.EXECUTE: If the user does not want to do a two step process of simulating and executing, then this option may be utilized which does both actions in one go
+    @constraint:String {maxLength: 35}
+    string automaticRun?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
+    # This field contains the reason for closing the account
+    @constraint:String {maxLength: 35}
+    string closureReason?;
+};
+
+# Represents the Headers record for the operation: updateBills
+public type UpdateBillsHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createLoanDisbursement
+public type CreateLoanDisbursementQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type TakeoverloanBodyReference1 record {
+    # Contains the finite amount of the payment used for settlement of the payables
+    @constraint:String {maxLength: 35}
+    string payoutAmount?;
+    # Contains the transaction type used to credit the customer account for settlement of the payables 
+    @constraint:String {maxLength: 55}
+    string payoutActivity?;
+    # The account to which a settlement amount is transferred
+    @constraint:String {maxLength: 90}
+    string payoutAccount?;
+    # Contains the percentage of the payment amount used for settlement of the payables
+    @constraint:String {maxLength: 35}
+    string payoutPercentage?;
+};
+
+public type BNPLLoanBodyCustomer record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Contains the customer identifier to fetch list of consent arrangements for the customer or customer identifier of the debtor account. This will be populated once the SCA(Strong Customer Authentication) is completed
+    BNPLLoanBodyCustomers[] customers?;
+    # Identifies if there is a joint liability on the limit record Allowed values: -YES -NO  
+    @constraint:String {maxLength: 1}
+    string jointLiability?;
+};
+
+public type LoanPayoffDetailsResponseBodyInner_properties record {
+    # Indicates the  property description to which benefit has been applied
+    string propertyName?;
+    # Indicates the payment amount which is corresponding to the product property
+    @constraint:String {maxLength: 19}
+    string propertyAmount?;
+    # Indicates an unallocated credit amount to an account
+    @constraint:String {maxLength: 19}
+    string unallocatedAmount?;
+};
+
+public type LoanInterestBodyMinimumPayments record {
+    # Specify the bill type for which minimum payment amount must be made due or capitalised
+    @constraint:String {maxLength: 15}
+    string minimumPaymentBillType?;
+    # minimum amount that needs to be made due or capitalised for the associated bill type
+    @constraint:String {maxLength: 18}
+    string minimumPaymentAmount?;
+    # Id of the product property
+    LoanInterestBodyProperties[] properties?;
+};
+
+public type WriteOffLoansBodyAdjustProperties record {
+    # Indicates the removal of an asset from the balance sheet due to impairment, obsolescence, or other factors
+    WriteOffLoansBodyWriteOffs[] writeOffs?;
+};
+
+# Represents the Queries record for the operation: createAutoSimulations
+public type CreateAutoSimulationsQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type RepaymentDateResponseBodyProperties record {
+    ConsumerLoanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+};
+
+# Represents the Queries record for the operation: initiateTakeoverloan
+public type InitiateTakeoverloanQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type EvidenceBodyConditions record {
+    # Contains the evidence requirement of a condition which defines the document specification to be submitted when an event occurs
+    @constraint:String {maxLength: 35}
+    string conditionsType?;
+    # Specifies the value that is identified to fulfil the metrics
+    @constraint:String {maxLength: 35}
+    string conditionsEvaluationValue?;
+    # Specifies the operand by which the condition metrics is measured. The accepted values are Less Than, Greater Than, Equals, Not Equal, Greater Than Or Equal, Lesser Than Or Equal
+    @constraint:String {maxLength: 35}
+    string conditionsEvaluationOperand?;
+    # Specifies a valid related requirement that fulfils a metrics for the defined condition
+    @constraint:String {maxLength: 35}
+    string conditionsMetrics?;
+    # Specifies the category on which the evidence requirement of the conditions can be grouped, e.g., FINANCIAL, LEGAL
+    @constraint:String {maxLength: 35}
+    string conditionsCategory?;
+    # Specifies the event on which the condition must be requested
+    @constraint:String {maxLength: 35}
+    string conditionsDueEvent?;
+    # Specifies the consequences defined when a condition is not submitted/met
+    @constraint:String {maxLength: 35}
+    string conditionsRestriction?;
+};
+
+# Represents the Headers record for the operation: cancelArrangement
+public type CancelArrangementHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanSimulationResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance pcdefer?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance escrow?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance subparticipant?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    BNPLLoanResponseBodyPropertiesInheritance principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance solicitorfee?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance penalinterest?;
+    BNPLLoanResponseBodyPropertiesInheritance redemptionfee?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance mortginsurance?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance offsetint?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance prepayfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesInheritance periodiccharge?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+public type LoanSimulationResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Contains the reason for performing the current activity
+    @constraint:String {maxLength: 100}
+    string reason?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # Indicates that this simulation capture is a synchronous request
+    @constraint:String {maxLength: 3}
+    string synchronous?;
+    # The override message is captured  that was generated at the time of commitment of the transaction to the database
+    BNPLLoanBodyOverrides[] overrides?;
+    # This field would be used during the Simulation scenarios. The following options are supported: 1. SIMULATE : The system would automatically trigger the Simulation the moment the simulated transaction is authorized. 2. EXECUTE : The system would automatically trigger the Execution of simulation the moment simulated transaction is authorized. It is assumed that the user would have simulated first before using this option. 3. DIRECT.EXECUTE: If the user does not want to do a two step process of simulating and executing, then this option may be utilized which does both actions in one go
+    @constraint:String {maxLength: 35}
+    string automaticRun?;
+    # The unique identifier to specify an arrangement reference which is act as a Master for the arrangement being created
+    @constraint:String {maxLength: 20}
+    string masterArrangementId?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates the runner Reference ID for simulation activity
+    @constraint:String {maxLength: 30}
+    string simulationRunReference?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Contains the transaction amount. This is based on the currency, either local or foreign currency
+    @constraint:Number {minValue: 0, maxValue: 19}
+    decimal transactionAmount?;
+    # Name of the role or sub contract that is displayed, for eg: Payments Inputter, Administrator, Clerk and etc
+    @constraint:String {maxLength: 35}
+    string roleName?;
+    # Identifier of the customer
+    BNPLLoanBodyCustomerIds[] customerIds?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
+    @constraint:String {maxLength: 3}
+    string currencyId?;
+    # Id of the product property
+    BNPLLoanBodyProperties[] properties?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
+};
+
+public type ConsumerLoanBodyReferences record {
+    # Defines the type of attribute used to calculate the custom rate. It is an identifier for the customized rate attributes. It may hold user defined values like currency
+    @constraint:String {maxLength: 35}
+    string customType?;
+    # Defines the value for the corresponding customized rate attribute to calculate custom rate
+    @constraint:String {maxLength: 35}
+    string customValue?;
+    # Defines the name of the customized rate attribute to calculate the custom rate
+    @constraint:String {maxLength: 35}
+    string customName?;
+};
+
+public type LoanPayoffDetailsResponseBodyInner_payoffs record {
+    # Indicates a date on which payoff bill has been raised
+    string payoffDate?;
+    # Indicates the original amount of the bill
+    @constraint:String {maxLength: 19}
+    string totPayoffAmount?;
+    # The accrued Interest due or accrued.
+    string interestAmount?;
+};
+
+# Represents the Headers record for the operation: cancelLoanDrawdownOffer
+public type CancelLoanDrawdownOfferHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type EvidenceResponse1BodyInner_covenants record {
+    # Specifies the category on which the evidence requirement of the covenant can be grouped, e.g., FINANCIAL, LEGAL.
+    @constraint:String {maxLength: 35}
+    string covenantsCategory?;
+    # Specifies the evidence requirement of a covenant which defines the document specification to be submitted on a periodic basis.
+    @constraint:String {maxLength: 35}
+    string covenantsType?;
+    # Specifies a valid related requirement that fulfils a metrics for the defined covenant.
+    @constraint:String {maxLength: 35}
+    string covenantsMetrics?;
+    # Specifies the operand by which the covenant metrics is measured. The accepted values are Less Than, Greater Than, Equals, Not Equal, Greater Than Or Equal, Lesser Than Or Equal.
+    @constraint:String {maxLength: 35}
+    string covenantsEvaluationOperand?;
+    # Specifies the value that is identified to fulfil the metrics.
+    @constraint:String {maxLength: 35}
+    string covenantsEvaluationValue?;
+    # Specifies the start date on which the covenant must be requested. The accepted format is YYYYMMDD.
+    string covenantsInitialDate?;
+    # Specifies the frequency on which the covenant must be requested. The frequency could be defined as weekly, monthly, yearly, etc. The accepted format is e0Y e0M e0W e0D.
+    @constraint:String {maxLength: 30}
+    string covenantsFrequency?;
+    # Contains the number of days the covenant must be requested before the due date.
+    @constraint:Number {maxValue: 35}
+    decimal covenantsNoticeDays?;
+    # Specifies the consequences defined when a covenant is not submitted/met.
+    @constraint:String {maxLength: 35}
+    string covenantsRestriction?;
+};
+
+public type RepaymentDateChangeSimulationResponseBodyProperties record {
+    LoanInterestResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesActivityChargesBodyCharges record {
+    # Denotes the method that needs to be applied to the rule break charges. Allowed values are Due, Defer, Capitalise. If it is set to Due then the Rule break charges are made due. If it is set to Capitalise then the Rule break charges are capitalised. If it is set to Defer then the Rule break charges are calculated but not applied immediately, charge are deferred and are collected over a period of time
+    "DUE"|"CAPITALISE"|"DEFER" applicationMethod?;
+    # This field aids turning off the automatic settlement for the corresponding charge. If set to yes settlement processing for the associated chage will be done based on the settlement configuration for the charge
+    @constraint:String {maxLength: 3}
+    string chargeAutoSettle?;
+    # Denotes the application period for the given rule break charges which will be applied at the end of the period.If the value defined is zero, then the charges are applied immediately
+    @constraint:String {maxLength: 4}
+    string appplicationPeriod?;
+};
+
+public type LoanDetailsResponseBody LoanDetailsResponseBodyInner[];
+
+# LoanDrawdownOfferAcceptanceResponse
+public type LoanDrawdownOfferAcceptanceResponse record {
+    ArrangementHeader header?;
+    LoanDrawdownOfferAcceptanceResponseBody body?;
+};
+
+public type BNPLLoanBodySettlement record {
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    BNPLLoanBodyReference[] reference?;
+    # Flag to indicate whether Payin Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payinSettlement?;
+    # Flag to indicate whether Payout Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payoutSettlement?;
+};
+
+# Represents the Headers record for the operation: getPaymentSchedulesProjection
+public type GetPaymentSchedulesProjectionHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: getPaymentSchedules
+public type GetPaymentSchedulesQueries record {
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # End date of the loan
+    string dateTo?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # Start date of the loan
+    string dateFrom?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+# Represents the Headers record for the operation: updateLoanSimulation
+public type UpdateLoanSimulationHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Headers record for the operation: createRepaymentSimulation
+public type CreateRepaymentSimulationHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanSettlementBodyRepayment record {
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    LoanSettlementBodyReference[] reference?;
+    # Contains the transaction recycling rules which define the set of retry conditions
+    @constraint:String {maxLength: 35}
+    string payInRCCondition?;
+    # Contains the transaction type used by the transaction recycler for retrying the debits
+    @constraint:String {maxLength: 35}
+    string payInRCType?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    LoanDrawdownOfferBodyPaymentTypes[] paymentTypes?;
+    # Flag to indicate whether Payin Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payInSettlement?;
+};
+
+public type BNPLLoanBodyReference1 record {
+    # Contains the percentage of the payment amount used for settlement of the bills due
+    @constraint:String {maxLength: 35}
+    string payinPercentage?;
+    # Contains the transaction type used to debit the customer account for settlement of the bills due
+    @constraint:String {maxLength: 55}
+    string payinActivity?;
+    # Contains the account from which funds are to be debited against the payment type
+    @constraint:String {maxLength: 90}
+    string payinAccount?;
+    # Contains the payment order product Id for which the payment is initiated
+    @constraint:String {maxLength: 35}
+    string payinPOProduct?;
+    # Contains the finite amount of the payment used for settlement of the bills due
+    @constraint:String {maxLength: 35}
+    string payinAmount?;
+    # Contains the beneficiary Id used for settlement of the bills due
+    @constraint:String {maxLength: 17}
+    string payinBeneficiary?;
+    # Contains the direct debit mandate reference (dd) when the settlement method is set to direct debit. The dd reference is typically the account number followed by a suffix, for example 15245.1
+    @constraint:String {maxLength: 25}
+    string ddMandateReference?;
+};
+
+public type EvidenceResponse1BodyInner_conditions record {
+    # Specifies the category on which the evidence requirement of the conditions can be grouped, e.g., FINANCIAL, LEGAL.
+    @constraint:String {maxLength: 35}
+    string conditionsCategory?;
+    # Contains the evidence requirement of a condition which defines the document specification to be submitted when an event occurs.
+    @constraint:String {maxLength: 35}
+    string conditionsType?;
+    # Specifies a valid related requirement that fulfils a metrics for the defined condition.
+    @constraint:String {maxLength: 35}
+    string conditionsMetrics?;
+    # Specifies the operand by which the condition metrics is measured. The accepted values are Less Than, Greater Than, Equals, Not Equal, Greater Than Or Equal, Lesser Than Or Equal.
+    @constraint:String {maxLength: 35}
+    string conditionsEvaluationOperand?;
+    # Specifies the consequences defined when a condition is not submitted/met
+    @constraint:String {maxLength: 35}
+    string conditionsRestriction?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesArrangementRules record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanResponseBodyPropertiesArrangementRulesBody body?;
+};
+
+# Represents the Headers record for the operation: updateLoansCustomer
+public type UpdateLoansCustomerHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type PaymentSchedulesProjectionResponseBody PaymentSchedulesProjectionResponseBodyInner[];
+
+public type RepaymentDateChangeSimulationSchedulesResponseBody record {
+    SimulationCapturesResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    RepaymentDateChangeSimulationSchedulesResponseBodyProperties properties?;
+};
+
+public type WriteOffBillLoansBodyBalanceMaintenance record {
+    # Indicates the extensions
+    record {} extensions?;
+    # List bills of all type
+    WriteOffLoansBodyBills[] bills?;
+};
+
+public type BNPLLoanBodyPayout record {
+    # Contains the transaction type used for settlement of the payables
+    @constraint:String {maxLength: 55}
+    string payoutSettlementActivity?;
+    # Id of the product property
+    BNPLLoanBodyProperty[] property?;
+    # Flag to indicate whether Payout Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payoutSettlement?;
+};
+
+# Represents the Headers record for the operation: updateLoanTopupAmount
+public type UpdateLoanTopupAmountHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: getLoanInformation
+public type GetLoanInformationQueries record {
+    # An Alternate Identification for the Deal. This can be used to retrieve the Deal for amendment
+    string alternateId?;
+    # Indicates an unique identifier of an account
+    string arrangementId?;
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # Identifier of the customer
+    string customerId?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+public type BNPLLoanResponseBodyPropertiesInheritance record {
+    BNPLLoanResponseBodyPropertiesInheritanceHeader header?;
+};
+
+public type LoanSimulationResponse1BodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance participant?;
+    BNPLLoanResponseBodyPropertiesInheritance itftax?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance escrow?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    BNPLLoanResponseBodyPropertiesInheritance principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance solicitorfee?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance penalinterest?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance mortginsurance?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance periodicCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+# Represents the Headers record for the operation: getLoanPayoffDetails
+public type GetLoanPayoffDetailsHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createFundsTransfer
+public type CreateFundsTransferQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type SimulationCapturesResponseBodyProperties record {
+    SimulationCapturesResponseBodyPropertiesPayoff payoff?;
+};
+
+# FundsTransferResponse
+public type FundsTransferResponse record {
+    ScreenHeader header?;
+    FundsTransferResponseBody body?;
+};
+
+# CommercialLoanResponse
+public type CommercialLoanResponse record {
+    ArrangementHeader header?;
+    CommercialLoanResponseBody body?;
+};
+
+public type TakeoverloanBodyProperty record {
+    # Contains the different payout options, for example management charge, principal interest or commitment on which the payout settlement instructions would be processed
+    @constraint:String {maxLength: 35}
+    string payoutProperty?;
+};
+
+# Represents the Queries record for the operation: updateLoanConditions
+public type UpdateLoanConditionsQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type ChargeOffActivityResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # System ID of the originating transaction
+    @constraint:String {maxLength: 6}
+    string systemId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Contains the transaction amount. This is based on the currency, either local or foreign currency
+    @constraint:Number {minValue: 0, maxValue: 19}
+    decimal transactionAmount?;
+    # Indicates the unique identifier of the transaction or contract which initiated the activity
+    @constraint:String {maxLength: 100}
+    string contractId?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
+    @constraint:String {maxLength: 3}
+    string currencyId?;
+    # Determines the status of events sent to external system from the current system for the given activity
+    @constraint:String {maxLength: 35}
+    string externalEventStatus?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesAgeingfee record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanResponseBodyPropertiesAgeingfeeBody body?;
+};
+
+# Represents the Headers record for the operation: getLoanBills
+public type GetLoanBillsHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# LoanDisbursementResponse
+public type LoanDisbursementResponse record {
+    ArrangementHeader header?;
+    LoanDisbursementResponseBody body?;
+};
+
+public type LoanInterestResponseBodyPropertiesSchedule record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    LoanInterestBodySchedule body?;
+};
+
+# LoanDrawdownOfferResponse
+public type LoanDrawdownOfferResponse record {
+    ArrangementHeader header?;
+    LoanDrawdownOfferResponseBody body?;
+};
+
+public type TakeoverloanBodySchedule record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Indicates the initiation of payment for an account
+    TakeoverloanBodyPayment[] payment?;
+};
+
+# Represents the Queries record for the operation: createRepaymentSchedule
+public type CreateRepaymentScheduleQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: getPaymentSchedulesProjection
+public type GetPaymentSchedulesProjectionQueries record {
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # End date of the loan
+    string dateTo?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # Start date of the loan
+    string dateFrom?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+public type LoanDetailsResponseBodyInner_schedules record {
+    # Count of the paid dates for repayment.
+    string paidScheduleCount?;
+    # Count of the due dates for repayment.
+    string dueScheduleCount?;
+    # Count of the future scheduled payments involving the principal and interest for a given loan
+    string futureScheduleCount?;
+    # Indicates payment schedule type
+    string schedulePaymentType?;
+    # Denotes the payment schedule method of the loan such as capitalise, pay, due and maintain.
+    string schedulePaymentMethod?;
+    # Denotes the property of the loans schedule
+    string scheduleProperty?;
+    # Contains the amount payable in the schedule
+    decimal schedulePaymentAmount?;
+    # Indicates the frequency associated - Eg. Pay to customer or paid by bank
+    string schedulePaymentFrequency?;
+};
+
+public type BillsBodyBalanceMaintenance record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Denotes the description for the adjustment
+    @constraint:String {maxLength: 35}
+    string adjustmentDisplayname?;
+    # List bills of all type
+    BillsBodyBills[] bills?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesActivityChargesBody record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Defines the activity to be processed against the Arrangement. The activity may be a user activity or a system generated activity
+    ConsumerLoanResponseBodyPropertiesActivityChargesBodyActivities[] activities?;
+};
+
+public type ChangeProductResponseBodyPropertiesAccount record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    LoanSimulationBodyAccount body?;
+};
+
+# Represents the Queries record for the operation: updateLoanInterest
+public type UpdateLoanInterestQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesArrangementRulesBodyRules record {
+    # Type of balance (e.g. current balance, credit interest accrued, deferred commission, etc.) as defined in the institution's accounting schemas
+    @constraint:String {maxLength: 20}
+    string balanceType?;
+    # Name of the validation rule to be checked against an online or periodic activity
+    @constraint:String {maxLength: 35}
+    string ruleName?;
+    # Contains the periodic value for a specific product condition
+    @constraint:String {maxLength: 35}
+    string periodicValue?;
+};
+
+# Represents the Queries record for the operation: getOverpaymentDetails
+public type GetOverpaymentDetailsQueries record {
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+# WriteOffLoansResponse
+public type WriteOffLoansResponse record {
+    ArrangementHeader header?;
+    WriteOffLoansResponseBody body?;
+};
+
+public type PaymentHolidaySimResponseBodyInner_paymentHoliday record {
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    @constraint:String {maxLength: 35}
+    string paymentType?;
+    # The type of payment obligation generated
+    @constraint:String {maxLength: 11}
+    string billType?;
+    # Contains the date on which the transaction or payment gets initiated.
+    @constraint:String {maxLength: 11}
+    string startDate?;
+    # Contains the details of holiday period. It includes holiday date , original payment amount, new payment amount etc.
+    PaymentHolidaySimResponseBodyInner_holidayPeriod[] holidayPeriod?;
+};
+
+# Represents the Headers record for the operation: getPaymentSchedules
+public type GetPaymentSchedulesHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# PaymentSchedulesResponse
+public type PaymentSchedulesResponse record {
+    QueryHeader header?;
+    PaymentSchedulesResponseBody body?;
+};
+
+public type LoanSettlementResponseBodyProperties record {
+    LoanSettlementResponseBodyPropertiesSettlement settlement?;
+};
+
+public type BNPLLoanBodyAprTypes record {
+    # Indicates the type of Annual Percentage Rate calculation selected for Reporting. Available options such as Cashflow,Interest
+    @constraint:String {maxLength: 30}
+    string aprType?;
+    # Indicates the Annual Percentage Rate  calculated for the specified annual percenatage rate type
+    @constraint:String {maxLength: 35}
+    string aprRate?;
+};
+
+# Represents the Queries record for the operation: updateBalance
+public type UpdateBalanceQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesActivityChargesBodyActivities record {
+    # The charges or fees for this transaction
+    ConsumerLoanResponseBodyPropertiesActivityChargesBodyCharges[] charges?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesAccount record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanBodyAccount body?;
+};
+
+public type LoanCollateralsResponseBodyInner record {
+    # Contains the name of the collateral
+    @constraint:String {maxLength: 3}
+    string collateralName?;
+    # This indicates the  date  on which the offer or privilege terminates for the event
+    string expiryDate?;
+    # Denotes the value given by any individual who does not have a direct connection with a legal transaction but might be affected by it
+    @constraint:Number {maxValue: 19}
+    decimal thirdPartyValue?;
+    # Indicates the extension data
+    record {} extensions?;
+    # Holds the total amount
+    decimal netAmount?;
+    # Denotes the sum of the Quantity
+    @constraint:Number {maxValue: 19}
+    decimal netNominal?;
+    # Denotes the value for signing the document at what is commonly referred to as the closing of the sale
+    @constraint:Number {maxValue: 19}
+    decimal executionValue?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
+    @constraint:String {maxLength: 3}
+    string currencyId?;
+};
+
+# ChargeOffActivityResponse
+public type ChargeOffActivityResponse record {
+    ArrangementHeader header?;
+    ChargeOffActivityResponseBody body?;
+};
+
+# Represents the Headers record for the operation: createLoanDisbursement
+public type CreateLoanDisbursementHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: updateLoanDecreaseAmount
+public type UpdateLoanDecreaseAmountQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# RepaymentDateChangeSimulationResponse
+public type RepaymentDateChangeSimulationResponse record {
+    ArrangementHeader header?;
+    RepaymentDateChangeSimulationResponseBody body?;
+};
+
+public type LoanOverviewResponseBody LoanOverviewResponseBodyInner[];
+
+# RepaymentDateResponse
+public type RepaymentDateResponse record {
+    ArrangementHeader header?;
+    RepaymentDateResponseBody body?;
+};
+
+public type LoanPayoffSimulationResponseBody record {
+    LoanSimulationResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanPayoffSimulationResponseBodyProperties properties?;
+};
+
+# Represents the Headers record for the operation: initiateTakeoverloan
+public type InitiateTakeoverloanHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanInformationResponseBodyInner record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 17}
+    string arrangementId?;
+    # Status of the arrangement. E.g. AUTH, CLOSE, UNAUTH etc
+    @constraint:String {maxLength: 15}
+    string arrangementStatus?;
+    # Indicates the interest rate of the loan
+    string loanInterestRate?;
+    # Indicates the loan commencement date
+    string loanStartDate?;
+    # Indicates the type of role of a customer
+    string roleDisplayName?;
+    # Indicates loan amount
+    decimal loanAmount?;
+    # Indicates the interest rate type - Eg. Fixed, floating, periodic
+    string loanInterestType?;
+    # Product name of the bank for this account, proprietary definition
+    @constraint:String {maxLength: 30}
+    string productName?;
+    # Indicates the outstanding balance of the loan
+    decimal loanBalance?;
+    # Indicates the next payment date for the loan
+    string loanNextPayDate?;
+    # Available balance of the account which is the projected balance which includes the net movements of both debits and credits against the account
+    decimal availableBalance?;
+    # An Alternate Identification for the Deal. This can be used to retrieve the Deal for amendment
+    @constraint:String {maxLength: 36}
+    string alternateId?;
+    # Indicates the short name of Customer
+    @constraint:String {maxLength: 10}
+    string customerShortName?;
+    # Indicates the extension data
+    record {} extensions?;
+    # The loan account product
+    @constraint:String {maxLength: 30}
+    string loanProduct?;
+    # Indicates the loan account id of an individual customer
+    @constraint:String {maxLength: 35}
+    string loanAccountId?;
+    # Indicates the currency of the loan
+    @constraint:String {maxLength: 3}
+    string loanCurrency?;
+    # Indicates the loan maturity date
+    string loanEndDate?;
+};
+
+public type WriteOffBalanceLoansResponseBody record {
+    ArrangementResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    WriteOffBalanceLoansResponseBodyProperties properties?;
+};
+
+public type WriteOffLoansBodyWriteOffs record {
+    # Indicates the removal of an asset from the balance sheet due to impairment, obsolescence, or other factors
+    @constraint:String {maxLength: 15}
+    string writeOff?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesAgeingfeeBody record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Specified the fixed charge amount to be collected
+    @constraint:String {maxLength: 19}
+    string flatCharge?;
+};
+
+public type ChangeProductResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance drawingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance exchRate?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyintrfr?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance periodicCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance balanceMaintenance?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance pricinggrid?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    ChangeProductResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+public type LinkedRateLoanBodyAgentArrangementIds record {
+    # The id of the arrangement with the 3rd party that has sold the product on behalf of the institution
+    @constraint:String {maxLength: 17}
+    string agentArrangementId?;
+};
+
+public type LoanSettlementBodyReference record {
+    # Contains the percentage of the payment amount used for settlement of the bills due
+    @constraint:String {maxLength: 35}
+    string payInPercentage?;
+    # Contains the payment order product Id for which the payment is initiated
+    @constraint:String {maxLength: 35}
+    string payInPoProduct?;
+    # Contains the transaction type used to debit the customer account for settlement of the bills due
+    @constraint:String {maxLength: 55}
+    string payInActivity?;
+    # Contains the account from which funds are to be debited against the payment type
+    @constraint:String {maxLength: 90}
+    string payInAccount?;
+    # Contains the finite amount of the payment used for settlement of the bills due
+    @constraint:String {maxLength: 35}
+    string payInAmount?;
+    # Contains the beneficiary Id used for settlement of the bills due
+    @constraint:String {maxLength: 17}
+    string payInBeneficiary?;
+    # Contains the direct debit mandate reference (dd) when the settlement method is set to direct debit. The dd reference is typically the account number followed by a suffix, for example 15245.1
+    @constraint:String {maxLength: 25}
+    string ddMandateReference?;
+};
+
+public type ConsumerLoanBodyPayment record {
+    # If Bill is to be produced ahead of the due date, then the number of lead days is specified here. Accepted format is ND, where N is the number of days
+    @constraint:String {maxLength: 3}
+    string billProduced?;
+    # Indicates if the settlement is automatic at the Customer / Broker side
+    @constraint:String {maxLength: 35}
+    string autoSettle?;
+    # The type of payment obligation generated
+    @constraint:String {maxLength: 15}
+    string billType?;
+    # Indicates the initiation of payment for an account
+    ConsumerLoanBodyPayments[] payments?;
+    # Id of the product property
+    ConsumerLoanBodyProperty[] property?;
+    # Method chosen to make the payment
+    @constraint:String {maxLength: 10}
+    string paymentMethod?;
+    # The frequency at which a payment is required to be generated
+    @constraint:String {maxLength: 38}
+    string paymentFrequency?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    @constraint:String {maxLength: 30}
+    string paymentType?;
+};
+
+# Represents the Headers record for the operation: updateLoanInterest
+public type UpdateLoanInterestHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Headers record for the operation: initiateWriteOffBillLoans
+public type InitiateWriteOffBillLoansHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanInterestResponseBody record {
+    LoanConditionsResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanInterestResponseBodyProperties properties?;
+};
+
+public type TakeoverloanResponseBodyPropertiesLimit record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    TakeoverloanBodyLimit body?;
+};
+
+# Represents the Headers record for the operation: createFundsTransfer
+public type CreateFundsTransferHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type EvidenceResponseBodyProperties record {
+    EvidenceResponseBodyPropertiesEvidence evidence?;
+};
+
+# Represents the Queries record for the operation: getLoanOutstandingBills
+public type GetLoanOutstandingBillsQueries record {
+    # Contains the aggregate outstanding principal amount thereof after giving effect to any borrowings and prepayments or repayments of Committed Loans
+    string outstandingAmount?;
+    # Identifies settled transaction
+    string settled?;
+    # Indicates the bill amount during the ageing status(Bill which crossed the due date)
+    string delinquentAmount?;
+    # Indicates a date on which a bill has been raised
+    string billDate?;
+    # Date that the payment has been deferred to
+    string deferDate?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    string paymentType?;
+    # Indicates the bill amount
+    string billedAmount?;
+    # Defines the status of the settlement for the incoming MT548 swift message.The values allowed are: Waiting : pending to receive settlement status update meaning pending to receive MT548 swift message,  Action required : awaiting action to be performed to get the final update on settlement status.Matched : transactions whose nominals have matched with the depository position
+    string settlementStatus?;
+    # Indicates the ageing status of a bill
+    string agingStatus?;
+    # Indicates whether advance payment made is set on an account
+    string advancePayment?;
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # Id of the product property
+    string property?;
+    # Indicates the status of a bill(Issued,Due,Ageing,Settled)
+    string billStatus?;
+    # Indicates a bill which is raised when a loan is paid off
+    string infoPayType?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # Method chosen to make the payment
+    string paymentMethod?;
+    # Contains the date in which the payment will be sent out. Date in the format YYYYMMDD. E.g. 20191231
+    string paymentDate?;
+    # Indicates if the file is of type simulation or live
+    string fileVersion?;
+    # Indicates the reference id for simulation activity
+    string simulationReference?;
+    # Indicates whether its a credit/debit type of bill
+    string paymentIndicator?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+public type CommercialLoanResponseBody record {
+    LinkedRateLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    CommercialLoanResponseBodyProperties properties?;
+};
+
+public type LinkedRateLoanResponseBodyArrangementActivity record {
+    # Contains the reason for performing the current activity
+    @constraint:String {maxLength: 100}
+    string reason?;
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangmentId?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # If the account has an associated pricing arrangement, the way the pricing is applied is indicated from standard set of values - automatic, manual or No Pricing
+    @constraint:String {maxLength: 35}
+    string pricingSelection?;
+    # Indicates the Rewards account id assigned to a financial account(Loans,Deposits)
+    @constraint:String {maxLength: 17}
+    string rewardsArrangementId?;
+    # Indicates the trade date in yyyymmdd format
+    @constraint:String {maxLength: 11}
+    string tradeDate?;
+    # Contains the identifier used for the role played by the party or customer in the contract or account
+    LinkedRateLoanBodyPartyRoles[] partyRoles?;
+    # The id of the arrangement with the 3rd party that has sold the product on behalf of the institution
+    LinkedRateLoanBodyAgentArrangementIds[] agentArrangementIds?;
+    # It is a date on/upon which an account is considered to take effect
+    @constraint:String {maxLength: 11}
+    string arrangementEffectiveDate?;
+    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
+    LinkedRateLoanBodyPartyIds[] partyIds?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # The role of the 3rd party, select from standard list
+    LinkedRateLoanBodyAgentRoles[] agentRoles?;
+    # Indicates the Pricing Plan of an account, it gives preferential interest rate/charge schedule based on customer segment
+    @constraint:String {maxLength: 35}
+    string pricingPlan?;
+    # Indicates the extensions
+    record {} extensions?;
+    # The id of the 3rd party who sold the product on behalf of the institution
+    LinkedRateLoanBodyAgentCustomerIds[] agentCustomerIds?;
+    # Identifies the currency. E.g. USD, GBP etc
+    @constraint:String {maxLength: 3}
+    string currency?;
+    # It defines the type of a customer based on criteria defined by Bank, Eg: Gold Customer, Mobile Banking Customer
+    @constraint:String {maxLength: 15}
+    string productVariation?;
+};
+
+public type BNPLLoanBodyOverrides record {
+    # The override message is captured  that was generated at the time of commitment of the transaction to the database
+    @constraint:String {maxLength: 35}
+    string override?;
+};
+
+public type ExternalEventStatusResponseBodyInner record {
+    # Indicates the extension data
+    record {} extensions?;
+    # Contains the arrangement activity reference identifier
+    @constraint:String {maxLength: 40}
+    string arrangementActivityId?;
+    # Determines the status of events sent to external system from the current system for the given activity
+    string externalEventStatus?;
+    # The unique identifier of an compensatory activity triggered for the given activity
+    string adjustmentActivityReference?;
+};
+
+public type BalanceResponseBody record {
+    LinkedRateLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    BalanceResponseBodyProperties properties?;
+};
+
+# Represents the Headers record for the operation: createpersonalLoans
+public type CreatepersonalLoansHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# LoanDrawdownOfferRenegotiationResponse
+public type LoanDrawdownOfferRenegotiationResponse record {
+    ArrangementHeader header?;
+    LoanDrawdownOfferRenegotiationResponseBody body?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesOfficers record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanResponseBodyPropertiesOfficersBody body?;
+};
+
+# Represents the Headers record for the operation: createCommercialLoan
+public type CreateCommercialLoanHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanDrawdownOfferResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Indicates the Pricing Plan of an account, it gives preferential interest rate/charge schedule based on customer segment
+    @constraint:String {maxLength: 35}
+    string pricingPlan?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Unique identifier (contract number) of the facility
+    @constraint:String {maxLength: 20}
+    string facilityId?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # Defines the activity to be processed against the Arrangement. The activity may be a user activity or a system generated activity
+    @constraint:String {maxLength: 80}
+    string activity?;
+    # If the account has an associated pricing arrangement, the way the pricing is applied is indicated from standard set of values - automatic, manual or No Pricing
+    @constraint:String {maxLength: 35}
+    string pricingSelection?;
+    # Indicates the date on which the offer is executed
+    string offerDate?;
+    # Indicates the Rewards account id assigned to a financial account(Loans,Deposits)
+    @constraint:String {maxLength: 17}
+    string rewardsArrangementId?;
+    # Identifies the currency. E.g. USD, GBP etc
+    @constraint:String {maxLength: 3}
+    string currency?;
+    # Contains the customer identifier to fetch list of consent arrangements for the customer or customer identifier of the debtor account. This will be populated once the SCA(Strong Customer Authentication) is completed
+    InstallmentLoanBodyCustomers[] customers?;
+    # Indicates the date on which the drawdown contract is created
+    string drawdownDate?;
+};
+
+public type ConsumerLoanResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    ConsumerLoanResponseBodyPropertiesArrangementRules arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance closureDefer?;
+    BNPLLoanResponseBodyPropertiesInheritance participant?;
+    BNPLLoanResponseBodyPropertiesSettlement settlement?;
+    ConsumerLoanResponseBodyPropertiesActivityCharges activityCharges?;
+    ConsumerLoanResponseBodyPropertiesAgeingfee payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance periodicCharges?;
+    ConsumerLoanResponseBodyPropertiesOfficers officers?;
+    ConsumerLoanResponseBodyPropertiesAgeingfee newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance refundfee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    ConsumerLoanResponseBodyPropertiesAgeingfee ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    ConsumerLoanResponseBodyPropertiesPayoff payoff?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    ConsumerLoanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance prefpricing?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    ConsumerLoanResponseBodyPropertiesAgeingfee disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    ConsumerLoanResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesCustomer customer?;
+};
+
+# WriteOffBillLoansResponse
+public type WriteOffBillLoansResponse record {
+    ArrangementHeader header?;
+    WriteOffBillLoansResponseBody body?;
+};
+
+public type BNPLLoanBodyAlternateIds record {
+    # An Alternate Identification for the Deal. This can be used to retrieve the Deal for amendment
+    @constraint:String {maxLength: 36}
+    string alternateId?;
+    # Contains the alternate account system identifier used for defining the alternate account Id
+    @constraint:String {maxLength: 10}
+    string alternateIdType?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesPayoffBody record {
+    # This is the payment amount
+    ConsumerLoanResponseBodyPropertiesPayoffBodyAmount[] amount?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Percentage of holdings that can be pledged as collateral
+    @constraint:String {maxLength: 12}
+    string percentage?;
+    # Refers to view or cancel options
+    @constraint:String {maxLength: 9}
+    string action?;
+    # Contains the period within which the locked rate needs to be availed
+    @constraint:String {maxLength: 3}
+    string expiryDays?;
+    # Specifies if the amounts made due to the customer between the simulation start date and payoff effective date, should be considered settled or not. By setting this field to YES, auto settlement of future dues would be enabled and setting it to null or NO will not settle the due amounts automatically
+    @constraint:String {maxLength: 3}
+    string settleDues?;
+};
+
+public type LoanOverviewResponseBodyInner_interests record {
+    # Identifies the bid rate of the related currency for the defined time period
+    string interestRate?;
+    # Indicates the interest property name
+    string interestProperty?;
+    # Contains the property name of loan interest such as penalty Interest and principal interest.
+    string interestPropertyName?;
+    # Contains the frequency type of compound in loan. For example, annually or monthly.
+    string compoundType?;
+    # Indicates whether the rate is fixed or floating rate.
+    string rateType?;
+    # Indicates the actual interest rate applied for the account after adjustment/tier calculation/based on basic or Periodic index value
+    string effectiveRate?;
+    # Type of the tier rate. Allowed values: - BAND: rates apply within each band - LEVEL: a common rate applies, determined by the highest level
+    string tierType?;
+    # Type of balance (e.g. current balance, credit interest accrued, deferred commission, etc.) as defined in the institution's accounting schemas.
+    string balanceTypes?;
+    # Amount of the balance
+    decimal balanceAmount?;
+};
+
+public type LoanPayoffSimulationResponseBodyProperties record {
+    ConsumerLoanResponseBodyPropertiesPayoff payoff?;
+};
+
+public type BNPLLoanResponseBodyPropertiesAccountHeaderAudit record {
+    # Time taken to respond by Transact
+    @jsondata:Name {value: "T24_time"}
+    int:Signed32 t24Time?;
+    # Time taken to parse the response by IRIS
+    @jsondata:Name {value: "responseParse_time"}
+    decimal responseParseTime?;
+    # Current number of the record
+    string versionNumber?;
+    # Time taken to parse the request by IRIS
+    @jsondata:Name {value: "requestParse_time"}
+    decimal requestParseTime?;
+};
+
+public type LinkedRateLoanResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance purchasepremium?;
+    BNPLLoanResponseBodyPropertiesInheritance participant?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance originationfee?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance purchasediscoun?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    LinkedRateLoanResponseBodyPropertiesPrincipalint principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance princiamort?;
+    BNPLLoanResponseBodyPropertiesInheritance restructure?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance penamort?;
+    BNPLLoanResponseBodyPropertiesInheritance commitmentcost?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance periodicCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance directcost?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance prefpricing?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance commitmentfees?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesInheritance account?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+public type RepaymentSimulationBodySchedule record {
+    # Indicates the amortisation term. When specified, the repayment amount is calculated based on the amortisation term insteam of the account term. When the amortisation term is less than account term, there will be a residual amount to be paid at the maturity
+    @constraint:String {maxLength: 4}
+    string amortisationTerm?;
+    # Customer is eligible for requesting payment holiday upto the limit amount specified here
+    "Repayment Holiday Limit" repaymentHolidayLimit?;
+    # Indicates the extensions
+    record {} extensions?;
+    # The amount to be paid at the maturity date
+    @constraint:String {maxLength: 18}
+    string residualAmount?;
+    # Indicates whether the cycling of dates should follow the base day calculation or not. Allowed values are BASE, PREVIOUS, NULL. BASE - Base day calculation will be applied. PREVIOUS/NULL - Base day calculation will not be applied
+    @constraint:String {maxLength: 20}
+    string baseDayKey?;
+    # Indicates if bills of same due date and same pament method(DUE or CAPITALISE) should be combined
+    "Combine Bills" combineBills?;
+    # Indicates the minimum payment related values such as minimum payment property, minum payment amount and minimum payment bill type
+    @constraint:String {maxLength: 15}
+    string minimumPayment?;
+    # Indicates actual restricted item for holiday. It holds the value based on the holiday restriction type
+    "Holiday Restrict Item" holidayRestrictItem?;
+    # This defines the payment schedule amount recalculation frequency
+    "Recalc Frequency" recalcFrequency?;
+    # Indicates the type of holiday restriction which will be applied. Allowed values are PropertyClass, Property, Bill Type, Payment Type
+    "Holiday Restrict Type" holidayRestrictType?;
+    # Contains the user defined rule definition which is evaluated during the transaction based on the defined period
+    "Periodic Attribute" periodicAttribute?;
+};
+
+public type MortgageBodySchedule record {
+    # Indicates the amortisation term. When specified, the repayment amount is calculated based on the amortisation term insteam of the account term. When the amortisation term is less than account term, there will be a residual amount to be paid at the maturity
+    @constraint:String {maxLength: 4}
+    string amortisationTerm?;
+    # Indicates if bills of same due date and same pament method(DUE or CAPITALISE) should be combined
+    @constraint:String {maxLength: 3}
+    string billsCombined?;
+    # Indicates the extensions
+    record {} extensions?;
+    # The amount to be paid at the maturity date
+    @constraint:String {maxLength: 18}
+    string residualAmount?;
+    # Indicates the initiation of payment for an account
+    ConsumerLoanBodyPayment[] payment?;
+    # Indicates the date from when the instruction or condition is effective
+    @constraint:String {maxLength: 30}
+    string effectiveFromDate?;
+    # This defines the payment schedule amount recalculation frequency
+    @constraint:String {maxLength: 38}
+    string recalcFrequency?;
+};
+
+# Represents the Headers record for the operation: createConsumerLoan
+public type CreateConsumerLoanHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type ConsumerLoanBodySchedule record {
+    # Indicates the amortisation term. When specified, the repayment amount is calculated based on the amortisation term insteam of the account term. When the amortisation term is less than account term, there will be a residual amount to be paid at the maturity
+    @constraint:String {maxLength: 4}
+    string amortisationTerm?;
+    # Indicates if bills of same due date and same pament method(DUE or CAPITALISE) should be combined
+    @constraint:String {maxLength: 3}
+    string billsCombined?;
+    # Indicates the extensions
+    record {} extensions?;
+    # The amount to be paid at the maturity date
+    @constraint:String {maxLength: 18}
+    string residualAmount?;
+    # Indicates the initiation of payment for an account
+    ConsumerLoanBodyPayment[] payment?;
+    # This defines the payment schedule amount recalculation frequency
+    @constraint:String {maxLength: 38}
+    string recalcFrequency?;
+};
+
+public type LoanInterestBodySchedule record {
+    # Indicates the amortisation term. When specified, the repayment amount is calculated based on the amortisation term insteam of the account term. When the amortisation term is less than account term, there will be a residual amount to be paid at the maturity
+    @constraint:String {maxLength: 4}
+    string amortisationTerm?;
+    # Indicates the extensions
+    record {} extensions?;
+    # The amount to be paid at the maturity date
+    @constraint:String {maxLength: 18}
+    string residualAmount?;
+    # Indicates whether the cycling of dates should follow the base day calculation or not. Allowed values are BASE, PREVIOUS, NULL. BASE - Base day calculation will be applied. PREVIOUS/NULL - Base day calculation will not be applied
+    @constraint:String {maxLength: 20}
+    string baseDayKey?;
+    # If Bill is to be produced ahead of the due date, then the number of lead days is specified here. Accepted format is ND, where N is the number of days
+    @constraint:String {maxLength: 3}
+    string billLeadDays?;
+    # Indicates the type of holiday restriction which will be applied. Allowed values are PropertyClass, Property, Bill Type, Payment Type
+    LoanInterestBodyHolidayRestrictTypes[] holidayRestrictTypes?;
+    # Defines the number of days prior to the actual payment, when a bill needs to be finalised. This allows the user or customer to make amendments to an issued bill through the Payment Holiday activity with as many number of times, between the issue date and finalisation date. When zero days is defined, then user or customer will be allowed to make amendments to an issued bill through Payment Holiday activity until the payment date
+    @constraint:String {maxLength: 4}
+    string finaliseBill?;
+    # Flag to indicate if future disbursements scheduled need to be considered when deriving the constant payment amounts. If set to YES then system will arrive at a constant amount from start date until maturity date of the contract considering any disbursements and payments scheduled for future dates and interest on the outstanding principal amount and then arrives at a calculated amount. If set to NULL, the calculated amount will not consider these future disbursements and payments scheduled in its calculation
+    @constraint:String {maxLength: 11}
+    string includeFutureDisbursement?;
+    # Indicates the initiation of payment for an account
+    LoanInterestBodyPayment[] payment?;
+    # This defines the payment schedule amount recalculation frequency
+    @constraint:String {maxLength: 38}
+    string recalcFrequency?;
+    # Indicates the minimum payment related values such as minimum payment property, minum payment amount and minimum payment bill type
+    LoanInterestBodyMinimumPayments[] minimumPayments?;
+};
+
+public type TakeoverloanBodyPayment record {
+    # Indicates the initiation of payment for an account
+    TakeoverloanBodyPayments[] payments?;
+    # Method chosen to make the payment
+    @constraint:String {maxLength: 10}
+    string paymentMethod?;
+    # The frequency at which a payment is required to be generated
+    @constraint:String {maxLength: 38}
+    string paymentFrequency?;
+};
+
+# Represents the Headers record for the operation: initiateWriteOffLoans
+public type InitiateWriteOffLoansHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type TakeoverloanBodyPropertyClass record {
+    # Contains the different payout options, for example charge, interest or principal on which the payout settlement instructions would be processed
+    @constraint:String {maxLength: 30}
+    string payoutPropertyClass?;
+};
+
+public type ArrangementHeaderAudit record {
+    # Time taken to respond by Transact
+    @jsondata:Name {value: "T24_time"}
+    int:Signed32 t24Time?;
+    # Time taken to parse the response by IRIS
+    @jsondata:Name {value: "responseParse_time"}
+    decimal responseParseTime?;
+    # The CURR.NO. of the record
+    string versionNumber?;
+    # Time taken to parse the request by IRIS
+    @jsondata:Name {value: "requestParse_time"}
+    decimal requestParseTime?;
+};
+
+public type BNPLLoanBodyFields record {
+    # The name of the field
+    @constraint:String {maxLength: 35}
+    string fieldName?;
+    # Indicates the field value of the arrangement property
+    @constraint:String {maxLength: 500}
+    string fieldValue?;
+};
+
+public type PaymentSchedulesResponseBody PaymentSchedulesProjectionResponseBodyInner[];
+
+# Represents the Headers record for the operation: createChargeOffActivity
+public type CreateChargeOffActivityHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanDetailsResponseBodyInner record {
+    # Indicates an unique identifier of an account
+    string arrangementId?;
+    # Name of Joint Customer
+    string jointCustomerName?;
+    # Indicates the original total paid amount
+    decimal lastPaidAmount?;
+    # Indicates cooling off period for an account until which pre-closure can be triggered without incurring any fees or charges
+    string coolingOffDate?;
+    # Contains the total number of credits
+    string totalCredits?;
+    # Date last payment was made
+    string lastPaidDate?;
+    # Contains the total withdrawal amount on hold until payment execution date
+    decimal pendingWithdrawals?;
+    # Indicates a date or period within which an account gets matured
+    string maturesIn?;
+    # Indicates the total amount which will be lent or deposited for the term
+    decimal commitmentBalance?;
+    # Indicates maturity date of the contract
+    string maturityDate?;
+    # Indicates where this pool may be run either online or End of the day
+    LoanDetailsResponseBodyInner_schedules[] schedules?;
+    # Indicates the period to which the BID and OFFER rates apply
+    string term?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
+    string currencyId?;
+    # Request for loans settlement
+    string payoffRequest?;
+    # Contains the total number of debits
+    string totalDebits?;
+    # Indicates next payment date for the contract
+    string nextPaymentDate?;
+    # Contains the virtual balance of the collateral
+    string virtualBalance?;
+    # Indicates the sum of debit transaction amounts that are yet to be processed and placed as holds on accounts, but will not be available for use
+    decimal pendingDeposit?;
+    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
+    string customerName?;
+    # This is the BIC code of the institution where beneficiary holds an account
+    string accountWithBankBIC?;
+    # Indicates the extension data
+    record {} extensions?;
+    # Indicates the total due amount
+    string totalDueAmount?;
+    # Last committed transaction
+    string lastPayment?;
+    # Interest amount
+    LoanDetailsResponseBodyInner_interests[] interests?;
+    # Contains the date on which the transaction or payment gets initiated
+    string startDate?;
+    # Indicates the payment amount to be settled in the next schedule
+    decimal nextPaymentAmount?;
+};
+
+# Represents the Headers record for the operation: createInstallmentLoan
+public type CreateInstallmentLoanHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type TakeoverloanBodyRepayment record {
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    TakeoverloanBodyReference[] reference?;
+    # Contains the transaction type used for settlement of the bills due
+    @constraint:String {maxLength: 55}
+    string payInSettlementActivity?;
+    # Contains the rule on which the system should utilise the funds available in the pay in account during the settlement process. Options are Full, Partial and None
+    @constraint:String {maxLength: 35}
+    string payInRule?;
+    # Flag to indicate whether Payin Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payinSettlement?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    LoanDrawdownOfferBodyPaymentTypes[] paymentTypes?;
+};
+
+public type SimulationCapturesResponseBody record {
+    SimulationCapturesResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    SimulationCapturesResponseBodyProperties properties?;
+};
+
+# Represents the Headers record for the operation: updateBalance
+public type UpdateBalanceHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanDrawdownOfferResponse1Body record {
+    LoanDrawdownOfferResponse1BodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    record {} properties?;
+};
+
+public type WriteOffLoansBodyBalanceMaintenance record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Denotes the description for the adjustment
+    @constraint:String {maxLength: 35}
+    string adjustmentDisplayname?;
+    # List bills of all type
+    WriteOffLoansBodyBills[] bills?;
+    # Indicates the interest or account or charge properties for which balances are to be captured or adjusted
+    WriteOffLoansBodyAdjustProperties[] adjustProperties?;
+};
+
+public type BNPLLoanResponseBodyPropertiesAccountHeader record {
+    # The status of the transaction
+    string transactionStatus?;
+    BNPLLoanResponseBodyPropertiesAccountHeaderAudit audit?;
+    # The Identifier of the record created
+    string id?;
+    # The status of the record
+    string status?;
+};
+
+# Represents the Headers record for the operation: createRepaymentDateChangeSimulation
+public type CreateRepaymentDateChangeSimulationHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type BalanceBodyBalanceMaintenance record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Denotes the description for the adjustment
+    @constraint:String {maxLength: 35}
+    string adjustmentDisplayname?;
+    # Indicates the interest or account or charge properties for which balances are to be captured or adjusted
+    BalanceBodyAdjustProperties[] adjustProperties?;
+};
+
+public type LoanPayoffDetailsResponseBody LoanPayoffDetailsResponseBodyInner[];
+
+# LinkedRateLoanResponse
+public type LinkedRateLoanResponse record {
+    ArrangementHeader header?;
+    LinkedRateLoanResponseBody body?;
+};
+
+public type SimulationCapturesBodyAmount record {
+    # Indicates the monetary amount that is fixed during the associated account's effective period
+    @constraint:String {maxLength: 19}
+    string fixedamount?;
+};
+
+public type LoanDrawdownOfferResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance pcdefer?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance escrow?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance subparticipant?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint principalint?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance solicitorfee?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penalinterest?;
+    BNPLLoanResponseBodyPropertiesInheritance redemptionfee?;
+    LoanDrawdownOfferResponseBodyPropertiesSettlement settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance mortginsurance?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance balanceMaintenance?;
+    BNPLLoanResponseBodyPropertiesInheritance offsetint?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    ConsumerLoanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance prepayfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesInheritance account?;
+    BNPLLoanResponseBodyPropertiesInheritance periodiccharge?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+public type LoanDrawdownOfferResponseBodyPropertiesSettlement record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    LoanDrawdownOfferBodySettlement body?;
+};
+
+public type LoanSettlementResponseBody record {
+    ArrangementResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanSettlementResponseBodyProperties properties?;
+};
+
+# BalanceResponse
+public type BalanceResponse record {
+    ArrangementHeader header?;
+    BalanceResponseBody body?;
+};
+
+# Represents the Headers record for the operation: createMortgage
+public type CreateMortgageHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# LoanTopupAmountResponse
+public type LoanTopupAmountResponse record {
+    ArrangementHeader header?;
+    LoanTopupAmountResponseBody body?;
+};
+
+public type LoanInterestResponseBodyProperties record {
+    LoanInterestResponseBodyPropertiesSchedule schedule?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint principalint?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penaltyint?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penalinterest?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint offsetint?;
+};
+
+public type LoanSimulationResponse1Body record {
+    LoanSimulationResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanSimulationResponse1BodyProperties properties?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesActivityCharges record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanResponseBodyPropertiesActivityChargesBody body?;
+};
+
+public type LinkedRateLoanBodyAgentCustomerIds record {
+    # The id of the 3rd party who sold the product on behalf of the institution
+    @constraint:String {maxLength: 10}
+    string agentCustomerId?;
+};
+
+public type WriteOffBalanceLoansBodyBalanceMaintenance record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Indicates the interest or account or charge properties for which balances are to be captured or adjusted
+    WriteOffBalanceLoansBodyAdjustProperties[] adjustProperties?;
+};
+
+public type LoanOverviewResponseBodyInner record {
+    # Indicates an unique identifier of an account
+    string arrangementId?;
+    # Indicates next payment date for the contract
+    string nextPaymentDate?;
+    # Contains the virtual balance of the collateral
+    string virtualBalance?;
+    # Count of the paid dates for repayment
+    string paidScheduleCount?;
+    # Count of the future scheduled payments involving the principal and interest for a given loan
+    string futureScheduleCount?;
+    # Indicates cooling off period for an account until which pre-closure can be triggered without incurring any fees or charges
+    string coolingOffDate?;
+    # Count of the due dates for repayment
+    string dueScheduleCount?;
+    # Indicates the extension data
+    record {} extensions?;
+    # Indicates a date or period within which an account gets matured
+    string maturesIn?;
+    # Indicates maturity date of the contract
+    string maturityDate?;
+    # Indicates where this pool may be run either online or End of the day
+    LoanOverviewResponseBodyInner_schedules[] schedules?;
+    # Last committed transaction
+    string lastPayment?;
+    # Indicates the period to which the BID and OFFER rates apply
+    string term?;
+    # Interest amount
+    LoanOverviewResponseBodyInner_interests[] interests?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
+    string currencyId?;
+    # Contains the date on which the transaction or payment gets initiated
+    string startDate?;
+    # Indicates the payment amount to be settled in the next schedule
+    decimal nextPaymentAmount?;
+    # Request for loans settlement
+    string payoffRequest?;
+};
+
+# Represents the Headers record for the operation: getExternalEventStatus
+public type GetExternalEventStatusHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createConsumerLoan
+public type CreateConsumerLoanQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanTopupAmountResponseBody record {
+    ArrangementResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanTopupAmountResponseBodyProperties properties?;
+};
+
+# Represents the Queries record for the operation: createLoanDrawdownOfferRenegotiation
+public type CreateLoanDrawdownOfferRenegotiationQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type ArrangementResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Determines the status of events sent to external system from the current system for the given activity
+    @constraint:String {maxLength: 35}
+    string externalEventStatus?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
+};
+
+# Represents the Queries record for the operation: getLoanBills
+public type GetLoanBillsQueries record {
+    # The type of payment obligation generated
+    string billType?;
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # Contains the date in which the payment will be sent out. Date in the format YYYYMMDD. E.g. 20191231
+    string paymentDate?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+# Represents the Headers record for the operation: initiateWriteOffBalanceLoans
+public type InitiateWriteOffBalanceLoansHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanInterestBodyPayment record {
+    # Indicates the initiation of payment for an account
+    LoanInterestBodyPayments[] payments?;
+    # Method chosen to make the payment
+    @constraint:String {maxLength: 10}
+    string paymentMethod?;
+    # The frequency at which a payment is required to be generated
+    @constraint:String {maxLength: 38}
+    string paymentFrequency?;
+};
+
+public type WriteOffLoansResponseBodyPropertiesBalanceMaintenance record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    WriteOffLoansBodyBalanceMaintenance body?;
+};
+
+# ChangeProductResponse
+public type ChangeProductResponse record {
+    ArrangementHeader header?;
+    ChangeProductResponseBody body?;
+};
+
+public type MortgageResponseBody record {
+    LinkedRateLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    MortgageResponseBodyProperties properties?;
+};
+
+public type TakeoverloanBodyReference record {
+    # Contains the percentage of the payment amount used for settlement of the bills due
+    @constraint:String {maxLength: 35}
+    string payinPercentage?;
+    # Contains the transaction type used to debit the customer account for settlement of the bills due
+    @constraint:String {maxLength: 55}
+    string payinActivity?;
+    # Contains the account from which funds are to be debited against the payment type
+    @constraint:String {maxLength: 90}
+    string payinAccount?;
+    # Contains the finite amount of the payment used for settlement of the bills due
+    @constraint:String {maxLength: 35}
+    string payinAmount?;
+};
+
+# LoanPayoffAutoSimulationResponse
+public type LoanPayoffAutoSimulationResponse record {
+    ArrangementHeader header?;
+    LoanPayoffAutoSimulationResponseBody body?;
+};
+
+public type LoanSettlementResponseBodyPropertiesSettlement record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    LoanSettlementBodySettlement body?;
+};
+
+public type RepaymentSimulationResponseBody record {
+    SimulationCapturesResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    RepaymentSimulationResponseBodyProperties properties?;
+};
+
+# Represents the Headers record for the operation: getLoanOverview
+public type GetLoanOverviewHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type AutoSimulationsResponseBodyPropertiesOfficers record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanBodyOfficers body?;
+};
+
+public type ConsumerLoanBodyMargins record {
+    # This is the rate applied over the default interest rate or commission rate to achieve the actual rate
+    @constraint:String {maxLength: 12}
+    string marginRate?;
+    # Indicates whether the margin is positive or negaitve, when margin percentage is applied on the market rate while calculating the fair value. Possible values include + or -
+    @constraint:String {maxLength: 9}
+    string marginOperand?;
+    # Defines whether there are single or multiple margins to be considered while arriving at the applicable interest rate  Allowed values:  null (default): multiple margins may be defined SINGLE: only a single margin is allowed
+    @constraint:String {maxLength: 15}
+    string marginType?;
+};
+
+# Represents the Headers record for the operation: getLoanOutstandingBills
+public type GetLoanOutstandingBillsHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createpersonalLoans
+public type CreatepersonalLoansQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanInterestBodyHolidayRestrictTypes record {
+    # Indicates the type of holiday restriction which will be applied. Allowed values are PropertyClass, Property, Bill Type, Payment Type
+    @constraint:String {maxLength: 35}
+    string holidayRestrictType?;
+    # Contains the payment reference and details for each bulk record
+    LoanInterestBodyItems[] items?;
+};
+
+public type WriteOffLoansBodyAdjustAmortAmounts record {
+    # Indicates the outstanding bill amount of a given property for a payment type
+    @constraint:String {maxLength: 19}
+    string outstandingAmortAmount?;
+    # Indicates the new charge amount which is specified during adjustment of the amortisation charge. The specified value will be the new amount outstanding and yet to be amortised
+    @constraint:String {maxLength: 19}
+    string newAmortizationAmount?;
+    # Indicates the amortisation end date for an amortisation type of charge
+    @constraint:String {maxLength: 11}
+    string amortEndDate?;
+};
+
+public type ConsumerLoanBodyPartyIds record {
+    # Contains the identifier used for the role played by the party or customer in the contract or account
+    @constraint:String {maxLength: 30}
+    string partyRole?;
+    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
+    @constraint:String {maxLength: 10}
+    string partyId?;
+};
+
+public type AutoSimulationsResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance pcdefer?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance escrow?;
+    AutoSimulationsResponseBodyPropertiesOfficers officers?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance subparticipant?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance solicitorfee?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance penalinterest?;
+    BNPLLoanResponseBodyPropertiesInheritance redemptionfee?;
+    BNPLLoanResponseBodyPropertiesSettlement settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance mortginsurance?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance offsetint?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    ConsumerLoanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance prepayfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    ConsumerLoanResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesInheritance periodiccharge?;
+    BNPLLoanResponseBodyPropertiesCustomer customer?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesPrincipalint record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanBodyPrincipalint body?;
+};
+
+public type LinkedRateLoanBodyPeriodicInterest record {
+    # Defines whether there are single or multiple margins to be considered while arriving at the applicable interest rate Allowed values: null (default): multiple margins may be defined SINGLE: only a single margin is allowed
+    LinkedRateLoanBodyMargins1[] margins?;
+    # Specifies the initial date from which the interest rate has to be reset.  If specified along with a reset frequency, the initial reset date will be used for deriving the subsequent reset dates
+    @constraint:String {maxLength: 30}
+    string initialResetDate?;
+    # Indicates the reset period of the periodic index defined
+    @constraint:String {maxLength: 30}
+    string periodicReset?;
+    # Indicates the actual interest rate applied for the account after adjustment/tier calculation/based on basic or Periodic index value
+    @constraint:String {maxLength: 19}
+    string effectiveRate?;
+    # A negative interest rate can be applied at each tier, select Yes, No, Block margin
+    @constraint:String {maxLength: 12}
+    string negativeRate?;
+    # Indicates the method used to calculate the interest rate for period interest setup
+    @constraint:String {maxLength: 15}
+    string periodicMethod?;
+    # Specify the period which will be used to fetch the interest rate
+    @constraint:String {maxLength: 20}
+    string periodicRate?;
+    # Specify the period which will be used to fetch the interest rate
+    @constraint:String {maxLength: 15}
+    string periodicPeriodType?;
+    # Define the period which has to be used to calculate the interest rate
+    @constraint:String {maxLength: 15}
+    string periodicPeriod?;
+    # Denotes an index which points to the right period of the securities or holdings
+    @constraint:String {maxLength: 4}
+    string periodicIndex?;
+};
+
+public type LoanSimulationBodyAccountNames record {
+    # Display name or short name of the account specified
+    @constraint:String {maxLength: 70}
+    string accountName?;
+};
+
+public type LoanDrawdownOfferRenegotiationResponseBody record {
+    LoanDrawdownOfferResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanDrawdownOfferRenegotiationResponseBodyProperties properties?;
+};
+
+# LoansCustomerResponse
+public type LoansCustomerResponse record {
+    ArrangementHeader header?;
+    LoansCustomerResponseBody body?;
+};
+
+public type LoanSettlementBodyPayoutproperties record {
+    # Contains the different payout options, for example management charge, principal interest or commitment on which the payout settlement instructions would be processed
+    @constraint:String {maxLength: 35}
+    string payoutproperty?;
+};
+
+public type PaymentHolidaySimResponseBodyInner_holidayPeriod record {
+    # Indicates the date which needs to be declared as payment holiday and customer is allowed to skip the repayments.
+    @constraint:String {maxLength: 11}
+    string holidayDate?;
+    # Indicates the new schedule amount which will be processed during the payment holiday period
+    @constraint:String {maxLength: 18}
+    string newPaymentAmount?;
+    # Indicates the original payment amount of the interest or account or charge property.
+    @constraint:String {maxLength: 18}
+    string originalPaymentAmount?;
+};
+
 public type QueryHeader record {
-    ScreenHeaderAudit audit?;
+    ArrangementHeaderAudit audit?;
     # The record from which the response should be displayed
     @jsondata:Name {value: "page_start"}
     int:Signed32 pageStart?;
@@ -2762,441 +2990,387 @@ public type QueryHeader record {
     int:Signed32 pageSize?;
 };
 
-# Represents the Queries record for the operation: deleteCustomerEmailAddress
-public type DeleteCustomerEmailAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Queries record for the operation: getCustomerPrintAddress
-public type GetCustomerPrintAddressQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Reference Id of address record
-    string addressId?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerAddressOutputResponseBodyInner_structuredGroup record {
-    # A list with address related details from Transact in structured format
-    string structuredAddress?;
-};
-
-public type CustomerMandatesResponseBodyMandateDetails record {
-    # Contains the application name for which the mandates check need to be followed. Any transaction processed by the application specified in this field will undergo mandate processing
-    @constraint:String {maxLength: 55}
-    string mandateApplication?;
-    # Contains the identifier of the rule that needs to executed before applying mandate processing
-    @constraint:String {maxLength: 35}
-    string mandateRuleId?;
-    # Contains mandate details of an account
-    @constraint:String {maxLength: 35}
-    string mandates?;
-};
-
-# CustomerConsentsResponse
-public type CustomerConsentsResponse record {
-    QueryHeader header?;
-    CustomerConsentsResponseBody body?;
-};
-
-# Represents the Queries record for the operation: getProspectCustomers
-public type GetProspectCustomersQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: createCustomerPhoneAddress
-public type CreateCustomerPhoneAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerEmailAddressResponseBodyInner record {
-    # Identifier of the customer address table
-    @constraint:String {maxLength: 1000}
-    string customerAddressId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Denotes the Short name registered for a customer
-    CustomerPhoneAddressResponseBodyInner_customerShortNames[] customerShortNames?;
-    # Email Identifier of the Customer
-    @constraint:String {maxLength: 254}
-    string email?;
-};
-
-# CustomerRestrictionsResponse
-public type CustomerRestrictionsResponse record {
-    ScreenHeader header?;
-    CustomerRestrictionsResponseBody body?;
-};
-
-# Represents the Queries record for the operation: createCustomerStaticChange
-public type CreateCustomerStaticChangeQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerStaticChangeResponseBody record {
-    # This will capture the request time
-    @constraint:String {maxLength: 5}
-    string requestTime?;
+public type ConsumerLoanBodyOfficers record {
     # Indicates the extensions
     record {} extensions?;
-    # Identifier of the customer
-    @constraint:String {maxLength: 15}
-    string customerId?;
-    # The name that is displayed for the event
-    @constraint:String {maxLength: 90}
-    string eventName?;
-    # Contains the creation date
-    @constraint:String {maxLength: 11}
-    string creationDate?;
-};
-
-# Represents the Queries record for the operation: getCustomerSwiftAddress
-public type GetCustomerSwiftAddressQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: deleteCustomerGroup
-public type DeleteCustomerGroupHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getCustomerSweeps
-public type GetCustomerSweepsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerOpportunitiesResponseBodyInner record {
-    # Indicates the sales opportunity score of a product
-    @constraint:String {maxLength: 5}
-    string score?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Contains the name used for display or enrichment purposes
-    @constraint:String {maxLength: 35}
-    string displayName?;
-    # Contains status of the data rights request.Allowed values are INITIATED, INPROGESS, EXTENDED, COMPLETED, REJECTED
-    @constraint:String {maxLength: 35}
-    string status?;
-};
-
-# CustomerGroupResponse
-public type CustomerGroupResponse record {
-    ScreenHeader header?;
-    CustomerGroupResponseBody body?;
-};
-
-# Represents the Queries record for the operation: createCustomerPrintAddress
-public type CreateCustomerPrintAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# CustomerExitStatusResponse
-public type CustomerExitStatusResponse record {
-    QueryHeader header?;
-    CustomerExitStatusResponseBody body?;
-};
-
-public type ProspectCustomersResponseBodyInner_socialNetworks record {
-    # Social Network Identification of the person/entity
-    @constraint:String {maxLength: 70}
-    string socialNetworkId?;
-};
-
-# CustomerClosureResponse1
-public type CustomerClosureResponse1 record {
-    QueryHeader header?;
-    CustomerClosureResponse1Body body?;
-};
-
-public type CustomerRelationshipResponse1BodyInner_originatingRelation record {
-    # Customer Relationship of originating party. It is used in conjunction with the relatedRelationReference attribute.
-    @constraint:String {maxLength: 35}
-    string relationReference?;
-    # Specifies customer information.
-    @constraint:String {maxLength: 35}
-    string party?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field.
-    @constraint:String {maxLength: 10}
-    string partyId?;
-    # Used to record the percentage of ownership in the relationship. For example an entity may be partially or wholly owned by another entity. This will only be allowed to be entered if the relation is indicated as a type allowing Ownership
-    @constraint:String {maxLength: 6}
-    string owningPercent?;
-    # Originating Party's relationship to the underlying portfolio. Should be a valid relationship.
-    @constraint:String {maxLength: 35}
-    string partyRelation?;
-    # Contains the identifier used for the role played by the party or customer in the contract or account
-    @constraint:String {maxLength: 20}
-    string partyRole?;
-    # Effective date from which there is a relationship between originating party and the portfolio.
-    string partyEffectiveDate?;
-    # Details about the Customer Relationships and Party Relationships
-    CustomerRelationshipResponse1BodyInner_relationships[] relationships?;
-};
-
-# PartyRelationshipResponse1
-public type PartyRelationshipResponse1 record {
-    QueryHeader header?;
-    PartyRelationshipResponse1Body body?;
-};
-
-public type CustomerInformationResponseBodyInner_employmentDetails record {
-    # Identifies the employment status of the customer
-    @constraint:String {maxLength: 45}
-    string employmentStatus?;
-};
-
-public type CustomerClosureResponse1Body CustomerClosureResponse1BodyInner[];
-
-public type CustomerInformationResponseBody CustomerInformationResponseBodyInner[];
-
-public type CustomerResponseBodyEmployDetails record {
-    # Occupation of the customer
-    @constraint:String {maxLength: 35}
-    string occupation?;
-    # Gross Salary details of the customer
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal salaryAmount?;
-    # Starting date of the customer's employment
-    string employStartDate?;
-    # Currency in which the Salary information of the customer is maintained
-    @constraint:String {maxLength: 50}
-    string salaryCurrency?;
-    # Name of the customer's employer
-    @constraint:String {maxLength: 150}
-    string employerName?;
-    # Employment Job Title of the Customer
-    @constraint:String {maxLength: 55}
-    string employJobTitle?;
-    # Employment status of the customer
-    @constraint:String {maxLength: 35}
-    string employStatus?;
-};
-
-public type StandingOrdersResponseBodyInner_accountWithBanks record {
-    # Identifies the bank where the beneficiary maintains his account
-    @constraint:String {maxLength: 35}
-    string accountWithBank?;
-};
-
-# Represents the Queries record for the operation: createCustomerCharge
-public type CreateCustomerChargeQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerRestrictionsResponseBodyPostingRestrictIds record {
-    # Identifies any restrictions for posting entries that are imposed on a Customer
-    @constraint:String {maxLength: 2}
-    string postingRestrictId?;
-};
-
-# Represents the Headers record for the operation: deleteCustomerEmailAddress
-public type DeleteCustomerEmailAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerSweepsResponseBody CustomerSweepsResponseBodyInner[];
-
-public type StandingOrdersResponseBodyInner record {
-    # Identifies the type of the order. Possible values are Single, Ifdone, Revol, oco. Single order - only one order item may be input. If done order -  If one order gets executed, the other order is also executed immediately. Revolving order -  based on the condition specified, it will wait for both the deals to be executed simultaneously. OCO -If one order gets executed, then the other order gets cancelled
-    @constraint:String {maxLength: 5}
-    string orderType?;
-    # Account name details of the creditor
-    string creditAccountName?;
-    # This is used to specify a percentage value, which would be applied on the accounts excess amount(Accounts cleared balance - CURRENT.AMOUNT) to arrive at 
-    @constraint:String {maxLength: 6}
-    string percentageOverCurrentBalance?;
-    # Country of the beneficiary account number. For example: US, IN, EU
-    @constraint:String {maxLength: 2}
-    string beneficiaryCountryId?;
-    # Display name or short name of the account specified
-    @constraint:String {maxLength: 35}
-    string accountName?;
-    # Indicates the name of payment order product 
-    @constraint:String {maxLength: 10}
-    string paymentOrderProductName?;
-    # Identifies the bank where the beneficiary maintains his account
-    StandingOrdersResponseBodyInner_accountWithBanks[] accountWithBanks?;
-    # Indicates the date based on current frequency
-    string currentFrequencyDate?;
-    # Indicates the bearer of the charges. For example: BEN( All transaction charges are to be borne by the beneficiary customer.), OUR (All transaction charges are to be borne by the ordering customer.), SHA (Transaction charges on the Sender's side are to be borne by the ordering customer, transaction charges on the Receiver's side are to be borne by the beneficiary customer.)
-    @constraint:String {maxLength: 3}
-    string beneficiaryOurCharges?;
-    # Specifies the frequency in which the payment application(periodic payments) execute the payment instruction
-    @constraint:String {maxLength: 50}
-    string frequency?;
-    # BIC (Bank Identifier Code) of the beneficiary customer 
-    @constraint:String {maxLength: 11}
-    string beneficiaryBIC?;
-    # Indicates the current frequency of the standing order
-    @constraint:String {maxLength: 35}
-    string currentFrequency?;
-    # Identifies the current end date of the standing order for the currency, amount and frequency specified. When the bank has received from the customer clear instructions which stipulate that the standing order must  only be executed during a determined period of time.  This is the date of the last execution of the standing order or when the customer has requested the bank to pay a certain amount during a determined period of time and then another amount starting from that date. In this case, this field specifies the end date of the first standing order amount.  After that date the second amount will then be executed
-    string currentEndDate?;
-    # Flag to indicate that the standing order should execute until future notice, i.e. until an end date is provided
-    @constraint:String {maxLength: 10}
-    string futureNotice?;
-    # The unique standing order identifier
-    @constraint:String {maxLength: 35}
-    string standingOrderId?;
-    # This field holds the reason for change in IB.STATUS field
-    string payTo?;
-    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
-    @constraint:String {maxLength: 3}
-    string currencyId?;
-    # This is the payment amount
-    @constraint:Number {maxValue: 18}
-    decimal amount?;
-    # STO initiation start date
-    string stoStartDate?;
-    # Contains the name used for display or enrichment purposes
-    StandingOrdersResponseBodyInner_displayNames[] displayNames?;
-    # International Bank Account Number (IBAN) of the beneficiary account, required only for International transfers/payments outside the Bank. For example: GB98 MIDL07009312345678, FR7630006000011234567890189
-    @constraint:String {maxLength: 35}
-    string beneficiaryIBAN?;
-    # Current number of the record
-    @constraint:String {maxLength: 6}
-    string versionNumber?;
-    # The identifier of the counter party's account
-    @constraint:String {maxLength: 35}
-    string counterPartyAccountId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # General status of the record. Possible values: - null - authorised - IHLD - input, on hold - INAU - input, not authorised - INA2 - input, authorised, pending second authorisation - INAO - input, not authorised with blocking overrides - RNAU - reversed, not authorised - RNAO - reversed, not authorised with blocking overrides
-    @constraint:String {maxLength: 6}
-    string recordStatus?;
-    # The sort code or the national clearing code of the beneficiary bank. 
-    string bankSortCode?;
-    # Method chosen to make the payment
+    # Specify the primary officer responsible for the arrangement
     @constraint:String {maxLength: 4}
-    string paymentMethod?;
-    # Credit account identifier of the payment or transaction
-    string creditAccountId?;
-    # Contains the date on which the transaction or payment gets initiated
-    string startDate?;
-    # Indicates the reference of the financial institution that allows access to the beneficiary information
+    string primaryOfficer?;
+};
+
+public type BalanceResponseBodyProperties record {
+    BalanceResponseBodyPropertiesBalanceMaintenance balanceMaintenance?;
+};
+
+# Represents the Queries record for the operation: updateRepaymentDate
+public type UpdateRepaymentDateQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: createRepaymentSimulation
+public type CreateRepaymentSimulationQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: updateLoanSimulation
+public type UpdateLoanSimulationQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# PaymentHolidaySimResponse
+public type PaymentHolidaySimResponse record {
+    QueryHeader header?;
+    PaymentHolidaySimResponseBody body?;
+};
+
+public type ArrangementHeader record {
+    # The status of the transaction
+    string transactionStatus?;
+    ArrangementHeaderAudit audit?;
+    # The Identifier of the aa record created
+    string aaaId?;
+    # The Identifier of the record created
+    string id?;
+    # Status of the API(success/failed)
+    string status?;
+    # The unique identifier/Message Reference of the record created
+    string uniqueIdentifier?;
+};
+
+public type LoanDecreaseAmountResponseBodyProperties record {
+    LoanInterestResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance subparticipant?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+};
+
+public type LoanPayoffAutoSimulationResponseBody record {
+    LoanSimulationResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanPayoffSimulationResponseBodyProperties properties?;
+};
+
+public type LoanAccountBodyBusinessDayCentres record {
+    # The country or region code to be considered for determining the holidays and used while calculating the schedule dates
+    @constraint:String {maxLength: 4}
+    string businessDayCentre?;
+};
+
+# BNPLLoanResponse
+public type BNPLLoanResponse record {
+    ArrangementHeader header?;
+    BNPLLoanResponseBody body?;
+};
+
+public type WriteOffLoansResponseBodyProperties record {
+    WriteOffLoansResponseBodyPropertiesBalanceMaintenance balanceMaintenance?;
+};
+
+public type RepaymentDateResponseBody record {
+    ArrangementResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    RepaymentDateResponseBodyProperties properties?;
+};
+
+# SimulationCapturesResponse
+public type SimulationCapturesResponse record {
+    ArrangementHeader header?;
+    SimulationCapturesResponseBody body?;
+};
+
+# LoanCollateralsResponse
+public type LoanCollateralsResponse record {
+    QueryHeader header?;
+    LoanCollateralsResponseBody body?;
+};
+
+# Represents the Queries record for the operation: createRepaymentDateChangeSimulation
+public type CreateRepaymentDateChangeSimulationQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Headers record for the operation: createAutoSimulations
+public type CreateAutoSimulationsHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createMortgage
+public type CreateMortgageQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type CommercialLoanResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    BNPLLoanResponseBodyPropertiesInheritance principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance participant?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance accreporting?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance periodicCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance prefpricing?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesInheritance account?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+# Represents the Queries record for the operation: createRepaymentDateChangeSimulationSchedules
+public type CreateRepaymentDateChangeSimulationSchedulesQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type ExternalEventStatusResponseBody ExternalEventStatusResponseBodyInner[];
+
+# LoanArrangementPayoffResponse
+public type LoanArrangementPayoffResponse record {
+    ArrangementHeader header?;
+    LoanArrangementPayoffResponseBody body?;
+};
+
+public type BNPLLoanResponseBody record {
+    BNPLLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    BNPLLoanResponseBodyProperties properties?;
+};
+
+public type ArrangementDetailsResponseBody ArrangementDetailsResponseBodyInner[];
+
+public type WriteOffBillLoansResponseBodyPropertiesBalanceMaintenance record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    WriteOffBillLoansBodyBalanceMaintenance body?;
+};
+
+public type BNPLLoanBodyCommitment record {
+    # This is the payment amount
+    @constraint:String {maxLength: 19}
+    string amount?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Flag to define if the limits are to be booked or not at the time of issuing the pre-advice LC. Allowed values: - YES - NO (same as null) - null (default)
+    "YES"|"NO" updateLimit?;
+    # Indicates maturity date of the contract
+    @constraint:String {maxLength: 11}
+    string maturityDate?;
+    # Indicates the period to which the BID and OFFER rates apply
+    @constraint:String {maxLength: 6}
+    string term?;
+    # Indicates the amount by which the original commitment amount increased or decreased
+    @constraint:String {maxLength: 19}
+    string changeAmount?;
+    # Indicates if commitment is revolving or non revolving in nature
+    "NO"|"PAYMENT"|"PREPAYMENT" revolving?;
+};
+
+public type ArrangementDetailsResponseBodyInner record {
+    # Indicates an unique identifier of an account
+    string arrangementId?;
+    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
+    string accountId?;
+    # Indicates the date on which the arrangement was created
+    string arrangementStartDate?;
+    # Status of the arrangement. E.g. AUTH, CLOSE, UNAUTH etc
+    @constraint:String {maxLength: 15}
+    string arrangementStatus?;
+    # Indicates the original contract date of the arrangement which was migrated from the legacy system
+    @constraint:String {maxLength: 11}
+    string originalContractDate?;
+    # Indicates the extension data
+    record {} extensions?;
+    # Identifier of the customer
     @constraint:String {maxLength: 17}
-    string beneficiaryId?;
-};
-
-public type ProspectCustomersResponseBodyInner_customerNames record {
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation.
-    @constraint:String {maxLength: 40}
-    string customerName?;
-};
-
-# Represents the Headers record for the operation: getCustomerPersonalDetails
-public type GetCustomerPersonalDetailsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerGroupsResponseBody CustomerGroupsResponseBodyInner[];
-
-public type StandingOrdersResponseBodyInner_displayNames record {
-    # Contains the name used for display or enrichment purposes
+    string customerId?;
+    # Indicates the customer who is the legal owner of the arrangement and is the responsible customer of the contract with bank
     @constraint:String {maxLength: 35}
-    string displayName?;
+    string beneficialOwner?;
+    # Indicates the description of the Product
+    string productDescription?;
 };
 
-public type CustomerRelationshipsResponseBodyRelations record {
-    # Details about the Customer Relationships and Party Relationships
-    @constraint:String {maxLength: 3}
-    string relationship?;
-    # Identifies the Customer id details of the Related Customer
-    @constraint:String {maxLength: 10}
-    string relatedCustomerId?;
+public type PaymentHolidayResponseBodyProperties record {
+    PaymentHolidayResponseBodyPropertiesPaymentHoliday paymentHoliday?;
 };
 
-# CustomerExitStatusParamResponse
-public type CustomerExitStatusParamResponse record {
-    QueryHeader header?;
-    CustomerExitStatusParamResponseBody body?;
+public type MortgageBodyPrincipalint record {
+    # If the charge calculated for this tier is less than the amount defined in this field then minimum amount will be the charge amount for this tier
+    @constraint:String {maxLength: 6}
+    string tiers?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Interest amount
+    LinkedRateLoanBodyInterest[] interest?;
+    # Specifies the Interest component of the linked contract that should be referred for getting the Interest Rate
+    @constraint:String {maxLength: 30}
+    string linkedProperty?;
+    # attributes
+    MortgageBodyAttributes[] attributes?;
+    # Indicates the date from when the instruction or condition is effective
+    @constraint:String {maxLength: 30}
+    string effectiveFromDate?;
 };
 
-# BicOwnersResponse
-public type BicOwnersResponse record {
-    QueryHeader header?;
-    BicOwnersResponseBody body?;
-};
-
-# Represents the Headers record for the operation: createCustomerGroup
-public type CreateCustomerGroupHeaders record {
+# Represents the Headers record for the operation: createLoanDrawdownOfferRenegotiationSchedules
+public type CreateLoanDrawdownOfferRenegotiationSchedulesHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
     # User who initiated the transaction
     string userRole?;
     # Identifies the device type
     string deviceId?;
+};
+
+# Represents the Headers record for the operation: updateRepaymentDateAndSchedules
+public type UpdateRepaymentDateAndSchedulesHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# LoanInformationResponse
+public type LoanInformationResponse record {
+    QueryHeader header?;
+    LoanInformationResponseBody body?;
+};
+
+public type LinkedRateLoanBodyMargins1 record {
+    # This is the rate applied over the default interest rate or commission rate to achieve the actual rate
+    @constraint:String {maxLength: 12}
+    string marginRate?;
+    # Defines whether there are single or multiple margins to be considered while arriving at the applicable interest rate  Allowed values:  null (default): multiple margins may be defined SINGLE: only a single margin is allowed
+    @constraint:String {maxLength: 15}
+    string marginType?;
+    # This is the operand which determines if a margin is added or subtracted from the interest rate. Options are ADD or SUB
+    @constraint:String {maxLength: 9}
+    string marginOperation?;
+};
+
+public type EvidenceResponseBodyPropertiesEvidence record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    EvidenceBodyEvidence body?;
+};
+
+public type ConsumerLoanResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
+    ConsumerLoanBodyPartyIds[] partyIds?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # Identifies the currency. E.g. USD, GBP etc
+    @constraint:String {maxLength: 3}
+    string currency?;
+    # Determines the status of events sent to external system from the current system for the given activity
+    @constraint:String {maxLength: 35}
+    string externalEventStatus?;
+    # It is a date on/upon which an account is considered to take effect
+    @constraint:String {maxLength: 11}
+    string arrangementEffectiveDate?;
+};
+
+# Represents the Headers record for the operation: createSimulationCaptures
+public type CreateSimulationCapturesHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type WriteOffBalanceLoansResponseBodyPropertiesBalanceMaintenance record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    WriteOffBalanceLoansBodyBalanceMaintenance body?;
+};
+
+# LoanSettlementResponse
+public type LoanSettlementResponse record {
+    ArrangementHeader header?;
+    LoanSettlementResponseBody body?;
+};
+
+public type LoanPayoffDetailsResponseBodyInner_payments record {
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    @constraint:String {maxLength: 19}
+    string paymentType?;
+    # Indicates the payment amount for the defined term, amount and payment frequency. It will include principal, charge and interest
+    @constraint:String {maxLength: 19}
+    string paymentAmount?;
 };
 
 # Provides a set of configurations for controlling the behaviours when communicating with a remote HTTP endpoint.
@@ -3241,116 +3415,201 @@ public type ConnectionConfig record {|
     boolean laxDataBinding = true;
 |};
 
-public type CustomerExitStatusParamResponseBodyInner record {
-    # The field reflects the description of, respective customer exit status
-    @constraint:String {maxLength: 70}
-    string exitStatusDescription?;
+public type RepaymentDateChangeSimulationSchedulesResponseBodyPropertiesSettlement record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    RepaymentDateChangeSimulationSchedulesBodySettlement body?;
+};
+
+# Represents the Queries record for the operation: createLoanDrawdownOfferAcceptanceSchedules
+public type CreateLoanDrawdownOfferAcceptanceSchedulesQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanArrangementPayoffResponseBody record {
+    SimulationCapturesResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    record {} properties?;
+};
+
+# Represents the Queries record for the operation: updateEvidence
+public type UpdateEvidenceQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type BNPLLoanResponseBodyPropertiesCommitment record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    BNPLLoanBodyCommitment body?;
+};
+
+public type OverpaymentDetailsResponseBodyInner record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 30}
+    string arrangementId?;
+    # Indicates whether the overpayment type is allowed or restricted
+    string overpay?;
+    # Indicates the remaining overpayment limit available for the period
+    string remainingYearToDate?;
     # Indicates the extension data
     record {} extensions?;
-    # Specifies if the bank user will be allowed to re-open a professional relationship with the respective prospect or customer by removing its exit status
-    @constraint:String {maxLength: 35}
-    string allowRemoveExitStatus?;
-    # The field indicates the reason for exiting a relation with a prospect or customer
-    CustomerExitStatusParamResponseBodyInner_allowedExitReasons[] allowedExitReasons?;
-    # The field reflects the exit status ID of a customer or prospect from the parameterization table CUSTOMER.EXIT.STATUS
-    @constraint:String {maxLength: 35}
-    string customerExitStatusId?;
+    # Indicates the base period for a overpayment type. This can be calendar or arrangement
+    string periodType?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    string productId?;
+    # Denotes the type of overpayment.It can have values either as regular or lumpsum
+    string overpayType?;
+    # Indicates the value of overpayment limit
+    string overpayLimitValue?;
+    # Indicates the total amount which will be lent or deposited for the term
+    string commitmentAmount?;
+    # Indicates the total utilised overpayment limit
+    string limitUtilised?;
+    # Indicates the base type on which overpay limit is derived .It can have values either as amount, total loan amount or principal loan amount
+    string overpayLimitType?;
+    # Indicates the utilised overpayment limit within the current rule period
+    string utilisedYearToDate?;
 };
 
-# Represents the Queries record for the operation: createCustomerRelationship
-public type CreateCustomerRelationshipQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Queries record for the operation: createCustomerGroup
-public type CreateCustomerGroupQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerDeliveryOptionsResponseBodyInner_deliveryPreferences record {
-    # Message group name that provides details of all Messages to be triggered.
-    @constraint:String {maxLength: 35}
-    string messageGroup?;
-    # Carrier to be used for processing the messages
-    @constraint:String {maxLength: 10}
-    string carrier?;
-    # Indicates if the related delivery carrier details will be added or removed as a preferred carrier for communication
-    boolean isRequired?;
-    # Contains the communication address of the customer or full address of the property
-    @constraint:String {maxLength: 3}
-    string address?;
-};
-
-# CustomerCreditCardsResponse
-public type CustomerCreditCardsResponse record {
-    QueryHeader header?;
-    CustomerCreditCardsResponseBody body?;
-};
-
-public type CustomerProfileResponseBodyCustomerRatings record {
-    # Indicates the rating of the customer
-    @constraint:String {maxLength: 10}
-    string customerRating?;
-};
-
-# Represents the Headers record for the operation: deleteCustomerPrintAddress
-public type DeleteCustomerPrintAddressHeaders record {
+# Represents the Headers record for the operation: createLoanDrawdownOfferAcceptanceSchedules
+public type CreateLoanDrawdownOfferAcceptanceSchedulesHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
     # User who initiated the transaction
     string userRole?;
     # Identifies the device type
     string deviceId?;
 };
 
-# Represents the Queries record for the operation: updateCustomerRelationship
-public type UpdateCustomerRelationshipQueries record {
+# Represents the Headers record for the operation: updateEvidence
+public type UpdateEvidenceHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type EvidenceResponse1Body EvidenceResponse1BodyInner[];
+
+public type LoanSettlementBodyPayoutpropertyclasses record {
+    # Contains the different payout options, for example charge, interest or principal on which the payout settlement instructions would be processed
+    @constraint:String {maxLength: 30}
+    string payoutpropertyclass?;
+};
+
+public type PaymentSchedulesProjectionResponseBodyInner record {
+    # Total amount
+    @constraint:Number {maxValue: 19}
+    decimal totalAmount?;
+    # Indicates the extension data
+    record {} extensions?;
+    # Contains the aggregate outstanding principal amount thereof after giving effect to any borrowings and prepayments or repayments of Committed Loans
+    @constraint:Number {maxValue: 19}
+    decimal outstandingAmount?;
+    # The type of event schedule. The main ones are interest payment (IP) , principal increase (PI), rate reset (RR)
+    string scheduleType?;
+    # The accrued Interest due or accrued
+    @constraint:Number {maxValue: 19}
+    decimal interestAmount?;
+    # Retrieves the charge amount after redeem
+    @constraint:Number {maxValue: 19}
+    decimal chargeAmount?;
+    # Contains the date in which the payment will be sent out. Date in the format YYYYMMDD. E.g. 20191231
+    string paymentDate?;
+    # Total amount of taxes applicable on all commission or charges calculated for the transaction/payment
+    @constraint:String {maxLength: 20}
+    string taxAmount?;
+    # Specifies the price for the first leg of the repo contract in specified currency.  Accepts numeric with decimal values. Allowed values are a maximum of 19 digits of numerics including decimals may be entered
+    @constraint:Number {maxValue: 19}
+    decimal principalAmount?;
+};
+
+public type EvidenceBodyCovenants record {
+    # Specifies the evidence requirement of a covenant which defines the document specification to be submitted on a periodic basis
+    @constraint:String {maxLength: 35}
+    string covenantsType?;
+    # Specifies the frequency on which the covenant must be requested. The frequency could be defined as weekly, monthly, yearly, etc. The accepted format is e0Y e0M e0W e0D
+    @constraint:String {maxLength: 30}
+    string covenantsFrequency?;
+    # Contains the number of days the covenant must be requested before the due date
+    @constraint:String {maxLength: 35}
+    string covenantsNoticeDays?;
+    # Specifies the value that is identified to fulfil the metrics
+    @constraint:String {maxLength: 35}
+    string covenantsEvaluationValue?;
+    # Specifies the category on which the evidence requirement of the covenant can be grouped, e.g., FINANCIAL, LEGAL
+    @constraint:String {maxLength: 35}
+    string covenantsCategory?;
+    # Specifies a valid related requirement that fulfils a metrics for the defined covenant
+    @constraint:String {maxLength: 35}
+    string covenantsMetrics?;
+    # Specifies the start date on which the covenant must be requested. The accepted format is YYYYMMDD
+    @constraint:String {maxLength: 30}
+    string covenantsInitialDate?;
+    # Specifies the consequences defined when a covenant is not submitted/met
+    @constraint:String {maxLength: 35}
+    string covenantsRestriction?;
+    # Specifies the operand by which the covenant metrics is measured. The accepted values are Less Than, Greater Than, Equals, Not Equal, Greater Than Or Equal, Lesser Than Or Equal
+    @constraint:String {maxLength: 35}
+    string covenantsEvaluationOperand?;
+};
+
+public type LoanAccountResponseBodyPropertiesAccount record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    LoanAccountBodyAccount body?;
+};
+
+public type LoanInterestBodyItems record {
+    # Indicates actual restricted item for holiday. It holds the value based on the holiday restriction type
+    @constraint:String {maxLength: 35}
+    string holidayRestrictItem?;
+};
+
+public type LoanBillsResponseBody LoanBillsResponseBodyInner[];
+
+# Represents the Queries record for the operation: createSimulationCaptures
+public type CreateSimulationCapturesQueries record {
     # The identifier to indicate if it is set to only validate or not
     @http:Query {name: "validate_only"}
     boolean validateOnly?;
 };
 
-public type ScreenHeaderAudit record {
-    # Time taken to response by Transact
-    @jsondata:Name {value: "T24_time"}
-    int:Signed32 t24Time?;
-    # Time taken to parse the response by IRIS
-    @jsondata:Name {value: "responseParse_time"}
-    decimal responseParseTime?;
-    # The CURR.NO. of the record
-    string versionNumber?;
-    # Time taken to parse the request by IRIS
-    @jsondata:Name {value: "requestParse_time"}
-    decimal requestParseTime?;
-};
+public type LoanCollateralsResponseBody LoanCollateralsResponseBodyInner[];
 
-# Represents the Queries record for the operation: getCustomerReportingStatus
-public type GetCustomerReportingStatusQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Identifier of the customer
-    string customerId;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: getPartyBasicDetails
-public type GetPartyBasicDetailsHeaders record {
+# Represents the Headers record for the operation: createLoanDrawdownOfferRenegotiation
+public type CreateLoanDrawdownOfferRenegotiationHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Headers record for the operation: getLoanDetails
+public type GetLoanDetailsHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
     # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
     boolean disablePagination?;
     # User who initiated the transaction
@@ -3359,465 +3618,352 @@ public type GetPartyBasicDetailsHeaders record {
     string deviceId?;
 };
 
-# Represents the Headers record for the operation: updateCustomerRelationship
-public type UpdateCustomerRelationshipHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: updateDeliveryPreference
-public type UpdateDeliveryPreferenceHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type PartyRelationshipResponseBody record {
+public type SimulationCapturesResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Contains the reason for performing the current activity
+    @constraint:String {maxLength: 100}
+    string reason?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # The override message is captured  that was generated at the time of commitment of the transaction to the database
+    BNPLLoanBodyOverrides[] overrides?;
+    # The unique identifier to specify an arrangement reference which is act as a Master for the arrangement being created
+    @constraint:String {maxLength: 20}
+    string masterArrangementId?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates the runner Reference ID for simulation activity
+    @constraint:String {maxLength: 30}
+    string simulationRunReference?;
     # Indicates the extensions
     record {} extensions?;
-    PartyRelationshipBodyPartyRelationships[] partyRelationships?;
-    # A description of the Party Relationship
-    PartyRelationshipBodyPartyDisplayNames[] partyDisplayNames?;
-};
-
-# Represents the Queries record for the operation: getPartyBasicDetails
-public type GetPartyBasicDetailsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type PartyBasicDetailsResponseBodyInner_postCodes record {
-    # Identifies the address postal code for the customer or the property
+    # Contains the transaction amount. This is based on the currency, either local or foreign currency
+    @constraint:Number {minValue: 0, maxValue: 19}
+    decimal transactionAmount?;
+    # Name of the role or sub contract that is displayed, for eg: Payments Inputter, Administrator, Clerk and etc
     @constraint:String {maxLength: 35}
-    string postCode?;
-};
-
-public type CustomerDigitalChannelsResponseBody CustomerDigitalChannelsResponseBodyInner[];
-
-# Represents the Headers record for the operation: updatePartyRelationship
-public type UpdatePartyRelationshipHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: updateCustomerExitStatusParam
-public type UpdateCustomerExitStatusParamQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type UnapprovedCustomerGroupResponseBodyInner record {
-    # The name that is displayed for the group
-    @constraint:String {maxLength: 40}
-    string groupName?;
-    # Indicates the type of entity that identifies the group eg. Parent or Member
-    @constraint:String {maxLength: 25}
-    string groupType?;
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    @constraint:String {maxLength: 9}
-    string companyId?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Indicates the details of Relationship maintained by the Customer or Entity
-    UnapprovedCustomerGroupResponseBodyInner_relationshipDetails[] relationshipDetails?;
-    # Contains sub group details such as sub group id, sub group name, sub group customer etc
-    UnapprovedCustomerGroupResponseBodyInner_subGroupDetails[] subGroupDetails?;
-    # Unique ID of the group
-    @constraint:String {maxLength: 35}
-    string groupId?;
-    # Contains the description of purpose of the payment
-    @constraint:String {maxLength: 35}
-    string description?;
-    # Identifier of customer group purpose
-    @constraint:String {maxLength: 15}
-    string groupPurposeId?;
-};
-
-public type OverdueSettlementsResponseBodyInner record {
-    # The nominal quantity
-    @constraint:String {maxLength: 19}
-    string quantity?;
-    # The identifier of the instrument
-    @constraint:String {maxLength: 12}
-    string instrumentId?;
-    # Currency of the account. For example: USD, GBP
-    @constraint:String {maxLength: 3}
-    string accountCurrency?;
-    # Standard date field which records trade date of the account
-    string tradeDate?;
-    # Indicates the value date on which the underlying accounting entry is to be given value (for interest purposes)
-    string valueDate?;
-    # Specifies the counterparty with whom the trade is to be effected
-    OverdueSettlementsResponseBodyInner_broker[] broker?;
-    # The trade currency is the settlement currency for the trade
-    @constraint:String {maxLength: 3}
-    string tradeCurrency?;
-    # Unique transaction identifier for retrieving the details of the transaction. For example: FT0102030333 etc
-    @constraint:String {maxLength: 97}
-    string transactionId?;
-    # The name that is displayed for the instrument, taken from the security master
-    string instrumentName?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Id of the portfolio or security account
-    @constraint:String {maxLength: 18}
-    string portfolioId?;
-    # The quantity outstanding from/to the customer
-    @constraint:String {maxLength: 19}
-    string customerOutstandingQuantity?;
-    # Person designated as depository by the company in or pursuant to this Indenture, and, unless otherwise provided with respect to any security, any successor to such person
-    @constraint:String {maxLength: 10}
-    string depository?;
-    # The name that is displayed for the depository
-    string depositoryName?;
-    # The name that is displayed for the portfolio
-    @constraint:String {maxLength: 10}
-    string portfolioName?;
-    # The amount outstanding from/to the customer
-    @constraint:Number {maxValue: 19}
-    decimal customerOutstandingAmount?;
-};
-
-# Represents the Headers record for the operation: getCustomerExitStatus
-public type GetCustomerExitStatusHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getCustomerMandates
-public type GetCustomerMandatesHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: createCustomerCharge
-public type CreateCustomerChargeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: getCustomerPersonalDetails
-public type GetCustomerPersonalDetailsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Queries record for the operation: createMessages
-public type CreateMessagesQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerResponseBodyOfficePhoneNumbers record {
-    # The office phone number of the customer
-    @constraint:String {maxLength: 55}
-    string officePhoneNumber?;
-};
-
-public type ProspectCustomerBodyProspectLegalDetails record {
-    # Unique reference number of the legal documents submitted as identification proof
-    @constraint:String {maxLength: 20}
-    string legalId?;
-    # Name of the legal documents such as passport, driving licence etc., provided as identification proof
-    @constraint:String {maxLength: 35}
-    string legalDocumentName?;
-};
-
-public type CustomerPersonalDetailsResponseBodyInner_residenceDetails record {
-    # Residence Status of the Customer for CRM purpose like Owner, Tenant, Householder, Nester etc.
-    @constraint:String {maxLength: 35}
-    string residenceStatus?;
-    # Residence type of the customer like Farmhouse, Independent house, Residential Apartment, Serviced Apartments
-    @constraint:String {maxLength: 35}
-    string residenceType?;
-    # Market Value of the customer's residence
-    @constraint:Number {maxValue: 19}
-    decimal residenceValue?;
-    # Mortgage value of the residence property of the customer
-    @constraint:Number {maxValue: 19}
-    decimal residenceMortgageValue?;
-    # The date since the user has obtained the residence.
-    string residenceSince?;
-};
-
-public type CustomerIdResponseBodyInner record {
-    # Indicates the extension data
-    record {} extensions?;
+    string roleName?;
     # Identifier of the customer
-    string customerId?;
+    BNPLLoanBodyCustomerIds[] customerIds?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
+    @constraint:String {maxLength: 3}
+    string currencyId?;
+    # Id of the product property
+    BNPLLoanBodyProperties[] properties?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
 };
 
-public type AlertRequestsResponseBodyInner_fields record {
-    # Contains the name of the display for enrichment purposes
-    @constraint:String {maxLength: 50}
-    string fieldDisplayName?;
-    # This field along with fieldName and value, defines the conditions for the alert to be triggered.
+public type BillsResponseBodyProperties record {
+    BillsResponseBodyPropertiesBalanceMaintenance balanceMaintenance?;
+};
+
+public type RepaymentDateChangeSimulationSchedulesBodySettlement record {
+    # Indicates the beneficiary the payment should be made to in default
+    "Default Beneficiary" defaultBeneficiary?;
+    # Contains the direct debit mandate reference (dd) when the settlement method is set to direct debit. The dd reference is typically the account number followed by a suffix, for example 15245.1
+    "DD Mandate Ref" ddMandateRef11?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    "Payment Type" paymentType11?;
+    # Flag to indicate whether Payout Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    "Payout Settlement" payoutSettlement1?;
+    # Contains the transaction type used by the transaction recycler for retrying the debits
+    "Payin RC Type" payinRcType1?;
+    # Contains the transaction recycling rules which define the set of retry conditions
+    "Payin RC Condition" payinRcCondition1?;
+    # Contains the account from which funds are to be debited against the payment type
+    "Payin Account" payinAccount11?;
+    # Contains the percentage of the payment amount used for settlement of the bills due
+    "Payin Percentage" payinPercentage11?;
+    # Contains the account to which a settlement amount is transferred
+    "Payout" payoutAcctSettle?;
+    # The account to which a settlement amount is transferred
+    "Payout Account" payoutAccount11?;
+    # Contains the beneficiary Id used for settlement of the bills due
+    "Payin Beneficiary" payinBeneficiary11?;
+    # Contains the transaction type used to debit the customer account for settlement of the bills due
+    "Payin Activity" payinActivity11?;
+    # Default settlement account to be used for all incoming payments and outgoing settlements when a specific settlement account is not provided for each payment type
+    "Default Settlement Account" defaultSettlementAccount?;
+    # Contains the rule on which the system should utilise the funds available in the pay in account during the settlement process. Options are Full, Partial and None
+    "Payin Account Debit Rule" payinAcDbRule1?;
+    # Contains the finite amount of the payment used for settlement of the payables
+    "Payout Amount" payoutAmount11?;
+    # The beneficiary that payment should be made to
+    "Payout Beneficiary" payoutBeneficiary11?;
+    # Contains the finite amount of the payment used for settlement of the bills due
+    "Payin Amount" payinAmount11?;
+    # Contains the transaction type used to credit the customer account for settlement of the payables
+    "Payout Activity" payoutActivity11?;
+    # Indicates the Transaction Cycler condition to be used for the payout property to allow variation of different retry conditions
+    "Payout RC Condition" payoutRcCondition1?;
+    # Contains the percentage of the payment amount used for settlement of the payable
+    "Payout Percentage" payoutPercentage11?;
+    # Contains the account from which funds are to be debited against the payment type
+    "Payin" payinAcctSettle?;
+    # Contains the payment order product id for which the payment is initiated
+    "Payin Product" payinPoProduct11?;
+    # If this field is set to YES, then whenever user changes the Payin settlement accounts then the modified accounts should affect the pending funding requests raised for the current overdue Bills. If this field is set to NO or blank then the changes to the payin settlement accounts apply to the next due bills
+    @constraint:String {maxLength: 3}
+    string updatePendingRetry?;
+    # Indicates the Transaction Cycler type  reference to be used during handoff to inform the recycler what type of transaction is being handed-off
+    "Payout RC Type" payoutRcType1?;
+    # Specifies the account at which the interest or payment settlement is to be made
+    "Account Settlement" accountSettlement?;
+    # Indicates the activity used for payout when payout of funds need to happen automatically
+    "Payout Settle Activity" payoutSettleActivity1?;
+    # Contains the payout payment order product for which payment is initiated
+    "Payout Product" payoutPoProduct11?;
+    # Indicates the activity to be used to settle the dues of the current contract
+    "Payin Settle Activity" payinSettleActivity1?;
+    # Contains the payout payment order product for which payment is initiated
+    "Payout Property" payoutProperty11?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Flag to indicate whether Payin Settlement instruction is required or not. Valid input is Yes or No. Default value is Yes
+    "Payin Settlement" payinSettlement1?;
+    # Contains the different payout options, for example charge, interest or principal on which the payout settlement instructions would be processed
+    "Property Class" payoutPptyClass11?;
+    # Indicates the user exception routine
+    "Payout Account Credit Rule" payoutAcCrRule1?;
+};
+
+public type BNPLLoanBodySettlement1 record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Details of the concentration account to which the surplus funds available in the sweeping account is paid out to
+    BNPLLoanBodyPayout[] payout?;
+    # Default settlement account to be used for all incoming payments and outgoing settlements when a specific settlement account is not provided for each payment type
+    @constraint:String {maxLength: 90}
+    string defaultSettlementAccount?;
+    BNPLLoanBodyAssocSettlement[] assocSettlement?;
+    # Indicates settlement conditions associated with the account
+    BNPLLoanBodySettlement[] settlement?;
+    BNPLLoanBodyFxSettlement[] fxSettlement?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    @constraint:String {maxLength: 30}
+    string paymentType?;
+};
+
+public type ConsumerLoanBodyInterest record {
+    # The interest rate is chosen from a selection of values which represent different interest types and rates
+    @constraint:String {maxLength: 4}
+    string floatingRate?;
+    # Defines whether there are single or multiple margins to be considered while arriving at the applicable interest rate Allowed values: null (default): multiple margins may be defined SINGLE: only a single margin is allowed
+    ConsumerLoanBodyMargins[] margins?;
+    # Specifies the initial date from which the interest rate has to be reset.  If specified along with a reset frequency, the initial reset date will be used for deriving the subsequent reset dates
+    @constraint:String {maxLength: 30}
+    string initialResetDate?;
+    # Applicable tier percentage (between 0 and 100) for interest calculations based on amount bands
+    @constraint:String {maxLength: 3}
+    string tierPercent?;
+    # The percent defined will be applied on the reference rate before applying margin and other interest adjustments
+    @constraint:String {maxLength: 6}
+    string usagePercent?;
+    # Indicates the reset period of the periodic index defined
+    @constraint:String {maxLength: 30}
+    string periodicReset?;
+    # A minimum interest rate can be applied at each tier
+    @constraint:String {maxLength: 13}
+    string minimumTierRate?;
+    # Specify the period which will be used to fetch the interest rate
+    @constraint:String {maxLength: 20}
+    string periodicRate?;
+    # The maximum rate that can be applied at each tier
+    @constraint:String {maxLength: 13}
+    string maximumTierRate?;
+    # Denotes an index which points to the right period of the securities or holdings
+    @constraint:String {maxLength: 4}
+    string periodicIndex?;
+    # The monetary amount for the tier
+    @constraint:String {maxLength: 19}
+    string tierAmount?;
+    # The interest rate for the tier can be linked to that of another account, YES/NO indicator
+    @constraint:String {maxLength: 4}
+    string linkedRateIndicator?;
+    # Indicates the actual interest rate applied for the account after adjustment/tier calculation/based on basic or Periodic index value
+    @constraint:String {maxLength: 19}
+    string effectiveRate?;
+    # Numeric value for the interest rate entered manually
+    @constraint:String {maxLength: 13}
+    string fixedRate?;
+    # Indicates the method used to calculate the interest rate for period interest setup
+    @constraint:String {maxLength: 15}
+    string periodicMethod?;
+    # A negative interest rate can be applied at each tier. The allowed options are Yes, No, Block margin, Floor Margin
+    @constraint:String {maxLength: 12}
+    string tierNegativeRate?;
+    # Specify the period which will be used to fetch the interest rate
+    @constraint:String {maxLength: 15}
+    string periodicPeriodType?;
+    # Define the period which has to be used to calculate the interest rate
+    @constraint:String {maxLength: 15}
+    string periodicPeriod?;
+    # Different interest rates can be applied for tiers determined by monetary amounts.  Standard selection to choose from - Single, Level, Banded
+    @constraint:String {maxLength: 6}
+    string rateTierType?;
+};
+
+# Represents the Queries record for the operation: getLoanOverview
+public type GetLoanOverviewQueries record {
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+# Represents the Queries record for the operation: initiateWriteOffBalanceLoans
+public type InitiateWriteOffBalanceLoansQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type TakeoverloanResponseBodyPropertiesSchedule record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    TakeoverloanBodySchedule body?;
+};
+
+public type ConsumerLoanBodyActivities record {
+    # Indicates the activities which will necessiate a recalculation of the schedules, ex, change of term, principal increase, etc,
+    @constraint:String {maxLength: 80}
+    string onThisActivity?;
+    # Recalculates the periodic rate when certain activities (e.g. LENDING-CHANGE-PRINCIPAL.INTEREST, LENDING-DISBURSE-COMMITMENT) is processed
     @constraint:String {maxLength: 35}
-    string operand?;
+    string recalculate?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesOfficersBody record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Specify the primary officer responsible for the arrangement
+    @constraint:String {maxLength: 4}
+    string primaryOfficer?;
+    ConsumerLoanResponseBodyPropertiesOfficersBodyOfficrers[] officrers?;
+};
+
+public type LoanSimulationResponseBody record {
+    LoanSimulationResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanSimulationResponseBodyProperties properties?;
+};
+
+public type PaymentHolidayBodyClosureNotes record {
+    # This field is used to hold the notes for the reason of account closure
+    @constraint:String {maxLength: 35}
+    string closureNote?;
+};
+
+public type LoanBillsResponseBodyInner_properties record {
+    # Indicates the  property description to which benefit has been applied
+    @constraint:String {maxLength: 35}
+    string propertyName?;
+    # The accrued Interest due or accrued.
+    decimal interestAmount?;
+};
+
+public type BillsResponseBodyPropertiesBalanceMaintenance record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    BillsBodyBalanceMaintenance body?;
+};
+
+public type AutoSimulationsResponseBody record {
+    LoanSimulationResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    AutoSimulationsResponseBodyProperties properties?;
+};
+
+public type BNPLLoanBodyCustomerIds record {
+    # Identifier of the customer
+    @constraint:String {maxLength: 10}
+    string customerId?;
+    # Indicates role of a customer for an arrangement
+    @constraint:String {maxLength: 30}
+    string customerRole?;
+};
+
+# Represents the Headers record for the operation: createRepaymentDateChangeSimulationSchedules
+public type CreateRepaymentDateChangeSimulationSchedulesHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createLoanDrawdownOfferRenegotiationSchedules
+public type CreateLoanDrawdownOfferRenegotiationSchedulesQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LinkedRateLoanBodyAttributes record {
+    # The account which is linked for calculating interest that should be applied to this account
+    @constraint:String {maxLength: 20}
+    string linkedArrangement?;
+    # Specifies the special attributes for processing the message
+    @constraint:String {maxLength: 30}
+    string attributes?;
+    # Specifies the special attributes for processing the message
+    @constraint:String {maxLength: 30}
+    string attribute?;
     # The value of the field on which the Alert criteria is based
     @constraint:String {maxLength: 35}
     string value?;
 };
 
-public type MessagesBodyMessages record {
-    # The actual Transact error message 
-    @constraint:String {maxLength: 150}
-    string message?;
+public type BalanceBodyAdjustBalanceTypes record {
+    # Indicates the new balance amount for the corresponding balance type while capturing a new balance type or adjusting an existing balance type. This is a signed field. For write off activities, system will default this field to zero
+    @constraint:String {maxLength: 19}
+    string newBalanceAmount?;
+    #  Indicates the balance type which is corresponding to the captured or adjusted property. It should be non-bill related balance type that are not currently linked to the arrangement. For example, balance types are CURACCOUNT, ACCPRINCIPALINT, AVLACCOUNT, etc
+    @constraint:String {maxLength: 22}
+    string adjustBalanceType?;
 };
 
-# Represents the Queries record for the operation: getCustomerGroupPurpose
-public type GetCustomerGroupPurposeQueries record {
-    # Indicates whether group relations have to be defaulted in customer group from party relationship. Allowed values are YES, NO or Blank
-    string allowGroupRelationship?;
-    # Indicates whether customers in a group are to be restricted from being defined in another customer group with same group purpose. YES - will restrict the customer from being defined in another group, NO/Blank - will allow customers to be defined in other groups
-    string groupLevelUniqueCustomer?;
-    # Indicates the type of customer group. Allowed values are RISK ,LIABILITY or Blank
-    string groupPurpose?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Indicates whether customer relations have to be defaulted in customer group from party relationship. Allowed values are YES, NO or Blank
-    string allowRelationship?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Identifier of customer group purpose
-    string groupPurposeId?;
-    # Indicates whether a customer is allowed to be part of multiple sub groups. Allowed values are UNIQUE, MULTIPLE, NONE or Blank
-    string subGroupLevelUniqueCustomer?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Queries record for the operation: getCustomerId
-public type GetCustomerIdQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerResponseBodyLegalDetails record {
-    # Date of Issue of the legal document
-    string legalIssueDate?;
-    # Expiry date of the legal document submitted as proof
-    string legalExpiredDate?;
-    # Unique reference number of the legal documents submitted as identification proof
-    @constraint:String {maxLength: 50}
-    string legalId?;
-    # Name of the legal documents such as passport, driving licence etc., provided as identification proof
-    @constraint:String {maxLength: 50}
-    string legalDocumentName?;
-    # Authority who issued the legal document
-    @constraint:String {maxLength: 75}
-    string legalIssueAuthorisedDate?;
-    # Name of the account holder in the Legal Document
-    @constraint:String {maxLength: 100}
-    string legalHolderName?;
-    # Indicates the country where the authorized legal document is issued
-    @constraint:String {maxLength: 50}
-    string legalIssueCountry?;
-};
-
-public type PartyBasicDetailsResponseBodyInner record {
-    # The last name of an individual customer
-    @constraint:String {maxLength: 50}
-    string lastName?;
-    # Contains a sub-division identifier of a large organisation or building
-    @constraint:String {maxLength: 70}
-    string subDepartmentId?;
-    # Contains the street name of the customer or the property
-    PartyBasicDetailsResponseBodyInner_streets[] streets?;
-    # Department identifier
-    @constraint:String {maxLength: 70}
-    string departmentId?;
-    # Contains the email identifier of the customer
-    @constraint:String {maxLength: 50}
-    string emailId?;
-    # The mobile SMS number of the customer
-    @constraint:String {maxLength: 17}
-    string smsNumber?;
-    # Main menu title or header which the user wants to display on the screen when requesting the display of this main menu. This field can be expanded to allow the user to enter the description of the main menu in various languages
-    @constraint:String {maxLength: 35}
-    string title?;
-    # Residence type of the customer like Farmhouse, Independent house, Residential Apartment, Serviced Apartments
-    @constraint:String {maxLength: 35}
-    string residenceType?;
-    # The town and country associated with the address
-    PartyBasicDetailsResponseBodyInner_townCountries[] townCountries?;
-    # Indicates the customer's country of birth
-    @constraint:String {maxLength: 2}
-    string birthCountry?;
-    # Contains the floor number of the customer address
-    @constraint:String {maxLength: 70}
-    string floorNumber?;
-    # Identifies the building number where customer resides
-    @constraint:String {maxLength: 16}
-    string buildingNumber?;
-    # Represents a subdivision of a country such as state, region, country
-    @constraint:String {maxLength: 35}
-    string state?;
-    # Address output displayed as configured in the address output format in Transact
-    @constraint:String {maxLength: 100}
-    string unstructuredAddress?;
-    # The town and/or city component of the base address of a customer
-    @constraint:String {maxLength: 35}
-    string addressCity?;
-    # Indicates the customer birth province
-    @constraint:String {maxLength: 35}
-    string birthProvince?;
-    # An institution-defined identifier of the type of customer
-    @constraint:String {maxLength: 100000}
-    string sectorId?;
-    # Identifies specific location name with in the country or town
-    @constraint:String {maxLength: 35}
-    string locationName?;
-    # Identifies the country of customer address
-    @constraint:String {maxLength: 2}
-    string addressCountryId?;
-    # The identifier of the nationality of a customer
-    @constraint:String {maxLength: 2}
-    string nationalityId?;
-    # Represents the language code of the underlying Entity/Company/Branch
-    @constraint:String {maxLength: 2}
-    string languageId?;
-    # The date of birth of an individual customer
-    @constraint:String {maxLength: 11}
-    string dateOfBirth?;
-    # Indicates the customer's city of birth
-    @constraint:String {maxLength: 35}
-    string birthCity?;
-    # Contains the party or service which was used for address confirmation purposes
-    @constraint:String {maxLength: 35}
-    string addressVerifier?;
-    # Identifies the purpose or usage of the address. Allowed values are CTC (Communication to Customer), CTICOP(Communication to In Care Of Party) or CTOP(Communication to Other Party)
-    @constraint:String {maxLength: 35}
-    string addressPurpose?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    @constraint:String {maxLength: 100}
-    string customerName?;
-    # The identifier of the country of residence of a customer
-    @constraint:String {maxLength: 2}
-    string residenceId?;
-    # Specifies how the Customer is considered by the bank and how he fits in with the Account Officer's overall marketing strategy
-    @constraint:String {maxLength: 4}
-    string target?;
-    # Identifies the name of the building where customer resides
-    @constraint:String {maxLength: 35}
-    string buildingName?;
-    # Indicates the short name of Customer
-    @constraint:String {maxLength: 50}
-    string customerShortName?;
-    # Identifier of Department Account Officer
-    @constraint:String {maxLength: 4}
-    string accountOfficer?;
+public type LoanPayoffDetailsResponseBodyInner record {
+    # Indicates an unique identifier of an account
+    string arrangementId?;
+    # Indicates the settlement of the loan amount
+    LoanPayoffDetailsResponseBodyInner_payoffs[] payoffs?;
     # Indicates the extension data
     record {} extensions?;
-    # Identifies the address postal code for the customer or the property
-    PartyBasicDetailsResponseBodyInner_postCodes[] postCodes?;
-    # Date on which the entity is incorporated
-    @constraint:String {maxLength: 11}
-    string birthIncorpDate?;
-    # Post Office Box (POB) number that relates to financial institution
-    @constraint:String {maxLength: 16}
-    string postBoxNumber?;
-    # Indicates the middle name of the customer or prospect
-    @constraint:String {maxLength: 50}
-    string middleName?;
-    # Contains the alias name or additional surname of the customer
-    PartyBasicDetailsResponseBodyInner_nameAliases[] nameAliases?;
-    # Contains the greeting to be used for communications with the customer
-    @constraint:String {maxLength: 70}
-    string salutation?;
-    # Identifies the apartment number of the customer address
-    @constraint:String {maxLength: 70}
-    string apartmentNumber?;
+    # Indicates the initiation of payment for an account
+    LoanPayoffDetailsResponseBodyInner_payments[] payments?;
+    LoanPayoffDetailsResponseBodyInner_infoPayments[] infoPayments?;
+    # Id of the product property
+    LoanPayoffDetailsResponseBodyInner_properties[] properties?;
 };
 
-# FatcaCustomerResponse
-public type FatcaCustomerResponse record {
-    ScreenHeader header?;
-    FatcaCustomerResponseBody body?;
+public type LinkedRateLoanResponseBody record {
+    LinkedRateLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LinkedRateLoanResponseBodyProperties properties?;
 };
 
-# Represents the Queries record for the operation: getCustomerSweeps
-public type GetCustomerSweepsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: getCustomerSwiftAddress
-public type GetCustomerSwiftAddressHeaders record {
+# Represents the Headers record for the operation: getLoanCollaterals
+public type GetLoanCollateralsHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
     # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
     boolean disablePagination?;
     # User who initiated the transaction
@@ -3826,847 +3972,893 @@ public type GetCustomerSwiftAddressHeaders record {
     string deviceId?;
 };
 
-# DirectDebitsResponse
-public type DirectDebitsResponse record {
-    QueryHeader header?;
-    DirectDebitsResponseBody body?;
-};
-
-# CustomerSwiftAddressResponse
-public type CustomerSwiftAddressResponse record {
-    QueryHeader header?;
-    CustomerSwiftAddressResponseBody body?;
-};
-
-# Represents the Queries record for the operation: getDirectDebits
-public type GetDirectDebitsQueries record {
+# Represents the Queries record for the operation: getExternalEventStatus
+public type GetExternalEventStatusQueries record {
     # The record from which the response should be displayed
     @http:Query {name: "page_start"}
     int:Signed32 pageStart?;
     # Unique id expected to get as part of response from Transact on every enquiry request
     @http:Query {name: "page_token"}
     string pageToken?;
-    # The unique identifier of the direct debit mandate. 
-    string directDebitId?;
     # The total number of records per page
     @http:Query {name: "page_size"}
     int:Signed32 pageSize?;
 };
 
-public type CustomerPrintAddressResponseBodyInner_customerNames record {
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation.
-    @constraint:String {maxLength: 70}
-    string customerName?;
+# Represents the Headers record for the operation: getPaymentHolidaySim
+public type GetPaymentHolidaySimHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
 };
 
-# CustomerRelationshipResponse1
-public type CustomerRelationshipResponse1 record {
-    QueryHeader header?;
-    CustomerRelationshipResponse1Body body?;
+# Represents the Queries record for the operation: getLoanDetails
+public type GetLoanDetailsQueries record {
+    # Type of balance (e.g. current balance, credit interest accrued, deferred commission, etc.) as defined in the institution's accounting schemas
+    string balanceTypes?;
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # End date of the loan
+    string dateTo?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # Start date of the loan
+    string dateFrom?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
 };
 
-# ProspectCustomerResponse
-public type ProspectCustomerResponse record {
-    ScreenHeader header?;
-    ProspectCustomerResponseBody body?;
-};
-
-public type DeliveryPreferenceBodyMessageGroup record {
-    # Contains the starting message id of the conversation
-    @constraint:String {maxLength: 35}
-    string messageGroupId?;
-    DeliveryPreferenceBodyMessageGroupDetail[] messageGroupDetail?;
-};
-
-public type ProspectCustomersResponseBodyInner_prospectLegalDetails record {
-    # Unique reference number of the legal documents submitted as identification proof
-    @constraint:String {maxLength: 20}
-    string legalId?;
-    # Name of the legal documents such as passport, driving licence etc., provided as identification proof
-    @constraint:String {maxLength: 35}
-    string legalDocumentName?;
-};
-
-public type CustomerAddressOutputResponseBodyInner record {
-    # Indicates the extension data
+public type LoanSimulationBodyAccount record {
+    # Indicates the extensions
     record {} extensions?;
-    CustomerAddressOutputResponseBodyInner_unstructuredGroup[] unstructuredGroup?;
-    CustomerAddressOutputResponseBodyInner_structuredGroup[] structuredGroup?;
-    # Identifier of the customer
-    @constraint:String {maxLength: 35}
-    string customerId?;
+    # Groups the products based on their type, eg, Checking, Savings, CD etc,
+    LoanSimulationBodyAccountTypes[] accountTypes?;
+    # Display name or short name of the account specified
+    LoanSimulationBodyAccountNames[] accountNames?;
 };
 
-public type FatcaCustomerBodyCitizenships record {
-    # Identifies the citizenship details of Customer
-    @constraint:String {maxLength: 9}
-    string citizenship?;
+public type WriteOffLoansResponseBody record {
+    ArrangementResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    WriteOffLoansResponseBodyProperties properties?;
 };
 
-public type CustomerInformationResponseBodyInner_postingRestrictions record {
-    # Identifies any restrictions for posting entries that are imposed on a Customer
-    @constraint:String {maxLength: 30}
-    string postingRestrictId?;
-    # Contains the short name of the posting restrict identifier
-    string postingRestrictName?;
+public type LoanSimulationBodyAccountTypes record {
+    # Groups the products based on their type, eg, Checking, Savings, CD etc,
+    @constraint:String {maxLength: 70}
+    string accountType?;
 };
 
-# Represents the Queries record for the operation: getCustomerExitStatus
-public type GetCustomerExitStatusQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# CustomerRequestsResponse
-public type CustomerRequestsResponse record {
-    QueryHeader header?;
-    CustomerRequestsResponseBody body?;
-};
-
-# Represents the Headers record for the operation: updateProspectCustomer
-public type UpdateProspectCustomerHeaders record {
+# Represents the Headers record for the operation: createBNPLLoan
+public type CreateBNPLLoanHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
     # User who initiated the transaction
     string userRole?;
     # Identifies the device type
     string deviceId?;
 };
 
-# Represents the Headers record for the operation: createCustomer
-public type CreateCustomerHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
+public type ConsumerLoanResponseBodyPropertiesPayoff record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    ConsumerLoanResponseBodyPropertiesPayoffBody body?;
 };
 
-# OverdueSettlementsResponse
-public type OverdueSettlementsResponse record {
-    QueryHeader header?;
-    OverdueSettlementsResponseBody body?;
+# RepaymentSimulationResponse
+public type RepaymentSimulationResponse record {
+    ArrangementHeader header?;
+    RepaymentSimulationResponseBody body?;
 };
 
-public type CustomerProfileResponseBodyNameAliases record {
-    # Contains the alias name or additional surname of the customer
-    @constraint:String {maxLength: 35}
-    string nameAlias?;
-};
-
-# Represents the Headers record for the operation: getPartyRelationship
-public type GetPartyRelationshipHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: approveCustomerGroupPurpose
-public type ApproveCustomerGroupPurposeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getUnapprovedCustomerGroup
-public type GetUnapprovedCustomerGroupHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: createPartyRelationship
-public type CreatePartyRelationshipQueries record {
+# Represents the Queries record for the operation: createLoanDrawdownOfferAcceptance
+public type CreateLoanDrawdownOfferAcceptanceQueries record {
     # The identifier to indicate if it is set to only validate or not
     @http:Query {name: "validate_only"}
     boolean validateOnly?;
 };
 
-public type CustomerRelationshipsResponseBody record {
+# Represents the Headers record for the operation: updateRepaymentDate
+public type UpdateRepaymentDateHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type WriteOffBalanceLoansResponseBodyProperties record {
+    WriteOffBalanceLoansResponseBodyPropertiesBalanceMaintenance balanceMaintenance?;
+};
+
+public type WriteOffBillLoansResponseBodyProperties record {
+    WriteOffBillLoansResponseBodyPropertiesBalanceMaintenance balanceMaintenance?;
+};
+
+public type LoanSettlementBodyReference1 record {
+    # Contains the transaction type used to credit the customer account for settlement of the payables 
+    @constraint:String {maxLength: 55}
+    string payOutActivity?;
+    # The account to which a settlement amount is transferred
+    @constraint:String {maxLength: 90}
+    string payOutAccount?;
+    # The beneficiary that payment should be made to 
+    @constraint:String {maxLength: 17}
+    string payOutBeneficiary?;
+    # Contains the percentage of the payment amount used for settlement of the payables
+    @constraint:String {maxLength: 35}
+    string payOutPercentage?;
+    # Contains the payout payment order product for which payment is initiated
+    @constraint:String {maxLength: 35}
+    string payOutPoProduct?;
+    # Contains the finite amount of the payment used for settlement of the payables
+    @constraint:String {maxLength: 35}
+    string payOutAmount?;
+};
+
+# ArrangementDetailsResponse
+public type ArrangementDetailsResponse record {
+    QueryHeader header?;
+    ArrangementDetailsResponseBody body?;
+};
+
+# Represents the Queries record for the operation: createInstallmentLoan
+public type CreateInstallmentLoanQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanInterestBodyProperties record {
+    # Defines the list of properties which will be used for minimum payment amount calculation
+    @constraint:String {maxLength: 35}
+    string minimumPaymentProperty?;
+};
+
+public type PaymentHolidayBodyPaymentHoliday record {
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
     # Indicates the extensions
     record {} extensions?;
-    CustomerRelationshipsResponseBodyRelations[] relations?;
-};
-
-public type CustomerInformationResponseBodyInner_addresses record {
-    # Contains the street name of the customer or the property
-    @constraint:String {maxLength: 35}
-    string street?;
-    # Contains the communication address of the customer or full address of the property
-    @constraint:String {maxLength: 35}
-    string address?;
-    # The town and/or city component of the base address of a customer
-    @constraint:String {maxLength: 35}
-    string addressCity?;
-    # Identifies the address postal code for the customer or the property
-    @constraint:String {maxLength: 35}
-    string postCode?;
-    # Identifies the country of the customer or a property or organization
-    @constraint:String {maxLength: 35}
-    string country?;
-};
-
-public type UnapprovedCustomerGroupPurposeResponseBody UnapprovedCustomerGroupPurposeResponseBodyInner[];
-
-# CustomerGroupsResponse
-public type CustomerGroupsResponse record {
-    QueryHeader header?;
-    CustomerGroupsResponseBody body?;
-};
-
-# Represents the Queries record for the operation: getBicOwners
-public type GetBicOwnersQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# DeliveryPreferenceResponse
-public type DeliveryPreferenceResponse record {
-    ScreenHeader header?;
-    DeliveryPreferenceResponseBody body?;
-};
-
-# CustomerKYCDetailsResponse
-public type CustomerKYCDetailsResponse record {
-    QueryHeader header?;
-    CustomerKYCDetailsResponseBody body?;
-};
-
-# CustomerEmailAddressResponse1
-public type CustomerEmailAddressResponse1 record {
-    ScreenHeader header?;
-    CustomerEmailAddressResponse1Body body?;
-};
-
-public type CustomerGroupPurposeBodyGroupRelationships record {
-    # Indicates the list of allowed group relations in a customer group using this purpose and group type. List of relations can be retrieved using /reference/relationships
+    # Indicates the number of payments in sequence for which the payment holiday applies
     @constraint:String {maxLength: 3}
-    string allowedGroupRelationship?;
-};
-
-public type AlertRequestsResponseBody AlertRequestsResponseBodyInner[];
-
-# Represents the Queries record for the operation: getUnapprovedCustomerGroup
-public type GetUnapprovedCustomerGroupQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerShortNamesResponseBody record {
-    # Indicates the extensions
-    record {} extensions?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    @constraint:String {maxLength: 70}
-    string customerName?;
-};
-
-public type CustomerResponseBodyRoleDetails record {
-    # This is used to specify what delivery addressing is to be used for the link customer. 
-    @constraint:String {maxLength: 55}
-    string jointRelationDeliveryOption?;
-    # Additional notes about the role
-    @constraint:String {maxLength: 55}
-    string jointRelationRoleNote?;
-    # Role of joint customer with the main customer
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal jointRelationRoleId?;
-};
-
-public type CustomerInformationResponseBodyInner_profileTypes record {
-    # Identifies the type of profile that can be assigned to the customer. Bank needs to profile its clients in order to be effective in cross selling and campaign management.
+    string numberOfInstallments?;
+    # The type of payment obligation generated
+    @constraint:String {maxLength: 15}
+    string billType?;
+    # Indicates the new schedule amount which will be processed during the payment holiday period
+    @constraint:String {maxLength: 18}
+    string newPaymentAmount?;
+    # Contains the date in which the payment will be sent out. Date in the format YYYYMMDD. E.g. 20191231
+    @constraint:String {maxLength: 11}
+    string paymentDate?;
+    # Refers to view or cancel options
+    @constraint:String {maxLength: 30}
+    string activityAction?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    @constraint:String {maxLength: 30}
+    string paymentType?;
+    # Indicates the recalculation method to the cashflow event. Possible values are - EIR, CARRY.COST and QUANTITATIVE.TEST.  EIR method -  System will recalculate the EIR(Effective Interest Rate) in case of a cash flow change. CARRY.COST method - System will adjust the carrying amount of the contract, EIR will not be recalculated. QUANTITATIVE.TEST method - System will recalculate the EIR(Effective Interest Rate) only when the cashflow change is substantial
     @constraint:String {maxLength: 35}
-    string profileType?;
-    # Specifies the description of the profile Type.
-    @constraint:String {maxLength: 35}
-    string profileTypeName?;
-    # Identifies the profile that can be assigned to the customer. Bank needs to profile its clients in order to be effective in cross selling and campaign management.
-    @constraint:String {maxLength: 35}
-    string profile?;
-    # Specifies the description of the profile.
-    @constraint:String {maxLength: 35}
-    string profileName?;
+    string recalculationMethod?;
 };
 
-# Represents the Queries record for the operation: getCustomerGroups
-public type GetCustomerGroupsQueries record {
-    # Unique ID of the group
-    string groupId?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
+# RepaymentDateChangeSimulationSchedulesResponse
+public type RepaymentDateChangeSimulationSchedulesResponse record {
+    ArrangementHeader header?;
+    RepaymentDateChangeSimulationSchedulesResponseBody body?;
 };
 
-public type CustomerConsentsResponseBodyInner record {
-    # Indicates an unique identifier of an account
-    string arrangementId?;
-    # This indicates the  date  on which the offer or privilege terminates for the event
-    string expiryDate?;
+public type TakeoverloanResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance drawingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance exchRate?;
+    BNPLLoanResponseBodyPropertiesInheritance participant?;
+    TakeoverloanResponseBodyPropertiesSettlement settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyintrfr?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    TakeoverloanResponseBodyPropertiesLimit 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance periodicCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance pricinggrid?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    TakeoverloanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    LoanAccountResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesCustomer customer?;
+};
+
+# Represents the Headers record for the operation: createvehicleLoan
+public type CreatevehicleLoanHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createvehicleLoan
+public type CreatevehicleLoanQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type BalanceResponseBodyPropertiesBalanceMaintenance record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    BalanceBodyBalanceMaintenance body?;
+};
+
+public type LoanAccountBodyReferalCodes record {
+    # Indicates the conditions under which account details or details of entries over the account are to be included in an end of day report for referral to the account officer responsible. Referral conditions can be defined depending on transaction such as transaction code, amount and sign, or the balance of the Account
+    @constraint:String {maxLength: 35}
+    string referalCode?;
+};
+
+public type LoanInterestBodyPayments record {
+    # Specifies the number of coupon or interest payments a year
+    @constraint:String {maxLength: 3}
+    string numberOfPayments?;
+    # Indicates the date till which the transaction history requested. If 20120101 is the start date and 20120201 is the end date, all transactions that are booked between January 1 to February 1 2012 are returned
+    @constraint:String {maxLength: 30}
+    string endDate?;
+    # One time payment amount made as part of the repayment activity. For scheduled payments  it indicates the actual amount paid instead of the scheduledPaymentAmount
+    @constraint:String {maxLength: 18}
+    string adhocPaymentAmount?;
+    # Contains the date on which the transaction or payment gets initiated
+    @constraint:String {maxLength: 30}
+    string startDate?;
+};
+
+public type LoanOutstandingBillsResponseBodyInner record {
     # Indicates the extension data
     record {} extensions?;
+    # Indicates the total billed amount of a bill
+    @constraint:String {maxLength: 19}
+    string billed?;
+    # The remaining monetary amount on a loan
+    @constraint:String {maxLength: 19}
+    string outstanding?;
+    # The type of payment obligation generated
+    string billType?;
+    # Indicates the bill reference or Id
+    @constraint:String {maxLength: 35}
+    string billId?;
+    # Indicates the status of a bill(Issued,Due,Ageing,Settled)
+    @constraint:String {maxLength: 15}
+    string billStatus?;
+    # Indicates a date on which a bill has been raised
+    string billDate?;
+    # Specifies the status of the agreement with following options, UNAUTH - input but not authorised, AUTH - authorised and LIVE, CURRENT - disbursement initiated, EXPIRED - past final payment date with pending dues, REVERSED - reversed, CLOSE - closed, PENDING.CLOSURE - ready for closure
+    string status?;
+};
+
+public type InstallmentLoanBodyCustomers record {
+    # Indicates role of a customer for an arrangement
+    @constraint:String {maxLength: 30}
+    string customerRole?;
+    # Contains the customer identifier to fetch list of consent arrangements for the customer or customer identifier of the debtor account. This will be populated once the SCA(Strong Customer Authentication) is completed
+    @constraint:String {maxLength: 10}
+    string customer?;
+};
+
+public type SimulationCapturesBodyPayoff record {
+    # This is the payment amount
+    SimulationCapturesBodyAmount[] amount?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Percentage of holdings that can be pledged as collateral
+    @constraint:String {maxLength: 12}
+    string percentage?;
+    # Refers to view or cancel options
+    @constraint:String {maxLength: 9}
+    string action?;
+    # Contains the period within which the locked rate needs to be availed
+    @constraint:String {maxLength: 3}
+    string expiryDays?;
+    # Specifies if the amounts made due to the customer between the simulation start date and payoff effective date, should be considered settled or not. By setting this field to YES, auto settlement of future dues would be enabled and setting it to null or NO will not settle the due amounts automatically
+    @constraint:String {maxLength: 3}
+    string settleDues?;
+};
+
+public type LoanAccountBodyShortTitles record {
+    # Contains the short title given to the name of an account or an arrangement
+    @constraint:String {maxLength: 70}
+    string shortTitle?;
+};
+
+# Represents the Headers record for the operation: getEvidence
+public type GetEvidenceHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
+    boolean disablePagination?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type ConsumerLoanResponseBody record {
+    ConsumerLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    ConsumerLoanResponseBodyProperties properties?;
+};
+
+# Represents the Queries record for the operation: updateRepaymentDateAndSchedules
+public type UpdateRepaymentDateAndSchedulesQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: initiateWriteOffBillLoans
+public type InitiateWriteOffBillLoansQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanDrawdownOfferResponse1BodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Unique identifier (contract number) of the facility
+    @constraint:String {maxLength: 20}
+    string facilityId?;
     # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
     string productId?;
-    # Consent Type for which the consent is given
-    CustomerConsentsResponseBodyInner_consentTypes[] consentTypes?;
+    # Defines the activity to be processed against the Arrangement. The activity may be a user activity or a system generated activity
+    @constraint:String {maxLength: 80}
+    string activity?;
+    # Indicates the date on which the offer is executed
+    string offerDate?;
+    # Identifies the currency. E.g. USD, GBP etc
+    @constraint:String {maxLength: 3}
+    string currency?;
+    # Contains the customer identifier to fetch list of consent arrangements for the customer or customer identifier of the debtor account. This will be populated once the SCA(Strong Customer Authentication) is completed
+    InstallmentLoanBodyCustomers[] customers?;
+    # Indicates the date on which the drawdown contract is created
+    string drawdownDate?;
+};
+
+public type ConsumerLoanBodyPayments record {
+    # Specifies the number of coupon or interest payments in a year
+    @constraint:String {maxLength: 3}
+    string numberPayments?;
+    # Indicates the date till which the transaction history requested. If 20120101 is the start date and 20120201 is the end date, all transactions that are booked between January 1 to February 1 2012 are returned
+    @constraint:String {maxLength: 30}
+    string endDate?;
+    # System calculated Payment amount
+    @constraint:String {maxLength: 18}
+    string calcAmount?;
+    # Percentage of holdings that can be pledged as collateral
+    @constraint:String {maxLength: 12}
+    string percentage?;
+    # One time payment amount made as part of the repayment activity. For scheduled payments it indicates the actual amount paid instead of the scheduledPaymentAmount
+    @constraint:String {maxLength: 18}
+    string actualAmount?;
+    # Contains the date on which the transaction or payment gets initiated
+    @constraint:String {maxLength: 30}
+    string startDate?;
+};
+
+public type LinkedRateLoanBodyMargins record {
+    # Defines whether there are single or multiple margins to be considered while arriving at the applicable interest rate Allowed values: null (default): multiple margins may be defined SINGLE: only a single margin is allowed
+    @constraint:String {maxLength: 15}
+    string margin?;
+    # This is the rate applied over the default interest rate or commission rate to achieve the actual rate
+    @constraint:String {maxLength: 12}
+    string marginRate?;
+    # This is the operand which determines if a margin is added or subtracted from the interest rate. Options are ADD or SUB
+    @constraint:String {maxLength: 9}
+    string marginOperation?;
+};
+
+# BillsResponse
+public type BillsResponse record {
+    ArrangementHeader header?;
+    BillsResponseBody body?;
+};
+
+public type BNPLLoanResponseBodyPropertiesAccount record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    BNPLLoanBodyAccount body?;
+};
+
+# LoanSimulationResponse1
+public type LoanSimulationResponse1 record {
+    ArrangementHeader header?;
+    LoanSimulationResponse1Body body?;
+};
+
+public type MortgageBodyAttributes record {
+    # The account which is linked for calculating interest that should be applied to this account
+    @constraint:String {maxLength: 20}
+    string linkedArrangement?;
+    # Specifies the special attributes for processing the message
+    @constraint:String {maxLength: 30}
+    string attributes?;
+    # The value of the field on which the Alert criteria is based
+    @constraint:String {maxLength: 35}
+    string value?;
+};
+
+# Represents the Queries record for the operation: createBNPLLoan
+public type CreateBNPLLoanQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type MortgageResponseBodyPropertiesSchedule record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    MortgageBodySchedule body?;
+};
+
+# LoanDrawdownOfferResponse1
+public type LoanDrawdownOfferResponse1 record {
+    ArrangementHeader header?;
+    LoanDrawdownOfferResponse1Body body?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesPayoffBodyAmount record {
+    # Indicates the monetary amount that is fixed during the associated account's effective period
+    @constraint:String {maxLength: 19}
+    string fixedAmount?;
+};
+
+public type WriteOffBalanceLoansBodyWriteOffs record {
+    # Indicates the removal of an asset from the balance sheet due to impairment, obsolescence, or other factors
+    @constraint:String {maxLength: 15}
+    string writeOff?;
+    # Indicates that the corresponding balance needs to be written off partially. It should not be greater than the original balance amount
+    @constraint:String {maxLength: 19}
+    string writeOffAmount?;
+};
+
+# Represents the Queries record for the operation: getLoanCollaterals
+public type GetLoanCollateralsQueries record {
+    # Status not equal to
+    string statusNE?;
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # Specifies the status of the agreement with following options, UNAUTH - input but not authorised, AUTH - authorised and LIVE, CURRENT - disbursement initiated, EXPIRED - past final payment date with pending dues, REVERSED - reversed, CLOSE - closed, PENDING.CLOSURE - ready for closure
+    string status?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+public type PaymentHolidaySimResponseBody PaymentHolidaySimResponseBodyInner[];
+
+# LoanDetailsResponse
+public type LoanDetailsResponse record {
+    QueryHeader header?;
+    LoanDetailsResponseBody body?;
+};
+
+# Represents the Headers record for the operation: updateLoanConditions
+public type UpdateLoanConditionsHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# TakeoverloanResponse
+public type TakeoverloanResponse record {
+    ArrangementHeader header?;
+    TakeoverloanResponseBody body?;
+};
+
+# Represents the Queries record for the operation: createChargeOffActivity
+public type CreateChargeOffActivityQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoansCustomerResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesCustomer customer?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+};
+
+# Represents the Queries record for the operation: createCreditLine
+public type CreateCreditLineQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: createLoanPayoffSimulation
+public type CreateLoanPayoffSimulationQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: initiateWriteOffLoans
+public type InitiateWriteOffLoansQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanOverviewResponseBodyInner_schedules record {
+    # Indicates payment schedule type
+    string schedulePaymentType?;
+    # Denotes the payment schedule method of the loan such as capitalise, pay, due and maintain.
+    string schedulePaymentMethod?;
+    # Denotes the property of the loans schedule
+    string scheduleProperty?;
+    # Contains the amount payable in the schedule
+    decimal schedulePaymentAmount?;
+    # Indicates the frequency associated - Eg. Pay to customer or paid by bank
+    string schedulePaymentFrequency?;
+};
+
+# OverpaymentDetailsResponse
+public type OverpaymentDetailsResponse record {
+    QueryHeader header?;
+    OverpaymentDetailsResponseBody body?;
+};
+
+public type ChargeOffActivityResponseBody record {
+    ChargeOffActivityResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    record {} properties?;
+};
+
+# Represents the Queries record for the operation: createLinkedRateLoan
+public type CreateLinkedRateLoanQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# ArrangementResponse
+public type ArrangementResponse record {
+    ArrangementHeader header?;
+    ArrangementResponseBody body?;
+};
+
+public type PaymentHolidayResponseBodyPropertiesPaymentHoliday record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    PaymentHolidayBodyPaymentHoliday body?;
+};
+
+public type BNPLLoanBodyProperty record {
+    # Contains the finite amount of the payment used for settlement of the payables
+    @constraint:String {maxLength: 35}
+    string payoutAmount?;
+    # Contains the different payout options, for example charge, interest or principal on which the payout settlement instructions would be processed
+    @constraint:String {maxLength: 30}
+    string payoutPropertyClass?;
+    # Contains the different payout options, for example management charge, principal interest or commitment on which the payout settlement instructions would be processed
+    @constraint:String {maxLength: 35}
+    string payoutProperty?;
+    # Contains the transaction type used to credit the customer account for settlement of the payables 
+    @constraint:String {maxLength: 55}
+    string payoutActivity?;
+    # Contains the payout payment order product for which payment is initiated
+    @constraint:String {maxLength: 35}
+    string payoutPOProduct?;
+    # The account to which a settlement amount is transferred
+    @constraint:String {maxLength: 90}
+    string payoutAccount?;
+    # Contains the percentage of the payment amount used for settlement of the payables
+    @constraint:String {maxLength: 35}
+    string payoutPercentage?;
+    # The beneficiary that payment should be made to 
+    @constraint:String {maxLength: 17}
+    string payoutBeneficiary?;
+};
+
+public type LoanAccountBodyAccountTitles record {
+    # Short title on an account
+    @constraint:String {maxLength: 70}
+    string accountTitle?;
+};
+
+# Represents the Headers record for the operation: createRepaymentSchedule
+public type CreateRepaymentScheduleHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createCommercialLoan
+public type CreateCommercialLoanQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: createBusinessLoan
+public type CreateBusinessLoanQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Headers record for the operation: createLoans
+public type CreateLoansHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type BillsBodyBills record {
+    # Indicates the bill reference or Id
+    @constraint:String {maxLength: 35}
+    string billId?;
+    # The type of payment obligation generated
+    @constraint:String {maxLength: 15}
+    string billType?;
+    # Indicates the bill amount during the ageing status(Bill which crossed the due date)
+    @constraint:String {maxLength: 19}
+    string delinquentAmount?;
+    # Method chosen to make the payment
+    @constraint:String {maxLength: 10}
+    string paymentMethod?;
+    # Indicates a date on which a bill has been raised
+    @constraint:String {maxLength: 11}
+    string billDate?;
+    # Contains the date in which the payment will be sent out. Date in the format YYYYMMDD. E.g. 20191231
+    @constraint:String {maxLength: 11}
+    string paymentDate?;
+    # Indicates the payment amount for the defined term, amount and payment frequency. It will include principal, charge and interest
+    @constraint:String {maxLength: 19}
+    string paymentAmount?;
+    # Id of the product property
+    BillsBodyProperties[] properties?;
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    @constraint:String {maxLength: 30}
+    string paymentType?;
+};
+
+# LoanPayoffDetailsResponse
+public type LoanPayoffDetailsResponse record {
+    QueryHeader header?;
+    LoanPayoffDetailsResponseBody body?;
+};
+
+public type SimulationCapturesResponseBodyPropertiesPayoff record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    SimulationCapturesBodyPayoff body?;
+};
+
+# Represents the Headers record for the operation: createBusinessLoan
+public type CreateBusinessLoanHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# LoanOverviewResponse
+public type LoanOverviewResponse record {
+    QueryHeader header?;
+    LoanOverviewResponseBody body?;
+};
+
+public type LoansCustomerResponseBodyArrangementActivity record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
+    ConsumerLoanBodyPartyIds[] partyIds?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Determines the status of events sent to external system from the current system for the given activity
+    @constraint:String {maxLength: 35}
+    string externalEventStatus?;
     # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
     string effectiveDate?;
 };
 
-# Represents the Queries record for the operation: updateProspectCustomer
-public type UpdateProspectCustomerQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
+# EvidenceResponse
+public type EvidenceResponse record {
+    ArrangementHeader header?;
+    EvidenceResponseBody body?;
 };
 
-# Represents the Queries record for the operation: getCustomerRelationship
-public type GetCustomerRelationshipQueries record {
-    # Identifies the key to Customer Relationship Group to form a relation
-    string customerRelationGroupId?;
-    # Identifier of the Related Party
-    string relatedPartyId?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Identifier of the Customer Relationship and Party Relationship
-    string relationId?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
-    string partyId?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerAddressOutputResponseBodyInner_unstructuredGroup record {
-    # Address output displayed as configured in the address output format in Transact
-    string unstructuredAddress?;
-};
-
-public type OtherBanksToConnectToResponseBodyInner_paymentTemplates record {
-    # Contains the template used for payment transactions
-    @constraint:String {maxLength: 35}
-    string paymentTemplate?;
-};
-
-# Represents the Queries record for the operation: updateDeliveryPreference
-public type UpdateDeliveryPreferenceQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Queries record for the operation: getCustomerCreditCards
-public type GetCustomerCreditCardsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-public type CustomerResponseBodyOtherNationalityIds record {
-    # Other Nationality of the Customer
-    @constraint:String {maxLength: 50}
-    string otherNationalityId?;
-};
-
-public type CustomerSweepsResponseBodyInner_toAccountDetails record {
-    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
-    string accountId?;
-    # Display name or short name of the account specified.
-    string accountName?;
-    # Currency of the account. For example: USD, GBP.
-    string accountCurrency?;
-    # The minimum account balance required
-    string minimumBalance?;
-    # The maximum account balance allowed
-    string maximumBalance?;
-};
-
-public type CustomerSweepsResponseBodyInner_fromAccountDetails record {
-    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
-    string accountId?;
-    # Display name or short name of the account specified.
-    string accountName?;
-    # Currency of the account. For example: USD, GBP.
-    string accountCurrency?;
-};
-
-# Represents the Headers record for the operation: createPartyRelationship
-public type CreatePartyRelationshipHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerOpportunitiesResponseBody CustomerOpportunitiesResponseBodyInner[];
-
-# Represents the Headers record for the operation: getCustomerOpportunities
-public type GetCustomerOpportunitiesHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type DirectDebitsResponseBody DirectDebitsResponseBodyInner[];
-
-# CustomerPostingRestrictionsResponse
-public type CustomerPostingRestrictionsResponse record {
-    QueryHeader header?;
-    CustomerPostingRestrictionsResponseBody body?;
-};
-
-public type ProspectCustomerBodyTownCountries record {
-    # The town and country associated with the address
-    @constraint:String {maxLength: 35}
-    string townCountry?;
-};
-
-# CustomerDeliveryOptionsResponse
-public type CustomerDeliveryOptionsResponse record {
-    QueryHeader header?;
-    CustomerDeliveryOptionsResponseBody body?;
-};
-
-public type UnapprovedCustomerGroupPurposeResponseBodyInner_groupTypes record {
-    # Indicates the type of entity that identifies the group eg. Parent or Member
-    @constraint:String {maxLength: 35}
-    string groupType?;
-    # Details about the Customer Relationships and Party Relationships
-    UnapprovedCustomerGroupPurposeResponseBodyInner_relationships[] relationships?;
-    UnapprovedCustomerGroupPurposeResponseBodyInner_groupRelationships[] groupRelationships?;
-    UnapprovedCustomerGroupPurposeResponseBodyInner_aggregateRelationships[] aggregateRelationships?;
-};
-
-public type PartyBasicDetailsResponseBodyInner_townCountries record {
-    # The town and country associated with the address
-    @constraint:String {maxLength: 35}
-    string townCountry?;
-};
-
-public type CustomerPrintAddressBodyPostCodes record {
-    # Identifies the address postal code for the customer or the property
-    @constraint:String {maxLength: 35}
-    string postCode?;
-};
-
-# PartyRelationshipResponse
-public type PartyRelationshipResponse record {
-    ScreenHeader header?;
-    PartyRelationshipResponseBody body?;
-};
-
-public type CustomerInformationResponseBodyInner_addressLocations record {
-    # Identifies the nature of the postal address, like primary, secondary or office address
-    @constraint:String {maxLength: 30}
-    string addressLocation?;
-};
-
-public type PartyRelationshipResponse1BodyInner record {
-    # Indicates the extension data
-    record {} extensions?;
-    # Specifies the short name of the customer in CUSTOMER.GROUP
-    @constraint:String {maxLength: 35}
-    string partyName?;
-    # Whether the related party is an Active Customer or Individual/Corporate Prospect.Valid options - CUSTOMER, PERSON, ENTITY
-    PartyRelationshipResponse1BodyInner_relatedParties[] relatedParties?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
-    @constraint:String {maxLength: 35}
-    string partyId?;
-    # Contains the identifier used for the role played by the party or customer in the contract or account
-    PartyRelationshipResponse1BodyInner_relatedPartyRoles[] partyRoles?;
-};
-
-# CustomerPhoneAddressResponse1
-public type CustomerPhoneAddressResponse1 record {
-    ScreenHeader header?;
-    CustomerPhoneAddressResponse1Body body?;
-};
-
-public type CustomerPrintAddressBodyTowns record {
-    # Contains the town associated with the address of the customer or property
-    @constraint:String {maxLength: 35}
-    string town?;
-};
-
-public type CustomerConsentsResponseBodyInner_subTypes record {
-    # Indicates the consent sub type linked to corresponding consent type.
-    string consentSubType?;
-    # Contains the sub type of consent given to the customer
-    string consentSubTypeGiven?;
-};
-
-# Represents the Headers record for the operation: updateCustomerGroupPurpose
-public type UpdateCustomerGroupPurposeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerProfileResponseBodySpokenLanguages record {
-    # Customers native language or the language that can be used for communication
-    @constraint:String {maxLength: 30}
-    string spokenLanguage?;
-};
-
-public type CustomerPrintAddressResponseBodyInner_towns record {
-    # Contains the town associated with the address of the customer or property
-    @constraint:String {maxLength: 35}
-    string town?;
-};
-
-public type CustomerGroupPurposeBodyRelationships record {
-    # Indicates the list of allowed real relations in a customer group using this purpose and group type. List of relations can be retrieved using /reference/relationships
-    @constraint:String {maxLength: 3}
-    string allowedRelationship?;
-};
-
-public type CustomerRelationshipBodyRelationships record {
-    # Used to record the percentage of ownership in the relationship. For example an entity may be partially or wholly owned by another entity. This will only be allowed to be entered if the relation is indicated as a type allowing Ownership
-    @constraint:String {maxLength: 6}
-    string owningPercent?;
-    # The relation between the originating party and the related party.For Example:Mother, Daughter
-    @constraint:String {maxLength: 3}
-    string relatedPartyRelation?;
-    # To define the role of the related party.For example: SOLICITOR, AUTHORISED SIGNATORY and POWER OF ATTORNEY
-    @constraint:String {maxLength: 20}
-    string relatedPartyRole?;
-    # Identifier of the Related Party
-    @constraint:String {maxLength: 10}
-    string relatedPartyId?;
-    # To state the effective date of the relationship
-    string relatedPartyEffectiveDate?;
-    # To relate the Customer Relationship between Originating party and other parties. It is used in conjunction with the relationReference attribute
-    @constraint:String {maxLength: 35}
-    string relatedRelationReference?;
-    # Whether the related party is an Active Customer or Individual/Corporate Prospect.Valid options - CUSTOMER, PERSON, ENTITY
-    @constraint:String {maxLength: 35}
-    string relatedParty?;
-};
-
-# Represents the Headers record for the operation: getCustomerGroups
-public type GetCustomerGroupsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerPrintAddressResponseBodyInner_customerShortNames record {
-    # Indicates the short name of Customer
-    string customerShortName?;
-};
-
-public type PartyRelationshipResponse1BodyInner_relatedParties record {
-    # Identifies the hierarchy in the relationship. It is applicable primarily for relationship between Corporate Entities – Parent, Child or Other
-    @constraint:String {maxLength: 35}
-    string relationshipHierarchyType?;
-    # Indicates the nature of the relationship between the two parties Parent-of, Subsidiary-of.
-    @constraint:Number {maxValue: 35}
-    decimal relationshipType?;
-    # Indicates the description of the relationship between parties
-    @constraint:String {maxLength: 35}
-    string relationshipName?;
-    # Identifier of the Related Party
-    @constraint:String {maxLength: 35}
-    string relatedPartyId?;
-    # Name of the Party related to the Customer
-    @constraint:String {maxLength: 35}
-    string relatedPartyName?;
-    # Contains the percentage contributed by specific owner of the asset or collateral
-    @constraint:Number {maxValue: 6}
-    decimal ownershipPercentage?;
-    # Specifies the date the relationship started.
-    string relationshipEffectiveDate?;
-    # Specifies the date the relationship ended.
-    string relationshipEndDate?;
-    # To define the role of the related party.For example: SOLICITOR, AUTHORISED SIGNATORY and POWER OF ATTORNEY
-    PartyRelationshipResponse1BodyInner_relatedPartyRoles[] relatedPartyRoles?;
-};
-
-# Represents the Queries record for the operation: createCustomerGroupPurpose
-public type CreateCustomerGroupPurposeQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Headers record for the operation: getCustomerRelationship
-public type GetCustomerRelationshipHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerResponseBodyAddresses record {
-    # Contains the communication address of the customer or full address of the property
-    @constraint:String {maxLength: 55}
-    string address?;
-};
-
-# Represents the Queries record for the operation: createFatcaCustomer
-public type CreateFatcaCustomerQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type ProspectCustomerBodyEmails record {
-    # Email Identifier of the Customer
-    @constraint:String {maxLength: 50}
-    string email?;
-};
-
-public type CustomerPrintAddressResponseBody CustomerPrintAddressResponseBodyInner[];
-
-# Represents the Queries record for the operation: updateCustomerEmailAddress
-public type UpdateCustomerEmailAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type UnapprovedCustomerGroupResponseBodyInner_subGroupDetails record {
-    # Unique ID of the group
-    @constraint:String {maxLength: 15}
-    string groupId?;
-    # The name that is displayed for the group
-    @constraint:String {maxLength: 35}
-    string groupName?;
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001.
-    @constraint:String {maxLength: 9}
-    string companyId?;
-    # Identifier of Department Account Officer
-    @constraint:String {maxLength: 6}
-    string accountOfficer?;
-    # Indicates the identifier for party details in which party id and party owner are defined
-    UnapprovedCustomerGroupResponseBodyInner_partyDetails[] partyDetails?;
-};
-
-public type CustomerKYCDetailsResponseBody CustomerKYCDetailsResponseBodyInner[];
-
-public type StandingOrdersResponseBody StandingOrdersResponseBodyInner[];
-
-public type CustomerDigitalChannelsResponseBodyInner_digitalChannels record {
-    # Name of the (digital) channel registered by the Customer
-    @constraint:String {maxLength: 20}
-    string channelName?;
-    # Contains status of the data rights request.Allowed values are INITIATED, INPROGESS, EXTENDED, COMPLETED, REJECTED.
-    @constraint:String {maxLength: 35}
-    string status?;
-    # The top level product line, which the product is ultimately attached to. May be a Temenos-defined product line such as ACCOUNTS, AGENT, BUNDLE, CONSENT, DEPOSITS, LENDING, REWARDS, etc. or one defined by the institution to manage external products.
-    @constraint:String {maxLength: 35}
-    string productLine?;
+public type BusinessLoanResponseBodyArrangementActivity record {
     # Indicates an unique identifier of an account
-    @constraint:String {maxLength: 35}
+    @constraint:String {maxLength: 20}
     string arrangementId?;
-    # Contains the date on which the transaction or payment gets initiated.
-    string startDate?;
-    # Indicates the date till which the transaction history requested. If 20120101 is the start date and 20120201 is the end date, all transactions that are booked between January 1 to February 1 2012 are returned
-    string endDate?;
-    # The type of the user. Can be CORPORATE, INTERMEDIARY,PERSONAL
-    @constraint:String {maxLength: 12}
-    string userType?;
-    # The type of login method e.g. password, PIN, OTP
+    # Contains the line of business in which the activity was performed. If pricing is not determined based on line of business, then this is not significant
+    @constraint:String {maxLength: 4}
+    string lineOfBusiness?;
+    # Contains the reason for performing the current activity
+    @constraint:String {maxLength: 100}
+    string reason?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # Contains the channel in which the activity was performed. If pricing is not determined based on channel, then this is not significant
+    @constraint:String {maxLength: 30}
+    string channel?;
+    # The override message is captured  that was generated at the time of commitment of the transaction to the database
+    BNPLLoanBodyOverrides[] overrides?;
+    # Contains the branch name/code in which the business activity was performed. If pricing is not determined based on branch, then this is not significant
+    @constraint:String {maxLength: 16}
+    string branch?;
+    # The unique identifier to specify an arrangement reference which is act as a Master for the arrangement being created
     @constraint:String {maxLength: 20}
-    string loginMethod?;
-    # Last date and time the user last logged in.
-    string lastSignOnDate?;
-};
-
-public type ProspectCustomerResponseBody record {
-    # Contains a sub-division identifier of a large organisation or building
-    @constraint:String {maxLength: 70}
-    string subDepartmentId?;
-    # Contains the communication address of the customer or full address of the property
-    CustomerResponseBodyAddresses[] addresses?;
-    # Identifies specific location name with in the country or town
-    @constraint:String {maxLength: 55}
-    string locationName?;
-    # Contains the street name of the customer or the property
-    CustomerResponseBodyStreets[] streets?;
-    # Stores the district name of the  Beneficiary Customer
-    @constraint:String {maxLength: 55}
-    string districtName?;
-    # Gender of the Individual Customer
-    @constraint:String {maxLength: 55}
-    string gender?;
-    # Department identifier
-    @constraint:String {maxLength: 70}
-    string departmentId?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    ProspectCustomerBodyCustomerNames[] customerNames?;
-    # Identifies the country of the customer or a property or organization
-    CustomerResponseBodyCountries[] countries?;
-    # Identify which country an entity has been registered
-    @constraint:String {maxLength: 50}
-    string registeredCountry?;
-    # The phone number of the customer or prospect
-    ProspectCustomerBodyPhoneNumbers[] phoneNumbers?;
-    # Identifies if the record is for a real person or a legal entity. Allowed Options: Person or Entity
-    @constraint:String {maxLength: 55}
-    string personEntity?;
-    # Email Identifier of the Customer
-    ProspectCustomerBodyEmails[] emails?;
-    # Social Network Identification of the person/entity
-    ProspectCustomerBodySocialNetworkIds[] socialNetworkIds?;
-    # Identifies the legal entity details of prospect customer
-    ProspectCustomerBodyProspectLegalDetails[] prospectLegalDetails?;
+    string masterArrangementId?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates the runner Reference ID for simulation activity
+    @constraint:String {maxLength: 30}
+    string simulationRunReference?;
     # Indicates the extensions
     record {} extensions?;
-    # Identifies the address postal code for the customer or the property
-    ProspectCustomerBodyPostCodes[] postCodes?;
-    # Date on which the entity is incorporated
-    string birthIncorpDate?;
-    # The town and country associated with the address
-    ProspectCustomerBodyTownCountries[] townCountries?;
-    # Contains the floor number of the customer address
-    @constraint:String {maxLength: 70}
-    string floorNumber?;
-};
-
-public type CustomerRelationshipResponse1Body CustomerRelationshipResponse1BodyInner[];
-
-public type CustomerRelationshipResponse1BodyInner_relationships record {
-    # To relate the Customer Relationship between Originating party and other parties. It is used in conjunction with the relationReference attribute
+    # Contains the transaction amount. This is based on the currency, either local or foreign currency
+    @constraint:Number {minValue: 0, maxValue: 19}
+    decimal transactionAmount?;
+    # Name of the role or sub contract that is displayed, for eg: Payments Inputter, Administrator, Clerk and etc
     @constraint:String {maxLength: 35}
-    string relatedRelationReference?;
-    # Whether the related party is an Active Customer or Individual/Corporate Prospect.Valid options - CUSTOMER, PERSON, ENTITY
-    @constraint:String {maxLength: 35}
-    string relatedParty?;
-    # Identifier of the Related Party
-    @constraint:String {maxLength: 10}
-    string relatedPartyId?;
-    # The relation between the originating party and the related party.For Example:Mother, Daughter
+    string roleName?;
+    # Identifier of the customer
+    BNPLLoanBodyCustomerIds[] customerIds?;
+    # Identifier of the currency. This is the 3-letter ISO 4217 code of the currency
     @constraint:String {maxLength: 3}
-    string relatedPartyRelation?;
-    # To define the role of the related party.For example: SOLICITOR, AUTHORISED SIGNATORY and POWER OF ATTORNEY
+    string currencyId?;
+    # Id of the product property
+    BNPLLoanBodyProperties[] properties?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
+};
+
+public type TakeoverloanResponseBodyArrangementActivity record {
+    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
+    ConsumerLoanBodyPartyIds[] partyIds?;
+    # Id of the activity, e.g. ACCOUNTS-CAPITALISE-ACCHARGE*CARDISSUEFEE
+    @constraint:String {maxLength: 80}
+    string activityId?;
+    # Indicates an unique identifier of an account
     @constraint:String {maxLength: 20}
-    string relatedPartyRole?;
-    # To state the effective date of the relationship.
-    string relatedPartyEffectiveDate?;
-    # Used to record the percentage of ownership in the relationship. For example an entity may be partially or wholly owned by another entity. This will only be allowed to be entered if the relation is indicated as a type allowing Ownership
-    @constraint:String {maxLength: 6}
-    string owningPercent?;
-};
-
-public type PartyBasicDetailsResponseBodyInner_streets record {
-    # Contains the street name of the customer or the property
-    @constraint:String {maxLength: 70}
-    string street?;
-};
-
-public type CustomerInformationResponseBodyInner_phoneNumbers record {
-    # The phone number of the customer or prospect
-    @constraint:String {maxLength: 47}
-    string phoneNumber?;
-};
-
-public type MessagesResponseBody record {
+    string arrangmentId?;
+    # Indicates the original contract date of the arrangement which was migrated from the legacy system
+    @constraint:String {maxLength: 11}
+    string originalContractDate?;
     # Indicates the extensions
     record {} extensions?;
-    # The subject of the message to be sent or received
-    @constraint:String {maxLength: 150}
-    string subject?;
-    # Specifies the record ID of parent message. 
-    MessagesBodyMessages[] messages?;
-    # The unique customer identifier of the Payee, to whom the payment message is to be sent
-    @constraint:String {maxLength: 10}
-    string toCustomerId?;
+    # Unique identifier (contract number) of the facility
+    @constraint:String {maxLength: 20}
+    string facilityId?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # Identifies the currency. E.g. USD, GBP etc
+    @constraint:String {maxLength: 3}
+    string currency?;
+    # Indicates the trade date in yyyymmdd format
+    @constraint:String {maxLength: 11}
+    string tradeDate?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
 };
 
-# Represents the Queries record for the operation: deleteCustomerPhoneAddress
-public type DeleteCustomerPhoneAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
+public type BalanceBodyAdjustProperties record {
+    # Indicates the interest or account or charge properties for which balances are to be captured or adjusted
+    @constraint:String {maxLength: 15}
+    string adjustProperty?;
+    #  Indicates the balance type which is corresponding to the captured or adjusted property. It should be non-bill related balance type that are not currently linked to the arrangement. For example, balance types are CURACCOUNT, ACCPRINCIPALINT, AVLACCOUNT, etc
+    BalanceBodyAdjustBalanceTypes[] adjustBalanceTypes?;
+};
+
+# InstallmentLoanResponse
+public type InstallmentLoanResponse record {
+    ArrangementHeader header?;
+    InstallmentLoanResponseBody body?;
+};
+
+# Represents the Queries record for the operation: getLoanPayoffDetails
+public type GetLoanPayoffDetailsQueries record {
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
 };
 
 # Provides API key configurations needed when communicating with a remote HTTP endpoint.
@@ -4674,1151 +4866,1295 @@ public type ApiKeysConfig record {|
     string apikey;
 |};
 
-# CustomerSweepsResponse
-public type CustomerSweepsResponse record {
-    QueryHeader header?;
-    CustomerSweepsResponseBody body?;
+public type LoanOutstandingBillsResponseBody LoanOutstandingBillsResponseBodyInner[];
+
+public type LoansCustomerResponseBody record {
+    LoansCustomerResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoansCustomerResponseBodyProperties properties?;
 };
 
-public type CustomerRequestsResponseBodyInner record {
-    # Indicates the display name of the activity
+public type WriteOffBillLoansResponseBody record {
+    ArrangementResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    WriteOffBillLoansResponseBodyProperties properties?;
+};
+
+# Represents the Headers record for the operation: updateLoanDecreaseAmount
+public type UpdateLoanDecreaseAmountHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Headers record for the operation: createLoanPayoffSimulation
+public type CreateLoanPayoffSimulationHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Headers record for the operation: createLoanDrawdownOffer
+public type CreateLoanDrawdownOfferHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type InstallmentLoanBodyCommitment record {
+    # This is the payment amount
+    @constraint:Number {minValue: 0, maxValue: 19}
+    decimal amount?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Indicates the period to which the BID and OFFER rates apply
+    @constraint:String {maxLength: 6}
+    string term?;
+    # Specifies if commitment can be utilized beyond the available amount. Allowed value is 'Allow Overdraw', which indicates the commitment can be utilized beyond available amount
+    @constraint:String {maxLength: 20}
+    string commitmentUtilisation?;
+};
+
+public type LoanAccountResponseBodyProperties record {
+    LoanAccountResponseBodyPropertiesAccount account?;
+};
+
+public type TakeoverloanBodyPayout record {
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    TakeoverloanBodyReference1[] reference?;
+    # Contains the transaction type used for settlement of the payables
+    @constraint:String {maxLength: 55}
+    string payOutSettlementActivity?;
+    # Contains the rule on which the system should utilise the funds available in the pay out account during the settlement process
     @constraint:String {maxLength: 35}
-    string activityDisplayName?;
+    string payOutRule?;
+    # Id of the product property
+    TakeoverloanBodyProperty[] property?;
+    # Condition that is used to build a product
+    TakeoverloanBodyPropertyClass[] propertyClass?;
+    # Flag to indicate whether Payout Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payoutSettlement?;
+};
+
+public type BusinessLoanResponseBody record {
+    BusinessLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    BNPLLoanResponseBodyProperties properties?;
+};
+
+public type BillsBodyProperties record {
+    # Indicates the original amount of a given property for a payment type
+    @constraint:String {maxLength: 18}
+    string originalPropertyAmount?;
+    # Id of the product property
+    @constraint:String {maxLength: 35}
+    string property?;
+    # Indicates the new charge amount which is specified during adjustment of the amortisation charge. The specified value will be the new amount outstanding and yet to be amortised
+    @constraint:String {maxLength: 19}
+    string newAmortizationAmount?;
+    # Indicates the amortisation end date for an amortisation type of charge
+    @constraint:String {maxLength: 11}
+    string amortEndDate?;
+    # Indicates the oustanding amount of interest or account or charge property after bill adjustment. For write off activities, system will default zero amount in this field
+    @constraint:String {maxLength: 19}
+    string newPropertyAmount?;
+};
+
+public type RepaymentDateChangeSimulationSchedulesResponseBodyProperties record {
+    RepaymentSimulationResponseBodyPropertiesSchedule schedule?;
+    RepaymentDateChangeSimulationSchedulesResponseBodyPropertiesSettlement settlement?;
+};
+
+# BusinessLoanResponse
+public type BusinessLoanResponse record {
+    ArrangementHeader header?;
+    BusinessLoanResponseBody body?;
+};
+
+# Represents the Queries record for the operation: createLoanArrangementPayoff
+public type CreateLoanArrangementPayoffQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanAccountResponseBody record {
+    LoanConditionsResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanAccountResponseBodyProperties properties?;
+};
+
+# Represents the Headers record for the operation: updateLoanSettlement
+public type UpdateLoanSettlementHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LinkedRateLoanBodyAgentRoles record {
+    # The role of the 3rd party, select from standard list
+    @constraint:String {maxLength: 30}
+    string agentRole?;
+};
+
+# Represents the Headers record for the operation: createLoanSimulation
+public type CreateLoanSimulationHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# PaymentHolidayResponse
+public type PaymentHolidayResponse record {
+    ArrangementHeader header?;
+    PaymentHolidayResponseBody body?;
+};
+
+# MortgageResponse
+public type MortgageResponse record {
+    ArrangementHeader header?;
+    MortgageResponseBody body?;
+};
+
+public type LoanDrawdownOfferRenegotiationResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance escrow?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance subparticipant?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint principalint?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance solicitorfee?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penalinterest?;
+    BNPLLoanResponseBodyPropertiesInheritance redemptionfee?;
+    LoanDrawdownOfferResponseBodyPropertiesSettlement settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance mortginsurance?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance balanceMaintenance?;
+    BNPLLoanResponseBodyPropertiesInheritance offsetint?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    ConsumerLoanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance prepayfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesInheritance account?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+public type LoanTopupAmountResponseBodyProperties record {
+    LoanInterestResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance subparticipant?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+};
+
+# AutoSimulationsResponse
+public type AutoSimulationsResponse record {
+    ArrangementHeader header?;
+    AutoSimulationsResponseBody body?;
+};
+
+public type EvidenceBodyEvidence record {
+    # Identifies the agreement with the customer
+    EvidenceBodyCovenants[] covenants?;
+    # Indicates the extensions
+    record {} extensions?;
+    EvidenceBodyConditions[] conditions?;
+};
+
+public type ConsumerLoanBodyAccount record {
+    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
+    @constraint:String {maxLength: 35}
+    string accountId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # An Alternate Identification for the Deal. This can be used to retrieve the Deal for amendment
+    BNPLLoanBodyAlternateIds[] alternateIds?;
+    # Id of the portfolio or security account
+    @constraint:String {maxLength: 35}
+    string portfolioId?;
+    # Display name or short name of the account specified
+    @constraint:String {maxLength: 70}
+    string accountName?;
+    # Groups the products based on their type, eg, Checking, Savings, CD etc,
+    @constraint:String {maxLength: 70}
+    string accountType?;
+    # The reference which is provided to the beneficiary/ creditor by the originator of payment
+    @constraint:String {maxLength: 16}
+    string customerReference?;
+    # The start or end period defined in MMDD format to indicate the period when charge rules has to be applied
+    @constraint:String {maxLength: 6}
+    string anniversary?;
+};
+
+# Represents the Headers record for the operation: updateLoanAccount
+public type UpdateLoanAccountHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: createLoanDrawdownOffer
+public type CreateLoanDrawdownOfferQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanDisbursementResponseBody record {
+    ChargeOffActivityResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    record {} properties?;
+};
+
+public type TakeoverloanResponseBody record {
+    TakeoverloanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    TakeoverloanResponseBodyProperties properties?;
+};
+
+public type BNPLLoanResponseBodyActivities record {
+    @jsondata:Name {value: "{activityName}"}
+    BNPLLoanResponseBodyActivitiesactivityName activityName?;
+};
+
+public type LoanDrawdownOfferResponseBody record {
+    LoanDrawdownOfferResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanDrawdownOfferResponseBodyProperties properties?;
+};
+
+public type LoanAccountBodyAccountTitles2 record {
+    # Title line 2 that will appear in notice and statements
+    @constraint:String {maxLength: 70}
+    string accountTitle2?;
+};
+
+public type LoanSettlementBodySettlement record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Details of the concentration account to which the surplus funds available in the sweeping account is paid out to
+    LoanSettlementBodyPayout[] payout?;
+    LoanSettlementBodyRepayment[] repayment?;
+};
+
+# LoanInterestResponse
+public type LoanInterestResponse record {
+    ArrangementHeader header?;
+    LoanInterestResponseBody body?;
+};
+
+public type LinkedRateLoanBodyActivites record {
+    # Indicates the activities which will necessiate a recalculation of the schedules, ex, change of term, principal increase, etc,
+    @constraint:String {maxLength: 80}
+    string onActivity?;
+    # Recalculates the periodic rate when certain activities (e.g. LENDING-CHANGE-PRINCIPAL.INTEREST, LENDING-DISBURSE-COMMITMENT) is processed
+    @constraint:String {maxLength: 35}
+    string recalculate?;
+};
+
+# LoanPayoffSimulationResponse
+public type LoanPayoffSimulationResponse record {
+    ArrangementHeader header?;
+    LoanPayoffSimulationResponseBody body?;
+};
+
+# Represents the Queries record for the operation: updateLoanTopupAmount
+public type UpdateLoanTopupAmountQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: getEvidence
+public type GetEvidenceQueries record {
+    # The record from which the response should be displayed
+    @http:Query {name: "page_start"}
+    int:Signed32 pageStart?;
+    # Unique id expected to get as part of response from Transact on every enquiry request
+    @http:Query {name: "page_token"}
+    string pageToken?;
+    # The total number of records per page
+    @http:Query {name: "page_size"}
+    int:Signed32 pageSize?;
+};
+
+public type FundsTransferResponseBody record {
+    # Date on which the amount will be debited for settlement
+    string debitValueDate?;
+    # Currency of the debit account. For example: USD, EUR etc
+    @constraint:String {maxLength: 3, minLength: 1}
+    string debitCurrency?;
+    # Specifies the credit currency. For example: USD, EUR etc
+    @constraint:String {maxLength: 3}
+    string creditCurrencyId?;
+    # Reference quoted by the credit account for a payment
+    string creditValueDate?;
+    # Indicates the debit account number of the payment or transaction
+    @constraint:String {maxLength: 36, minLength: 1}
+    string debitAccountId?;
+    # Amount to be debited in a payment transaction
+    @constraint:Number {minValue: 1, maxValue: 18}
+    decimal debitAmount?;
+    # Indicates the commission types which are applicable for the transaction
+    @constraint:String {maxLength: 11}
+    string commissionType?;
+    # Identifies the transaction type applicable to the transaction being processed, i.e. outward or inward payment. For example: ACPX, OTPX etc
+    @constraint:String {maxLength: 4, minLength: 1}
+    string transactionType?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Credit account identifier of the payment or transaction
+    @constraint:String {maxLength: 36, minLength: 1}
+    string creditAccountId?;
+    # These field control the allocation of Periodic commission where the field COMM.CODE is the trigger for periodic commission and the field CSN.CODE is a system maintained field and hold the commission amount relating to the period band
+    @constraint:String {maxLength: 20}
+    string commissionCode?;
+    # Amount to be credited in a payment transaction
+    @constraint:Number {minValue: 0, maxValue: 18}
+    decimal creditAmount?;
+    # Indicates the payment details for the beneficiary to apply the payment
+    @constraint:String {maxLength: 35}
+    string paymentDetails?;
+    # Amount of commission charged for the payment created with respect to the commission type used
+    @constraint:Number {minValue: 0, maxValue: 22}
+    decimal commissionAmount?;
+};
+
+public type ChangeProductResponseBody record {
+    LoanConditionsResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    ChangeProductResponseBodyProperties properties?;
+};
+
+public type BNPLLoanBodyAssocSettlement record {
+    # Contains the transaction type used by the transaction recycler for retrying the debits
+    @constraint:String {maxLength: 35}
+    string payinRCType?;
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    BNPLLoanBodyReference1[] reference?;
+    # Flag to indicate whether Payin Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payinSettlement?;
+    # Contains the transaction type used for settlement of the bills due
+    @constraint:String {maxLength: 55}
+    string payinSettlementActivity?;
+    # Contains the transaction recycling rules which define the set of retry conditions
+    @constraint:String {maxLength: 35}
+    string payinRCCondition?;
+    # Contains the rule on which the system should utilise the funds available in the pay in account during the settlement process. Options are Full, Partial and None
+    @constraint:String {maxLength: 35}
+    string payinRule?;
+};
+
+public type ConsumerLoanResponseBodyPropertiesArrangementRulesBody record {
+    # Indicates the extensions
+    record {} extensions?;
+    # A rule is assigned to a product and the rule determines whether a customer can buy that product or hold it after changes in circumstance
+    ConsumerLoanResponseBodyPropertiesArrangementRulesBodyRules[] rules?;
+};
+
+public type TakeoverloanResponseBodyPropertiesSettlement record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    TakeoverloanBodySettlement body?;
+};
+
+public type BNPLLoanBodyCustomers record {
+    # Tax liability percentage of the customer
+    @constraint:String {maxLength: 12}
+    string taxLiabilityPercentage?;
+    # Indicates percentage of limit allocated to the customer out of overall limit
+    @constraint:String {maxLength: 12}
+    string limitAllocactionPercentage?;
+    # Indicates GL allocation percentage of the customer
+    @jsondata:Name {value: "GLAllocactionPercentage"}
+    string gLAllocactionPercentage?;
+    # Indicates role of a customer for an arrangement
+    @constraint:String {maxLength: 30}
+    string customerRole?;
+    # Contains the customer identifier to fetch list of consent arrangements for the customer or customer identifier of the debtor account. This will be populated once the SCA(Strong Customer Authentication) is completed
+    @constraint:String {maxLength: 10}
+    string customer?;
+};
+
+# PaymentSchedulesProjectionResponse
+public type PaymentSchedulesProjectionResponse record {
+    QueryHeader header?;
+    PaymentSchedulesProjectionResponseBody body?;
+};
+
+# Represents the Headers record for the operation: updateChangeProduct
+public type UpdateChangeProductHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type RepaymentDateChangeSimulationResponseBody record {
+    SimulationCapturesResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    RepaymentDateChangeSimulationResponseBodyProperties properties?;
+};
+
+public type EvidenceResponse1BodyInner record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 30}
+    string arrangementId?;
+    # Identifies the agreement with the customer
+    EvidenceResponse1BodyInner_covenants[] covenants?;
     # Indicates the extension data
     record {} extensions?;
-    # Business Activity Status  POSSIBLE VALUES: 0: Ready  1: Running  2: Completed successfully  3: On hold or in error
-    @constraint:String {maxLength: 35}
-    string activityStatus?;
-    # Indicates the display name of the current initiated process
-    @constraint:String {maxLength: 35}
-    string processDisplayName?;
+    EvidenceResponse1BodyInner_conditions[] conditions?;
 };
 
-public type DeliveryPreferenceBodyOtherMessagesDetail record {
-    # Indicates the Role of the Customer
+# LoanSimulationResponse
+public type LoanSimulationResponse record {
+    ArrangementHeader header?;
+    LoanSimulationResponseBody body?;
+};
+
+# Represents the Queries record for the operation: createLoanPayoffAutoSimulation
+public type CreateLoanPayoffAutoSimulationQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type BNPLLoanResponseBodyPropertiesCustomer record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    BNPLLoanBodyCustomer body?;
+};
+
+public type WriteOffLoansBodyBills record {
+    # Contains the narration which is specific to the bill adjustment
     @constraint:String {maxLength: 35}
-    string role?;
-    # Identifies the position of the carrier in the arrangement
+    string billAdjustmentNarrative?;
+    # Indicates the adjustment amount for the charge during adjustment. The new charge amount will be calculated from the unamortised amount and the adjustment amount. Either a value in this field or the new amort amount will be allowed during adjustment. The value should be given in arrangement currency
+    WriteOffLoansBodyAdjustAmortAmounts[] adjustAmortAmounts?;
+    # Indicates whether to write off an entire bill amount. Allowed values are YES or NULL. If writeOff bill is defined as YES, it indicates that the entire bill will be written off
+    @constraint:String {maxLength: 15}
+    string writeOffBill?;
+};
+
+public type InstallmentLoanResponseBody record {
+    InstallmentLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    InstallmentLoanResponseBodyProperties properties?;
+};
+
+public type LinkedRateLoanBodyInterest record {
+    # The monetary amount for the tier
+    @constraint:String {maxLength: 19}
+    string upTo?;
+    # Applicable tier percentage (between 0 and 100) for interest calculations based on amount bands
     @constraint:String {maxLength: 3}
-    string carrierPosition?;
-    # Indicates the date till which the transaction history requested. If 20120101 is the start date and 20120201 is the end date, all transactions that are booked between January 1 to February 1 2012 are returned
-    @constraint:String {maxLength: 11}
-    string endDate?;
-    # Defines whether the output delivery message is to be held by the system before processing. Allowed option is Y
+    string orPercent?;
+    # Defines whether there are single or multiple margins to be considered while arriving at the applicable interest rate Allowed values: null (default): multiple margins may be defined SINGLE: only a single margin is allowed
+    LinkedRateLoanBodyMargins[] margins?;
+    # Indicates the actual interest rate applied for the account after adjustment/tier calculation/based on basic or Periodic index value
+    @constraint:String {maxLength: 19}
+    string effectiveRate?;
+    # A negative interest rate can be applied at each tier, select Yes, No, Block margin
+    @constraint:String {maxLength: 12}
+    string negativeRate?;
+    # Numeric value for the interest rate entered manually
+    @constraint:String {maxLength: 13}
+    string fixed?;
+    # The maximum rate that can be applied at each tier
+    @constraint:String {maxLength: 13}
+    string maxRate?;
+    # A minimum interest rate can be applied at each tier
+    @constraint:String {maxLength: 13}
+    string minMaxRate?;
+    # The interest rate for the tier can be linked to that of another account, YES/NO indicator
+    @constraint:String {maxLength: 4}
+    string spread?;
+};
+
+public type EvidenceResponseBody record {
+    LinkedRateLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    EvidenceResponseBodyProperties properties?;
+};
+
+public type MortgageResponseBodyPropertiesPrincipalint record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    MortgageBodyPrincipalint body?;
+};
+
+public type InstallmentLoanResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance participant?;
+    BNPLLoanResponseBodyPropertiesSettlement settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance overdue?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance activityMessaging?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance closure?;
+    BNPLLoanResponseBodyPropertiesInheritance reporting?;
+    BNPLLoanResponseBodyPropertiesInheritance periodicCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance poCashback?;
+    BNPLLoanResponseBodyPropertiesInheritance payMerchant?;
+    BNPLLoanResponseBodyPropertiesInheritance activityRestriction?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    InstallmentLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance chargeoff?;
+    BNPLLoanResponseBodyPropertiesInheritance changeProduct?;
+    BNPLLoanResponseBodyPropertiesInheritance cashback?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    ConsumerLoanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    ConsumerLoanResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+public type BNPLLoanBodyAccount record {
+    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
     @constraint:String {maxLength: 35}
-    string holdOutput?;
-    # Indicates the formatting version to be used for the delivery message
-    @constraint:String {maxLength: 2}
-    string format?;
-    # Defines the hold options to be used on the delivery messages during the hold period. Options are HELD - hold the delivery messages; DELETE - aviod generation of delivery messages; CLEAR - automatically clear hold messages after hold period expiry and SEND - automatically push the held messages for processing
+    string accountId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # An Alternate Identification for the Deal. This can be used to retrieve the Deal for amendment
+    BNPLLoanBodyAlternateIds[] alternateIds?;
+    # Id of the portfolio or security account
     @constraint:String {maxLength: 35}
-    string holdMailOption?;
-    # The language that the contents of the field are displayed in
-    @constraint:String {maxLength: 2}
-    string language?;
-    # Defines the start date of the hold period when the delivery message is to be held in the system
-    @constraint:String {maxLength: 11}
-    string holdMailStartDate?;
-    # Flag to set the channel to communicate
+    string portfolioId?;
+    # Display name or short name of the account specified
+    @constraint:String {maxLength: 70}
+    string accountName?;
+    # Groups the products based on their type, eg, Checking, Savings, CD etc,
+    @constraint:String {maxLength: 70}
+    string accountType?;
+    # Indicates the type of Annual Percentage Rate calculation selected for Reporting. Available options such as Cashflow,Interest
+    BNPLLoanBodyAprTypes[] aprTypes?;
+    # The start or end period defined in MMDD format to indicate the period when charge rules has to be applied
+    @constraint:String {maxLength: 6}
+    string anniversary?;
+};
+
+public type LinkedRateLoanBodyPartyRoles record {
+    # Contains the identifier used for the role played by the party or customer in the contract or account
+    @constraint:String {maxLength: 30}
+    string partyRole?;
+};
+
+public type LoanDetailsResponseBodyInner_interests record {
+    # Identifies the bid rate of the related currency for the defined time period
+    string interestRate?;
+    # Indicates the interest property name
+    string interestProperty?;
+    # Contains the property name of loan interest such as penalty Interest and principal interest.
+    string interestPropertyName?;
+    # Contains the frequency type of compound in loan. For example, annually or monthly.
+    string compoundType?;
+    # Indicates whether the rate is fixed or floating rate.
+    string rateType?;
+    # Indicates the actual interest rate applied for the account after adjustment/tier calculation/based on basic or Periodic index value
+    string effectiveRate?;
+    # Type of the tier rate. Allowed values: - BAND: rates apply within each band - LEVEL: a common rate applies, determined by the highest level
+    string tierType?;
+    # Type of balance (e.g. current balance, credit interest accrued, deferred commission, etc.) as defined in the institution's accounting schemas.
+    string balanceTypes?;
+    # Amount of the balance
+    decimal balanceAmount?;
+    # Interest accrued for the specified period
+    decimal dividentPaidYtd?;
+    # Deprecated - Interest accrued for the specified period
+    decimal lastPaidDivident?;
+    # Indicates the end date of the interest period
+    string periodEnding?;
+};
+
+public type BNPLLoanBodyReference record {
+    # Contains the percentage of the payment amount used for settlement of the bills due
     @constraint:String {maxLength: 35}
-    string required?;
-    # Carrier to be used for processing the messages
-    @constraint:String {maxLength: 10}
-    string carrier?;
-    # Specifies the number of copies of a message required
-    @constraint:String {maxLength: 2}
-    string copies?;
-    # Defines the end date of the hold period when the delivery message is to be held in the system
+    string payinPercentage?;
+    # Contains the finite amount of the payment used for settlement of the payables
+    @constraint:String {maxLength: 35}
+    string payoutAmount?;
+    # Contains the account from which funds are to be debited against the payment type
+    @constraint:String {maxLength: 90}
+    string payinAccount?;
+    # Contains the finite amount of the payment used for settlement of the bills due
+    @constraint:String {maxLength: 35}
+    string payinAmount?;
+    # The account to which a settlement amount is transferred
+    @constraint:String {maxLength: 90}
+    string payoutAccount?;
+    # Contains the percentage of the payment amount used for settlement of the payables
+    @constraint:String {maxLength: 35}
+    string payoutPercentage?;
+    # Contains the beneficiary Id used for settlement of the bills due
+    @constraint:String {maxLength: 17}
+    string payinBeneficiary?;
+    # The beneficiary that payment should be made to 
+    @constraint:String {maxLength: 17}
+    string payoutBeneficiary?;
+    # Contains the direct debit mandate reference (dd) when the settlement method is set to direct debit. The dd reference is typically the account number followed by a suffix, for example 15245.1
+    @constraint:String {maxLength: 25}
+    string ddMandateReference?;
+    # Contains the payment order product Id for which the payment is initiated
+    @constraint:String {maxLength: 35}
+    string payinPoProduct?;
+    # Contains the payout payment order product for which payment is initiated
+    @constraint:String {maxLength: 35}
+    string payoutPoProduct?;
+};
+
+public type PaymentHolidaySimResponseBodyInner record {
+    # Indicates an unique identifier of an account
+    @constraint:String {maxLength: 20}
+    string arrangementId?;
+    # Indicates the extension data
+    record {} extensions?;
+    # Indicates the reference id for simulation activity
+    @constraint:String {maxLength: 17}
+    string simulationReference?;
+    # Contains the details of payment holiday. It includes payment type, bill type, start date and holiday period, etc
+    PaymentHolidaySimResponseBodyInner_paymentHoliday[] paymentHoliday?;
+};
+
+public type MortgageResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance pcdefer?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance escrow?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance subparticipant?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    MortgageResponseBodyPropertiesPrincipalint principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance solicitorfee?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance penalinterest?;
+    BNPLLoanResponseBodyPropertiesInheritance redemptionfee?;
+    BNPLLoanResponseBodyPropertiesInheritance settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance mortginsurance?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance offsetint?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    MortgageResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance prepayfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesInheritance account?;
+    BNPLLoanResponseBodyPropertiesInheritance periodiccharge?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+# ExternalEventStatusResponse
+public type ExternalEventStatusResponse record {
+    QueryHeader header?;
+    ExternalEventStatusResponseBody body?;
+};
+
+# Represents the Queries record for the operation: updateChangeProduct
+public type UpdateChangeProductQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanDrawdownOfferBodyPaymentTypes record {
+    # Indicates if the payment is Customer (C) type or Bank (B) type
+    @constraint:String {maxLength: 30}
+    string paymentType?;
+};
+
+# Represents the Queries record for the operation: updateLoanAccount
+public type UpdateLoanAccountQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+public type LoanAccountBodyPostingRestrictions record {
+    # This indicates the  date  on which the offer or privilege terminates for the event
     @constraint:String {maxLength: 11}
-    string holdMailEndDate?;
+    string expiryDate?;
+    # Identifies any restrictions for posting entries that are to be imposed on the Account
+    @constraint:String {maxLength: 4}
+    string postingRestriction?;
+    # Reason for unblocking the restriction set on an account
+    @constraint:String {maxLength: 100}
+    string unrestrictionText?;
+    # Sets restrictions on the actions that can be performed on an account. Allowed values can be retrieved through method getEbLookup, virtualTableName BLOCK.REASON.CODES. 
+    @constraint:String {maxLength: 35}
+    string restrictionReason?;
+    # Free text information to capture the reason for restriction applied on an account
+    @constraint:String {maxLength: 100}
+    string restrictionText?;
     # Contains the date on which the transaction or payment gets initiated
     @constraint:String {maxLength: 11}
     string startDate?;
-};
-
-public type CustomerIdResponseBody CustomerIdResponseBodyInner[];
-
-# Represents the Queries record for the operation: updateCustomerGroupPurpose
-public type UpdateCustomerGroupPurposeQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# UnapprovedCustomerGroupResponse
-public type UnapprovedCustomerGroupResponse record {
-    QueryHeader header?;
-    UnapprovedCustomerGroupResponseBody body?;
-};
-
-# CustomerInformationResponse
-public type CustomerInformationResponse record {
-    QueryHeader header?;
-    CustomerInformationResponseBody body?;
-};
-
-public type CustomerPostingRestrictionsResponseBodyInner_postingRestricts record {
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation.
+    # Captures the code that removes the restriction set on an account.  Allowed values can be retrieved through method getEbLookup, virtualTableName UNBLOCK.REASON.CODES
     @constraint:String {maxLength: 35}
-    string customerName?;
-    # Identifies any restrictions for posting entries that are imposed on a Customer
-    @constraint:String {maxLength: 2}
-    string postingRestrictId?;
-    # Display name of Posting Restriction, if any, applicable for the customer
-    @constraint:String {maxLength: 2}
-    string postingRestrictDisplayName?;
+    string unrestrictionReason?;
 };
 
-public type PartyRelationshipResponse1BodyInner_relatedPartyRoles record {
-    # Indicates the role of the party in relation to the bank – Customer, Associated Party, Representative.
-    @constraint:String {maxLength: 35}
-    string partyRoleType?;
-    # Indicates the status for the party role – Active, Inactive or Prospect.
-    @constraint:String {maxLength: 35}
-    string partyRoleStatus?;
+public type LoanConditionsResponseBody record {
+    LoanConditionsResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    LoanConditionsResponseBodyProperties properties?;
 };
 
-# Represents the Queries record for the operation: createCustomerEmailAddress
-public type CreateCustomerEmailAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type BicOwnersResponseBodyInner_bicdetails record {
-    # The identifier of the underlying Entity/Company/Branch.
-    @constraint:String {maxLength: 9}
-    string companyCode?;
-    # Contains the customer identifier to fetch list of consent arrangements for the customer or customer identifier of the debtor account. This will be populated once the SCA(Strong Customer Authentication) is completed.
-    @constraint:String {maxLength: 10}
-    string customer?;
-    # Carrier to be used for processing the messages
-    @constraint:String {maxLength: 10}
-    string carrier?;
-};
-
-public type ProspectCustomersResponseBodyInner_countryNames record {
-    # This is the country name that the financial institution resides in.
-    @constraint:String {maxLength: 35}
-    string countryName?;
-};
-
-public type OverdueSettlementsResponseBody OverdueSettlementsResponseBodyInner[];
-
-public type CustomerInformationResponseBodyInner_vulnerabilities record {
-    # The type of vulnerability (physical impairment) the customer had.
-    @constraint:String {maxLength: 45}
-    string vulnerability?;
-};
-
-public type CustomerPostingRestrictionsResponseBodyInner record {
-    # Indicates the extension data
-    record {} extensions?;
-    # Identifier of the customer
-    @constraint:String {maxLength: 10}
-    string customerId?;
-    # Identifier of the Posting Restricts imposed on a customer or account
-    CustomerPostingRestrictionsResponseBodyInner_postingRestricts[] postingRestricts?;
-};
-
-public type CustomerProfileResponseBodyCitizenships record {
-    # Specifies the country name of the beneficiary customer
-    @constraint:String {maxLength: 9}
-    string customerCountry?;
-};
-
-public type CustomerSwiftAddressResponseBodyInner record {
-    # Indicates the short name of Customer
-    @constraint:String {maxLength: 50}
-    string customerShortName?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Indicates that BIC Code to be included in the Tag25 or not
-    @constraint:String {maxLength: 3}
-    string swiftTag25Indicator?;
-    # Indicates that client name is not used in SWIFT Address for confidential purposes
-    @constraint:String {maxLength: 3}
-    string confidentialityText?;
-    # The BIC code of the Beneficiary bank
-    @jsondata:Name {value: "BIC"}
-    string bIC?;
-};
-
-# Represents the Queries record for the operation: updateFatcaCustomer
-public type UpdateFatcaCustomerQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerGroupsResponseBodyInner_primaryPartyDetails record {
-    # Indicates the type of primary customer which is part of the aggregate relationship. It may be Customer, Person or Entity
-    @constraint:String {maxLength: 8}
-    string primaryPartyType?;
-    # Identifier of the customer defined as the primary party in an aggregate relationship.
-    @constraint:String {maxLength: 10}
-    string primaryPartyId?;
-};
-
-# Represents the Headers record for the operation: getCustomerShortNames
-public type GetCustomerShortNamesHeaders record {
+# Represents the Headers record for the operation: createLinkedRateLoan
+public type CreateLinkedRateLoanHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getCustomerDigitalChannels
-public type GetCustomerDigitalChannelsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: createCustomerClosure
-public type CreateCustomerClosureQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerClosureResponse1BodyInner record {
-    # Identifier of customer closure request
-    @constraint:String {maxLength: 35}
-    string customerClosureId?;
-    # The field reflects the customer exit reason of the customer or prospect
-    @constraint:String {maxLength: 80}
-    string exitReason?;
-    # Indicates if the customer who had exited the relationship with the bank is reopened
-    @constraint:String {maxLength: 11}
-    string reopenedDate?;
-    # Identifier of the customer
-    @constraint:String {maxLength: 10}
-    string customerId?;
-    # The field reflects the customer exit status of a customer or prospect
-    @constraint:String {maxLength: 35}
-    string exitStatus?;
-    # General comments / notes
-    @constraint:String {maxLength: 35}
-    string remarks?;
-    # The current status of the request. The possible values includes New, send to printer, cancelled and processed
-    @constraint:String {maxLength: 35}
-    string requestStatus?;
-    # The field reflects the customer exit date of the customer or prospect
-    @constraint:String {maxLength: 11}
-    string exitDate?;
-};
-
-public type CustomerPersonalDetailsResponseBodyInner_Addresses record {
-    # The address of the customer's employer.
-    @constraint:String {maxLength: 35}
-    string employerAddress?;
-};
-
-public type CustomerResponseBody record {
-    # Specifies an alternative easy means of referencing the Customer
-    @constraint:String {maxLength: 200}
-    string customerMnemonic?;
-    # Customer's risk class updated manually by the User overriding the risk class calculated by the KYC process
-    @constraint:String {maxLength: 50}
-    string manualRiskClass?;
-    # Contains the communication address of the customer or full address of the property
-    CustomerResponseBodyAddresses[] addresses?;
-    # Specifies the number of dependents to the customer
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal numberOfDependents?;
-    # Contains the street name of the customer or the property
-    CustomerResponseBodyStreets[] streets?;
-    # Name of the person who introduced the Customer to the bank
-    @constraint:String {maxLength: 55}
-    string introducer?;
-    # Date that first contact was made with the Customer
-    string contactDate?;
-    # Reason for changing the customer's risk class from the calculated risk class
-    @constraint:String {maxLength: 35}
-    string overrideReason?;
-    # The language that the contents of the field are displayed in
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal language?;
-    # Indicates the communication details of the customer like PhoneNumber, email
-    CustomerResponseBodyCommunicationDevices[] communicationDevices?;
-    # Date customer KYC information was last reviewed
-    string kycLastReviewDate?;
-    # Holds the Customer's TAX/SSN Id
-    CustomerResponseBodyTaxIds[] taxIds?;
-    # An institution-defined identifier of the industry in which the customer is trading, operating or is associated with
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal industryId?;
-    # Identifies the type of customers. Example Personal, Business, Corporate, etc
-    @constraint:String {maxLength: 35}
-    string customerType?;
-    # The identifier of the department head or specific account officer responsible for the customer
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal accountOfficerId?;
-    # Branch of the customer. Accepts the id of the COMPANY which shares customer with currently signed in company
-    @constraint:String {maxLength: 11}
-    string customerCompany?;
-    # If 'Yes', then the customer will receive a SECURE message
-    @constraint:String {maxLength: 3}
-    string isSecureMessage?;
-    # An institution-defined identifier of the type of customer
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal sectorId?;
-    # Indicates the customer consolidation number for credit grouping purposes, within the same branch/country
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal customerLiability?;
-    # The town and/or city component of the base address of a customer
-    CustomerResponseBodyAddressCities[] addressCities?;
-    # The identifier of the nationality of a customer
-    @constraint:String {maxLength: 50}
-    string nationalityId?;
-    # Customer's given name
-    @constraint:String {maxLength: 50}
-    string givenName?;
-    # The last date when Anti Money Laundering result is performed and updated
-    @constraint:String {maxLength: 11}
-    string amlLastResultDate?;
-    # Identifies the country of the customer or a property or organization
-    CustomerResponseBodyCountries[] countries?;
-    # Date system has calculated customer should next be reviewed
-    string kycNextSystemReviewDate?;
-    # Indicates the residence details of Customer or entity like type, status, value
-    CustomerResponseBodyResidenceDetails[] residenceDetails?;
-    # Describe the legal controls that is required by institutions to prevent or report Anti Money Laundering activities. It can have YES, SENT or NULL values
-    @constraint:String {maxLength: 4}
-    string amlCheck?;
-    # The identifier of the country of residence of a customer
-    @constraint:String {maxLength: 2}
-    string residenceId?;
-    # Other Nationality of the Customer
-    CustomerResponseBodyOtherNationalityIds[] otherNationalityIds?;
-    # Identifies any restrictions for posting entries that are imposed on a Customer
-    CustomerResponseBodyPostingRestrictIds[] postingRestrictIds?;
-    # Indicates the extensions
-    record {} extensions?;
-    # Next date of KYC review defined manually by the User
-    string kycNextReviewDate?;
-    # Identifies the address postal code for the customer or the property
-    @constraint:Number {minValue: 0, maxValue: 10000}
-    decimal postCode?;
-    # Marital status of the customer
-    @constraint:String {maxLength: 35}
-    string maritalStatus?;
-    # The last name of an individual customer
-    @constraint:String {maxLength: 50}
-    string lastName?;
-    # Gender of the Individual Customer
-    @constraint:String {maxLength: 35}
-    string gender?;
-    # The death date of customer
-    @constraint:String {maxLength: 55}
-    string dateOfDeath?;
-    # The fax (facsimile) number of the customer
-    CustomerResponseBodyFaxIds[] faxIds?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    CustomerResponseBodyCustomerNames[] customerNames?;
-    # Indicates the residence region of country used for capital gains tax purposes
-    @constraint:String {maxLength: 55}
-    string taxResidenceRegion?;
-    # Specifies the additional officers who can assist with a product/arrangement
-    CustomerResponseBodyOtherOfficers[] otherOfficers?;
-    # Main menu title or header which the user wants to display on the screen when requesting the display of this main menu. This field can be expanded to allow the user to enter the description of the main menu in various languages
-    @constraint:String {maxLength: 35}
-    string title?;
-    # The internal bank status of a customer
-    @constraint:Number {minValue: 0, maxValue: 10000}
-    decimal customerStatus?;
-    # The office phone number of the customer
-    CustomerResponseBodyOfficePhoneNumbers[] officePhoneNumbers?;
-    # Whether information related to the customer has been collected and verified
-    boolean isKycComplete?;
-    # Describe the results of Anti Money Laundering
-    @constraint:String {maxLength: 55}
-    string amlResult?;
-    # Indicates the employment details of Customer like Status, title, occupation
-    CustomerResponseBodyEmployDetails[] employDetails?;
-    # Contains the name used for display or enrichment purposes
-    CustomerResponseBodyDisplayNames[] displayNames?;
-    # Indicates the Customer Relationship details of the customer
-    @constraint:String {maxLength: 55}
-    string kycRelationship?;
-    # The date of birth of an individual customer
-    string dateOfBirth?;
-    # Contains the contact details of the customer
-    CustomerResponseBodyContactDetails[] contactDetails?;
-    # Specifies how the Customer is considered by the bank and how he fits in with the Account Officer's overall marketing strategy
-    @constraint:Number {minValue: 0, maxValue: 100000}
-    decimal target?;
-    # Indicates the details of Relationship maintained by the Customer or Entity
-    CustomerResponseBodyRelationshipDetails[] relationshipDetails?;
-    # Date on which the entity is incorporated
-    string birthIncorpDate?;
-    # Indicates country of domicile
-    @constraint:String {maxLength: 55}
-    string domicile?;
-    # Indicates the legal document details of the Customer
-    CustomerResponseBodyLegalDetails[] legalDetails?;
-};
-
-public type ProspectCustomerBodyPostCodes record {
-    # Identifies the address postal code for the customer or the property
-    @constraint:String {maxLength: 60}
-    string postCode?;
-};
-
-public type CustomerRelationshipResponseBody record {
-    # Details about the Customer Relationships and Party Relationships
-    CustomerRelationshipBodyOriginatingRelation[] originatingRelation?;
-    # Identifies the key to Customer Relationship Group to form a relation
-    @constraint:Number {minValue: 0, maxValue: 15}
-    decimal customerRelationGroupId?;
-    # Indicates the extensions
-    record {} extensions?;
-    # The purpose of the relationship between the Originating Party and the Related Party. Valid options - TAX, LIMIT, ADVICES, OTHERS or can be left blank
-    @constraint:String {maxLength: 35}
-    string purposeOfRelationship?;
-    # Name of a Customer Relationship Group if applicable to the relationship
-    @constraint:String {maxLength: 40}
-    string customerRelationGroupName?;
-};
-
-public type CustomerDeliveryOptionsResponseBodyInner record {
-    # Indicates the extension data
-    record {} extensions?;
-    CustomerDeliveryOptionsResponseBodyInner_deliveryPreferences[] deliveryPreferences?;
-    # Identifier of the customer
-    @constraint:Number {maxValue: 35}
-    decimal customerId?;
-};
-
-# Represents the Headers record for the operation: updateCustomerExitStatus
-public type UpdateCustomerExitStatusHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerMandatesResponseBody record {
-    # Indicates the extensions
-    record {} extensions?;
-    # Holds the Mandate details such as apllication and mandate rules to be followed for transactions done using that specific application
-    CustomerMandatesResponseBodyMandateDetails[] mandateDetails?;
-};
-
-# Represents the Headers record for the operation: createCustomerEmailAddress
-public type CreateCustomerEmailAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type ProspectCustomerBodyPhoneNumbers record {
-    # The phone number of the customer or prospect
-    @constraint:String {maxLength: 17}
-    string phoneNumber?;
-};
-
-public type FatcaCustomerResponseBody record {
-    FatcaCustomerBodyTinDetails[] tinDetails?;
-    # User who defines the Campaign
-    @jsondata:Name {value: "Owner"}
-    FatcaCustomerBodyOwner[] owner?;
-    # Specifies the date on which the current status got expired
-    string currentStatusExpiry?;
-    # Specifies the reason (if any) for any status change
-    @constraint:String {maxLength: 35}
-    string changeReason?;
-    # Specifies whether there is power of attorney(POA) to a person with US Address. Possible values YES/NO
-    @constraint:String {maxLength: 50}
-    string isPoa?;
-    # Identifies the citizenship details of customer. If blank it defaults to US
-    @constraint:String {maxLength: 50}
-    string isPlaceOfBirthUs?;
-    # Identifies the Social Security number of the customer
-    @constraint:String {maxLength: 35}
-    string socialSecurityNumber?;
-    # Identifies the type of client.E.g Individual, Entity etc
-    @constraint:String {maxLength: 35}
-    string fatcaClientType?;
-    # The identifier of the country of residence of a customer
-    @constraint:String {maxLength: 55}
-    string residenceId?;
-    # Identifies the effective date of change of status
-    string statusChangeDate?;
-    # Specifies the Fatca status or Account Classification of the client. 
-    @constraint:String {maxLength: 35}
-    string fatcaStatus?;
-    # Indicates the extensions
-    record {} extensions?;
-    # Specifies whether there is any standing instruction to an account in US. Possible values YES/NO
-    @constraint:String {maxLength: 55}
-    string standingInstructionOnUsAccount?;
-    # The phone number of the customer or prospect
-    @constraint:String {maxLength: 55}
-    string phoneNumber?;
-    # Specifies the self-classification received from entities 
-    @constraint:String {maxLength: 35}
-    string entityStatus?;
-    # Identifies the citizenship details of Customer
-    FatcaCustomerBodyCitizenships[] citizenships?;
-    # Specifies the Global Intermediary Identification Numbers of financial institutions
-    @constraint:String {maxLength: 35}
-    string giin?;
-    # Indicates country of domicile
-    @constraint:String {maxLength: 55}
-    string domicile?;
-    # Specifies if account has any instructions from a US address. Possible values YES or NO
-    @constraint:String {maxLength: 55}
-    string accountInstructionfromUs?;
-    # Indicates if customer is a joint owner
-    @jsondata:Name {value: "JointOwner"}
-    FatcaCustomerBodyJointOwner[] jointOwner?;
-    # Identifies the greencard details of the client
-    @constraint:String {maxLength: 35}
-    string greencardDetails?;
-    # Identifies if the KYC check has been done or not. Possible values YES or NO
-    @constraint:String {maxLength: 55}
-    string isKycChecked?;
-    # Specifies whether there is no contact that could be established with the client. Possible values YES or NO
-    @constraint:String {maxLength: 55}
-    string isDormantAccount?;
-    # Identifies any free format narrative related to FATCA status
-    @constraint:String {maxLength: 35}
-    string statusNarrative?;
-};
-
-# Represents the Queries record for the operation: updatePartyRelationship
-public type UpdatePartyRelationshipQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Headers record for the operation: getCustomerCreditCards
-public type GetCustomerCreditCardsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getOverdueSettlements
-public type GetOverdueSettlementsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerGroupsResponseBodyInner_relationshipDetails record {
-    # Defines the application id, to which the party id belongs to. Example, CUSTOMER/PERSON.ENTITY.
-    @constraint:String {maxLength: 13}
-    string partyType?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field.
-    @constraint:String {maxLength: 10}
-    string partyId?;
-    # Indicates the nature of the relationship between the two parties Parent-of, Subsidiary-of.
-    @constraint:String {maxLength: 3}
-    string relationshipType?;
-    # Indicates the description of the relationship between parties
-    @constraint:String {maxLength: 13}
-    string relationshipName?;
-    # Indicates the nature of the relationship between the two group of parties.
-    @constraint:String {maxLength: 3}
-    string groupRelationshipType?;
-    # Indicates the related party's customer type. It may be Customer, Person or Entity.
-    @constraint:String {maxLength: 13}
-    string relatedPartyType?;
-    # Identifier of the Related Party
-    @constraint:String {maxLength: 10}
-    string relatedPartyId?;
-    # Contains the percentage contributed by specific owner of the asset or collateral
-    @constraint:String {maxLength: 6}
-    string ownershipPercentage?;
-    # Contains the date on which the transaction or payment gets initiated.
-    @constraint:String {maxLength: 11}
-    string startDate?;
-    # Indicates whether the party can be excluded from the customer group. Allowed values are YES or Blank
-    @constraint:String {maxLength: 3}
-    string excludeParty?;
-};
-
-public type CustomerRequestsResponseBody CustomerRequestsResponseBodyInner[];
-
-# CustomerLegalDocumentsResponse
-public type CustomerLegalDocumentsResponse record {
-    ScreenHeader header?;
-    CustomerLegalDocumentsResponseBody body?;
-};
-
-# CustomerPhoneAddressResponse
-public type CustomerPhoneAddressResponse record {
-    QueryHeader header?;
-    CustomerPhoneAddressResponseBody body?;
-};
-
-public type CustomerProfileResponseBodyCustomerNames record {
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    @constraint:String {maxLength: 70}
-    string customerName?;
-};
-
-public type UnapprovedCustomerGroupResponseBodyInner_partyDetails record {
-    # Defines the application id, to which the party id belongs to. Example, CUSTOMER/PERSON.ENTITY.
-    @constraint:String {maxLength: 13}
-    string partyType?;
-    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field.
-    @constraint:String {maxLength: 10}
-    string partyId?;
-};
-
-# Represents the Headers record for the operation: createCustomerRelationship
-public type CreateCustomerRelationshipHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type ProspectCustomersResponseBodyInner_streets record {
-    # Contains the street name of the customer or the property
-    @constraint:String {maxLength: 35}
-    string street?;
-};
-
-public type JointCustomerDetailsResponseBodyInner_jointCustomerDetails record {
-    # The identifier of the relationship between joint holder and owner 
-    @constraint:Number {maxValue: 3}
-    decimal jointRelationCode?;
-    # Display name of Joint Relationship identifier
-    @constraint:String {maxLength: 3}
-    string jointRelationDisplayName?;
-    # Joint or related customer id
-    @constraint:Number {maxValue: 10}
-    decimal jointCustomer?;
-    # Name of Joint Customer
-    @constraint:String {maxLength: 10}
-    string jointCustomerName?;
-    # Relationship code for the Related Customer
-    @constraint:Number {maxValue: 3}
-    decimal reverseJointRelationCode?;
-    # Describes the Relation code and is used for the enrichment of the code for reverse joint relation.
-    @constraint:String {maxLength: 3}
-    string reverseJointRelationName?;
-    # Identifies the delivery options available to the customer
-    JointCustomerDetailsResponseBodyInner_deliveryOption[] deliveryOption?;
-};
-
-# Represents the Headers record for the operation: getBicOwners
-public type GetBicOwnersHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# CustomerExitStatusResponse1
-public type CustomerExitStatusResponse1 record {
-    ScreenHeader header?;
-    CustomerExitStatusResponse1Body body?;
-};
-
-# Represents the Queries record for the operation: deleteCustomerPrintAddress
-public type DeleteCustomerPrintAddressQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerInformationResponseBodyInner_legalDocuments record {
-    # Unique reference number of the legal documents submitted as identification proof
-    @constraint:String {maxLength: 45}
-    string legalId?;
-    # Name of the legal documents such as passport, driving licence etc., provided as identification proof
-    @constraint:String {maxLength: 45}
-    string legalDocumentName?;
-    # Name of the account holder in the Legal Document
-    @constraint:String {maxLength: 100}
-    string legalHolderName?;
-    # Authority who issued the legal document
-    string legalIssueAuthorisedDate?;
-    # Date of Issue of the legal document
-    string legalIssueDate?;
-    # Expiry date of the legal document submitted as proof
-    string legalExpiredDate?;
-};
-
-public type CustomerExitStatusParamResponse1Body record {
-    # The field reflects the description of, respective customer exit status
-    @constraint:String {maxLength: 70}
-    string exitStatusDescription?;
-    # Identifies the type of customers. Example Personal, Business, Corporate, etc
-    @constraint:String {maxLength: 8}
-    string customerType?;
-    # Indicates the extensions
-    record {} extensions?;
-    # Specifies if the bank user will be allowed to re-open a professional relationship with the respective prospect or customer by removing its exit status
-    @constraint:String {maxLength: 35}
-    string allowRemoveExitStatus?;
-    # The field indicates the reason for exiting a relation with a prospect or customer
-    CustomerExitStatusParamBodyAllowedExitReasons[] allowedExitReasons?;
-};
-
-public type CustomerContactsResponseBodyInner record {
-    CustomerContactsResponseBodyInner_emailIds[] emailIds?;
-    # The mobile SMS number of the customer
-    CustomerContactsResponseBodyInner_smsNumbers[] smsNumbers?;
-    # Indicates the extension data
-    record {} extensions?;
-    # The fax (facsimile) number of the customer
-    CustomerContactsResponseBodyInner_faxIds[] faxIds?;
-    # Identifier of the customer
-    string customerId?;
-    # The phone number of the customer or prospect
-    CustomerContactsResponseBodyInner_phoneNumbers[] phoneNumbers?;
-};
-
-# Represents the Queries record for the operation: cancelCustomerGroupPurpose
-public type CancelCustomerGroupPurposeQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-# Represents the Headers record for the operation: deleteCustomerPhoneAddress
-public type DeleteCustomerPhoneAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getCustomerConsents
-public type GetCustomerConsentsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Queries record for the operation: getCustomerConsents
-public type GetCustomerConsentsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # The identifier of a condition that is used to build a product
-    string propertyClassId?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# Represents the Headers record for the operation: getCustomerLegalDocuments
-public type GetCustomerLegalDocumentsHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: getCustomer
-public type GetCustomerHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# CustomerStaticChangeResponse
-public type CustomerStaticChangeResponse record {
-    ScreenHeader header?;
-    CustomerStaticChangeResponseBody body?;
-};
-
-public type CustomerKYCDetailsResponseBodyInner record {
-    # Indicates the extension data
-    record {} extensions?;
-    # Next date of KYC review defined manually by the User
-    string kycNextReviewDate?;
-    # Name of the person who introduced the Customer to the bank
-    @constraint:String {maxLength: 35}
-    string introducer?;
-    # Date that first contact was made with the Customer
-    string contactDate?;
-    # Indicates the Customer Relationship details of the customer
-    @constraint:String {maxLength: 35}
-    string kycRelationship?;
-    # The last date when Anti Money Laundering result is performed and updated
-    string amlLastResultDate?;
-    # Date system has calculated customer should next be reviewed
-    string kycNextSystemReviewDate?;
-    # Whether information related to the customer has been collected and verified
-    boolean isKycComplete?;
-    # Date customer KYC information was last reviewed
-    string kycLastReviewDate?;
-    # Describe the results of Anti Money Laundering
-    @constraint:String {maxLength: 14}
-    string amlResult?;
-    # Describe the legal controls that is required by institutions to prevent or report Anti Money Laundering activities. It can have YES, SENT or NULL values
-    @constraint:String {maxLength: 4}
-    string amlCheck?;
-};
-
-# Represents the Queries record for the operation: getOverdueSettlements
-public type GetOverdueSettlementsQueries record {
-    # Contains the stock exchange details where a particular security is usually dealt
-    string stockExchange?;
-    # The identifier of the broker
-    string brokerId?;
-    # The nominal quantity
-    string quantity?;
-    # The identifier of the instrument
-    string instrumentId?;
-    # Customer's directions to a bank as to the disposition of funds and securities in the customer's account
-    string deliveryInstruction?;
-    # Standard date field which records trade date of the account
-    string tradeDate?;
-    # Indicates the value date on which the underlying accounting entry is to be given value (for interest purposes)
-    string valueDate?;
-    # Unique transaction identifier for retrieving the details of the transaction. For example: FT0102030333 etc
-    string transactionId?;
-    # Identifies the transaction type applicable to the transaction being processed, i.e. outward or inward payment. For example: ACPX, OTPX etc
-    string transactionType?;
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
-    # Person designated as depository by the company in or pursuant to this Indenture, and, unless otherwise provided with respect to any security, any successor to such person
-    string depository?;
-    # Identifies the currency. E.g. USD, GBP etc
-    string currency?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
-};
-
-# JointCustomerDetailsResponse
-public type JointCustomerDetailsResponse record {
-    QueryHeader header?;
-    JointCustomerDetailsResponseBody body?;
-};
-
-# Represents the Headers record for the operation: getCustomerGroupPurpose
-public type GetCustomerGroupPurposeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-# Represents the Headers record for the operation: updateCustomerEmailAddress
-public type UpdateCustomerEmailAddressHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type UnapprovedCustomerGroupPurposeResponseBodyInner_aggregateRelationships record {
-    # Indicates the relations that must be considered for aggregating under a primary customer within the customer group. List of relations can be retrieved using /reference/relationships
-    @constraint:String {maxLength: 3}
-    string allowedAggregateRelationship?;
-};
-
-# Represents the Headers record for the operation: cancelCustomerGroupPurpose
-public type CancelCustomerGroupPurposeHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type UnapprovedCustomerGroupPurposeResponseBodyInner_groupRelationships record {
-    # Indicates the list of allowed group relations in a customer group using this purpose and group type. List of relations can be retrieved using /reference/relationships
-    @constraint:String {maxLength: 3}
-    string allowedGroupRelationship?;
-};
-
-# Represents the Queries record for the operation: createCustomer
-public type CreateCustomerQueries record {
-    # The identifier to indicate if it is set to only validate or not
-    @http:Query {name: "validate_only"}
-    boolean validateOnly?;
-};
-
-public type CustomerSweepsResponseBodyInner record {
-    # Indicates the extension data
-    record {} extensions?;
-    # Debit account details for sweep record
-    CustomerSweepsResponseBodyInner_fromAccountDetails[] fromAccountDetails?;
-    # Creditor unique account details
-    CustomerSweepsResponseBodyInner_toAccountDetails[] toAccountDetails?;
-    # This indicates the charge code which will be triggered for payment stop instruction. Applicable when financial institutions would like to charge for stop payment of cheque etc. 
-    string chargeId?;
-    # Retrieves the charge amount after redeem
-    string chargeAmount?;
-    # Indicates the account to which the charges has to be levied. Used when charges are to be taken from a separate account
-    string chargeAccountId?;
-    # Identifier of the Retail account sweep
-    @constraint:String {maxLength: 35}
-    string sweepId?;
-    # Sweep types defined to the user
-    string sweepType?;
-    # Specifies the frequency in which the payment application(periodic payments) execute the payment instruction
-    string frequency?;
-};
-
-# Represents the Headers record for the operation: createCustomerClosure
-public type CreateCustomerClosureHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
-};
-
-public type CustomerCreditCardsResponseBody CustomerCreditCardsResponseBodyInner[];
-
-public type CustomerExitStatusResponseBodyInner record {
-    # Identifies the type of customers. Example Personal, Business, Corporate, etc
-    @constraint:String {maxLength: 35}
-    string customerType?;
-    # Indicates the extension data
-    record {} extensions?;
-    # The field reflects the customer exit reason of the customer or prospect
-    @constraint:String {maxLength: 80}
-    string exitReason?;
-    # The field reflects the customer exit status of a customer or prospect
-    @constraint:String {maxLength: 35}
-    string exitStatus?;
-    # The field reflects the customer exit date of the customer or prospect
-    string exitDate?;
-};
-
-public type CustomerEmailAddressResponseBody CustomerEmailAddressResponseBodyInner[];
-
-# Represents the Queries record for the operation: getCustomerDigitalChannels
-public type GetCustomerDigitalChannelsQueries record {
-    # The record from which the response should be displayed
-    @http:Query {name: "page_start"}
-    int:Signed32 pageStart?;
-    # Unique id expected to get as part of response from Transact on every enquiry request
-    @http:Query {name: "page_token"}
-    string pageToken?;
     # Name of the (digital) channel registered by the Customer
     string channelName?;
-    # The total number of records per page
-    @http:Query {name: "page_size"}
-    int:Signed32 pageSize?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
 };
 
-public type CustomerReportingStatusResponseBodyInner record {
-    # Specifies the Fatca status or Account Classification of the client. 
-    @constraint:String {maxLength: 2}
-    string fatcaStatus?;
-    # Identifies any restrictions for posting entries that are to be imposed on the Account
-    string postingRestriction?;
-    # Indicates the extension data
-    record {} extensions?;
-    # Holds the status of the customer as Reportable or Non-reportable
-    CustomerReportingStatusResponseBodyInner_crsStatuses[] crsStatuses?;
-    # Indicates the residences of the participating jurisdictions of the reporting customer
-    CustomerReportingStatusResponseBodyInner_reportableJurisdictions[] reportableJurisdictions?;
-    # Describe the results of Anti Money Laundering
-    string amlResult?;
-};
-
-public type CustomerResponseBodyCustomerNames record {
-    # Continuation/Extension to the Customer Name
-    @constraint:String {maxLength: 70}
-    string customerNameAdditional?;
-    # Indicates the name of the customer. Originator is the party who requests the payment cancellation
-    @constraint:String {maxLength: 70}
-    string customerName?;
-};
-
-public type DeliveryPreferenceResponseBody record {
+public type TakeoverloanBodySettlement record {
     # Indicates the extensions
     record {} extensions?;
-    DeliveryPreferenceBodyOtherMessagesDetail[] otherMessagesDetail?;
-    # Identifies the default customer preferences for receiving any message group for which specific preferences have not been defined
-    @constraint:String {maxLength: 35}
-    string applyOtherMessages?;
-    # Message group name that provides details of all Messages to be triggered
-    DeliveryPreferenceBodyMessageGroup[] messageGroup?;
+    # Details of the concentration account to which the surplus funds available in the sweeping account is paid out to
+    TakeoverloanBodyPayout[] payout?;
+    # Default settlement account to be used for all incoming payments and outgoing settlements when a specific settlement account is not provided for each payment type
+    @constraint:String {maxLength: 90}
+    string defaultSettlementAccount?;
+    TakeoverloanBodyRepayment[] repayment?;
 };
 
-# Represents the Queries record for the operation: updateCustomerExitStatus
-public type UpdateCustomerExitStatusQueries record {
+# Represents the Headers record for the operation: createCreditLine
+public type CreateCreditLineHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LoanConditionsResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint principalint?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance solicitorfee?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penalinterest?;
+    BNPLLoanResponseBodyPropertiesInheritance redemptionfee?;
+    BNPLLoanResponseBodyPropertiesSettlement settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance mortginsurance?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance escrow?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance balanceMaintenance?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint offsetint?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    ConsumerLoanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prepayfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    ConsumerLoanResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesCustomer customer?;
+};
+
+public type LoanDrawdownOfferAcceptanceResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance insurance?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance pcdefer?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance rewardsPoints?;
+    BNPLLoanResponseBodyPropertiesInheritance escrow?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance subparticipant?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingRules?;
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint principalint?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance solicitorfee?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    ConsumerLoanResponseBodyPropertiesPrincipalint penalinterest?;
+    BNPLLoanResponseBodyPropertiesInheritance redemptionfee?;
+    LoanDrawdownOfferResponseBodyPropertiesSettlement settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance mortginsurance?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance offsetint?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    ConsumerLoanResponseBodyPropertiesSchedule schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance prepayfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesInheritance account?;
+    BNPLLoanResponseBodyPropertiesInheritance periodiccharge?;
+    BNPLLoanResponseBodyPropertiesInheritance customer?;
+};
+
+# Represents the Headers record for the operation: createLoanDrawdownOfferAcceptance
+public type CreateLoanDrawdownOfferAcceptanceHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+public type LinkedRateLoanBodyPartyIds record {
+    # Allows capturing of customers or person entities to be part of the relationship. If partyType is selected as Customer, then the system will allow only customer Ids to be captured into this field. If partyType is selected as Person or Entity, then system will allow only personEntity Ids to be captured into this field
+    @constraint:String {maxLength: 10}
+    string partyId?;
+};
+
+public type InstallmentLoanResponseBodyPropertiesCommitment record {
+    BNPLLoanResponseBodyPropertiesAccountHeader header?;
+    InstallmentLoanBodyCommitment body?;
+};
+
+# Represents the Queries record for the operation: createLoans
+public type CreateLoansQueries record {
     # The identifier to indicate if it is set to only validate or not
     @http:Query {name: "validate_only"}
     boolean validateOnly?;
 };
 
-# Represents the Headers record for the operation: createCustomerGroupPurpose
-public type CreateCustomerGroupPurposeHeaders record {
+public type LoanConditionsResponseBodyArrangementActivity record {
+    # Indicates the extensions
+    record {} extensions?;
+    # Contains the unique identifier of the product, e.g. the product id of the arrangement account
+    @constraint:String {maxLength: 30}
+    string productId?;
+    # Contains the identifier for the transaction date. Dates are expected in ‘YYYYMMDD’ format
+    string effectiveDate?;
+};
+
+public type WriteOffBalanceLoansBodyAdjustProperties record {
+    # Indicates the removal of an asset from the balance sheet due to impairment, obsolescence, or other factors
+    WriteOffBalanceLoansBodyWriteOffs[] writeOffs?;
+};
+
+public type BNPLLoanBodyFxSettlement record {
+    # Contains the contra settlement accounts used for posting the foreign exchange offset entries
+    @constraint:String {maxLength: 35}
+    string fxSettlementAccount?;
+    # Contains the currency for which foreign exchange contra settlement account needs to be maintained
+    @constraint:String {maxLength: 3}
+    string fxSettlementCurrency?;
+};
+
+public type BillsResponseBody record {
+    LinkedRateLoanResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    BillsResponseBodyProperties properties?;
+};
+
+public type ConsumerLoanBodyProperty record {
+    # Defines the frequency date when a payment  has to be made due. When not mentioned, this will be same as the paymentFrequency
+    @constraint:String {maxLength: 38}
+    string dueFrequency?;
+    # The identifier of the product condition
+    @constraint:String {maxLength: 30}
+    string propertyId?;
+};
+
+public type ArrangementResponseBody record {
+    ArrangementResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    record {} properties?;
+};
+
+# Represents the Headers record for the operation: createLoanArrangementPayoff
+public type CreateLoanArrangementPayoffHeaders record {
     # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
     string companyId?;
     # Username and password to authenticate the API against core-banking
     string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
     # User who initiated the transaction
     string userRole?;
     # Identifies the device type
     string deviceId?;
 };
 
-# CustomerDigitalChannelsResponse
-public type CustomerDigitalChannelsResponse record {
+public type LoanSettlementBodyPayout record {
+    # Indicates the transaction reference for which the history of transactions is requested. It is steered by the attribute 'booked' given the start date and end date or the entry from which the history is requested
+    LoanSettlementBodyReference1[] reference?;
+    # Contains the different payout options, for example charge, interest or principal on which the payout settlement instructions would be processed
+    LoanSettlementBodyPayoutpropertyclasses[] payoutpropertyclasses?;
+    # Flag to indicate whether Payout Settlement instruction is required or not.Valid input is Yes or No.Default value is Yes
+    @constraint:String {maxLength: 3}
+    string payOutSettlement?;
+    # Contains the different payout options, for example management charge, principal interest or commitment on which the payout settlement instructions would be processed
+    LoanSettlementBodyPayoutproperties[] payoutproperties?;
+};
+
+# LoanAccountResponse
+public type LoanAccountResponse record {
+    ArrangementHeader header?;
+    LoanAccountResponseBody body?;
+};
+
+# EvidenceResponse1
+public type EvidenceResponse1 record {
     QueryHeader header?;
-    CustomerDigitalChannelsResponseBody body?;
+    EvidenceResponse1Body body?;
 };
 
-public type UnapprovedCustomerGroupResponseBody UnapprovedCustomerGroupResponseBodyInner[];
+public type LoanInformationResponseBody LoanInformationResponseBodyInner[];
 
-# CustomerEmailAddressResponse
-public type CustomerEmailAddressResponse record {
-    QueryHeader header?;
-    CustomerEmailAddressResponseBody body?;
+public type LoanAccountBodyAccount record {
+    # An Alternate Identification for the Deal. This can be used to retrieve the Deal for amendment
+    LoanAccountBodyAlternateIds[] alternateIds?;
+    # Identifier of the account in source system, eg, a origination system
+    @constraint:String {maxLength: 35}
+    string originationReference?;
+    # Defines if anniversaryDate or start date is based on account creation or once disbursement is done. Allowed values are ARRANGEMENT and DISBURSEMENT. ARRANGEMENT indicates that account start period is considered as arrangement creation time. If set as DISBURSEMENT the account start period is based on disbursement activity date
+    @constraint:String {maxLength: 10}
+    string baseDateType?;
+    # Identifies any restrictions for posting entries that are to be imposed on the Account
+    LoanAccountBodyPostingRestrictions[] postingRestrictions?;
+    # Indicates the accounting company of the account record
+    @constraint:String {maxLength: 11}
+    string accountingCompany?;
+    # Indicates the number of months without customer activity before an account is declared as inactive
+    @constraint:String {maxLength: 3}
+    string inactiveMonths?;
+    # Defines the behavior when recurring payment dates falls on a weekend or bank holiday. The payment is then executed either the 'preceding' or 'following' working day. ASPSP might reject the request due to the communicated value, if rules in Online-Banking are not supporting this execution rule
+    @constraint:String {maxLength: 15}
+    string dateAdjustment?;
+    # Indicates the conditions under which account details or details of entries over the account are to be included in an end of day report for referral to the account officer responsible. Referral conditions can be defined depending on transaction such as transaction code, amount and sign, or the balance of the Account
+    LoanAccountBodyReferalCodes[] referalCodes?;
+    # Identifier of the account. Often referred to as the account number, yet for consistency this is always referred to as accountId. Accepts both IBAN & BBAN
+    @constraint:String {maxLength: 35}
+    string accountId?;
+    # Indicates the extensions
+    record {} extensions?;
+    # Id of the portfolio or security account
+    @constraint:String {maxLength: 35}
+    string portfolioId?;
+    # Indicates the option to specify the basis for deriving the future event dates.Allowed values are previous(last adjusted event date will be used for deriving) ,base(last unadjusted event date provided by user will be used for deriving and null(change product ,renewal event base date will be used for deriving)
+    @constraint:String {maxLength: 10}
+    string baseDateKey?;
+    # Title line 2 that will appear in notice and statements
+    LoanAccountBodyAccountTitles2[] accountTitles2?;
+    # The reference which is provided to the beneficiary/ creditor by the originator of payment
+    @constraint:String {maxLength: 16}
+    string customerReference?;
+    # Short title on an account
+    LoanAccountBodyAccountTitles[] accountTitles?;
+    # The country or region code to be considered for determining the holidays and used while calculating the schedule dates
+    LoanAccountBodyBusinessDayCentres[] businessDayCentres?;
+    # Shortcut code for referring an Entity/Company/Branch
+    @constraint:String {maxLength: 10}
+    string mnemonic?;
+    # Indicates the type of Annual Percentage Rate calculation selected for Reporting. Available options such as Cashflow,Interest
+    BNPLLoanBodyAprTypes[] aprTypes?;
+    # Contains the short title given to the name of an account or an arrangement
+    LoanAccountBodyShortTitles[] shortTitles?;
+    # Indicates how the schedule date has to be adjusted when the schedule falls on a holiday. Allowed values are BACKWARD, FORWARD, FORWARD SAME MONTH or CALENDAR
+    @constraint:String {maxLength: 18}
+    string dateConvention?;
+    # Indicates the account or contract product name. For example for an account this maybe current, savings etc
+    @constraint:String {maxLength: 5}
+    string category?;
+    # The start or end period defined in MMDD format to indicate the period when charge rules has to be applied
+    @constraint:String {maxLength: 6}
+    string anniversary?;
 };
 
-# Represents the Headers record for the operation: getCustomerId
-public type GetCustomerIdHeaders record {
-    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
-    string companyId?;
-    # Username and password to authenticate the API against core-banking
-    string credentials?;
-    # Indicates the pagination header attributes availability. If set to 'true', it fetches all the data
-    boolean disablePagination?;
-    # User who initiated the transaction
-    string userRole?;
-    # Identifies the device type
-    string deviceId?;
+public type PaymentHolidayResponseBody record {
+    PaymentHolidayResponseBodyArrangementActivity arrangementActivity?;
+    BNPLLoanResponseBodyActivities activities?;
+    PaymentHolidayResponseBodyProperties properties?;
 };
 
-public type CustomerAddressOutputResponseBody CustomerAddressOutputResponseBodyInner[];
-
-# CustomerIdResponse
-public type CustomerIdResponse record {
-    QueryHeader header?;
-    CustomerIdResponseBody body?;
+# Represents the Queries record for the operation: updateBills
+public type UpdateBillsQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
 };
 
-# Represents the Queries record for the operation: getUnapprovedCustomerGroupPurpose
-public type GetUnapprovedCustomerGroupPurposeQueries record {
-    # Indicates whether group relations have to be defaulted in customer group from party relationship. Allowed values are YES, NO or Blank
-    string allowGroupRelationship?;
-    # Indicates whether customers in a group are to be restricted from being defined in another customer group with same group purpose. YES - will restrict the customer from being defined in another group, NO/Blank - will allow customers to be defined in other groups
-    string groupLevelUniqueCustomer?;
-    # Indicates the type of customer group. Allowed values are RISK ,LIABILITY or Blank
-    string groupPurpose?;
+public type BNPLLoanResponseBodyProperties record {
+    BNPLLoanResponseBodyPropertiesInheritance maintenancefee?;
+    BNPLLoanResponseBodyPropertiesInheritance principalint?;
+    BNPLLoanResponseBodyPropertiesInheritance penaltyint?;
+    BNPLLoanResponseBodyPropertiesInheritance evidence?;
+    BNPLLoanResponseBodyPropertiesInheritance bonus?;
+    BNPLLoanResponseBodyPropertiesInheritance arrangementRules?;
+    BNPLLoanResponseBodyPropertiesInheritance inheritance?;
+    BNPLLoanResponseBodyPropertiesInheritance xisPoolid?;
+    BNPLLoanResponseBodyPropertiesInheritance participant?;
+    BNPLLoanResponseBodyPropertiesSettlement settlement?;
+    BNPLLoanResponseBodyPropertiesInheritance activityCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance payofffee?;
+    BNPLLoanResponseBodyPropertiesInheritance exchangeRate?;
+    BNPLLoanResponseBodyPropertiesInheritance accreporting?;
+    BNPLLoanResponseBodyPropertiesInheritance dormancy?;
+    BNPLLoanResponseBodyPropertiesInheritance statement?;
+    BNPLLoanResponseBodyPropertiesInheritance 'limit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisFinance?;
+    BNPLLoanResponseBodyPropertiesInheritance agentCommission?;
+    BNPLLoanResponseBodyPropertiesInheritance periodicCharges?;
+    BNPLLoanResponseBodyPropertiesInheritance officers?;
+    BNPLLoanResponseBodyPropertiesInheritance newarrfee?;
+    BNPLLoanResponseBodyPropertiesInheritance prindecreasefee?;
+    BNPLLoanResponseBodyPropertiesInheritance xumaumiIndicator?;
+    BNPLLoanResponseBodyPropertiesInheritance xrateSetup?;
+    BNPLLoanResponseBodyPropertiesInheritance restructureRules?;
+    BNPLLoanResponseBodyPropertiesInheritance ageingfee?;
+    BNPLLoanResponseBodyPropertiesInheritance renewal?;
+    BNPLLoanResponseBodyPropertiesCommitment commitment?;
+    BNPLLoanResponseBodyPropertiesInheritance payoff?;
+    BNPLLoanResponseBodyPropertiesInheritance xauLoanProductControls?;
+    BNPLLoanResponseBodyPropertiesInheritance tax?;
+    BNPLLoanResponseBodyPropertiesInheritance messaging?;
+    BNPLLoanResponseBodyPropertiesInheritance alerts?;
+    BNPLLoanResponseBodyPropertiesInheritance schedule?;
+    BNPLLoanResponseBodyPropertiesInheritance prefpricing?;
+    BNPLLoanResponseBodyPropertiesInheritance splitsMerges?;
+    BNPLLoanResponseBodyPropertiesInheritance pricingGrid?;
+    BNPLLoanResponseBodyPropertiesInheritance xtxlimit?;
+    BNPLLoanResponseBodyPropertiesInheritance xisDrawing?;
+    BNPLLoanResponseBodyPropertiesInheritance constraint?;
+    BNPLLoanResponseBodyPropertiesInheritance disbursementfee?;
+    BNPLLoanResponseBodyPropertiesInheritance facility?;
+    BNPLLoanResponseBodyPropertiesAccount account?;
+    BNPLLoanResponseBodyPropertiesCustomer customer?;
+};
+
+# Represents the Queries record for the operation: getPaymentHolidaySim
+public type GetPaymentHolidaySimQueries record {
     # The record from which the response should be displayed
     @http:Query {name: "page_start"}
     int:Signed32 pageStart?;
-    # Indicates whether customer relations have to be defaulted in customer group from party relationship. Allowed values are YES, NO or Blank
-    string allowRelationship?;
     # Unique id expected to get as part of response from Transact on every enquiry request
     @http:Query {name: "page_token"}
     string pageToken?;
-    # Identifier of customer group purpose
-    string groupPurposeId?;
-    # Indicates whether a customer is allowed to be part of multiple sub groups. Allowed values are UNIQUE, MULTIPLE, NONE or Blank
-    string subGroupLevelUniqueCustomer?;
     # The total number of records per page
     @http:Query {name: "page_size"}
     int:Signed32 pageSize?;
 };
 
-# CustomerMandatesResponse
-public type CustomerMandatesResponse record {
-    ScreenHeader header?;
-    CustomerMandatesResponseBody body?;
+# LoanBillsResponse
+public type LoanBillsResponse record {
+    QueryHeader header?;
+    LoanBillsResponseBody body?;
 };
 
-public type CustomerPhoneAddressResponseBodyInner_customerShortNames record {
-    # Indicates the short name of Customer
-    @constraint:String {maxLength: 50}
-    string customerShortName?;
+# Represents the Headers record for the operation: simulatePaymentHoliday
+public type SimulatePaymentHolidayHeaders record {
+    # Identifier of the lead company of the underlying Entity/Company/Branch for the respective contract for customer data protection purposes. Example US0010001
+    string companyId?;
+    # Username and password to authenticate the API against core-banking
+    string credentials?;
+    # Name of the (digital) channel registered by the Customer
+    string channelName?;
+    # User who initiated the transaction
+    string userRole?;
+    # Identifies the device type
+    string deviceId?;
+};
+
+# Represents the Queries record for the operation: updateLoanSettlement
+public type UpdateLoanSettlementQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
+};
+
+# Represents the Queries record for the operation: createLoanSimulation
+public type CreateLoanSimulationQueries record {
+    # The identifier to indicate if it is set to only validate or not
+    @http:Query {name: "validate_only"}
+    boolean validateOnly?;
 };
